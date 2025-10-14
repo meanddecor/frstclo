@@ -1,0 +1,184 @@
+{% comment %}
+  Premium Interactive Drake Environment
+  - Animated navigation points
+  - Smooth transitions
+  - Premium styling
+{% endcomment %}
+
+<link href="{{ 'interactive-environment.css' | asset_url }}" rel="stylesheet" preload>
+<script src="{{ 'interactive-environment.js' | asset_url }}" defer></script>
+
+<div class="interactive-drake" data-section-type="interactive-drake">
+  <div class="environment-container">
+    {% if section.settings.image %}
+      <img class="environment-image" 
+           src="{{ section.settings.image | image_url: width: 3000 }}" 
+           alt="{{ section.settings.image.alt }}"
+           loading="eager"
+           width="3000"
+           height="{{ 3000 | divided_by: section.settings.image.aspect_ratio | round }}">
+    {% endif %}
+
+    {% for block in section.blocks %}
+      <div class="interactive-point-wrapper" 
+           style="left: {{ block.settings.x_position }}%; 
+                  top: {{ block.settings.y_position }}%;">
+        <a href="{{ block.settings.link }}" 
+           class="interactive-point {{ block.settings.direction }}"
+           aria-label="{{ block.settings.label }}"
+           data-direction="{{ block.settings.direction }}"
+           style="--bg-color: {{ block.settings.bg_color }};
+                  --text-color: {{ block.settings.text_color }};
+                  --border-color: {{ block.settings.border_color }};
+                  --arrow-color: {{ block.settings.arrow_color }};">
+          <span class="point-arrow">
+            <svg width="13" height="11" viewBox="0 0 13 11" fill="none">
+              <line x1="11.7052" y1="4.77742" x2="6.8748" y2="9.60777" stroke="var(--arrow-color)" stroke-width="2"></line>
+              <path d="M10.2912 4.77745L6.89487 1.38135" stroke="var(--arrow-color)" stroke-width="2"></path>
+              <line x1="10.5151" y1="5.45581" x2="0.998047" y2="5.45581" stroke="var(--arrow-color)" stroke-width="2"></line>
+            </svg>
+          </span>
+          <span class="point-label">{{ block.settings.label }}</span>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .interactive-point-wrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  .interactive-point {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 24px;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    text-decoration: none;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    max-width: 40px;
+  }
+  
+  .interactive-point:hover {
+    max-width: 300px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .interactive-point.prev .point-arrow {
+    transform: scaleX(-1);
+  }
+  
+  .point-label {
+    opacity: 0;
+    white-space: nowrap;
+    padding-left: 8px;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+  
+  .interactive-point:hover .point-label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Premium Interactive Drake",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Environment Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Navigation Point",
+      "settings": [
+        {
+          "type": "range",
+          "id": "x_position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal Position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "y_position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical Position",
+          "default": 50
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button Label",
+          "default": "Explore"
+        },
+        {
+          "type": "select",
+          "id": "direction",
+          "label": "Arrow Direction",
+          "options": [
+            { "value": "prev", "label": "Left" },
+            { "value": "next", "label": "Right" }
+          ],
+          "default": "next"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "#000000"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "arrow_color",
+          "label": "Arrow Color",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Premium Interactive Drake",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

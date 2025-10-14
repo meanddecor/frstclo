@@ -13,11 +13,14 @@
   "sections": {
     "announcement-bar": {
       "type": "announcement-bar",
+      "disabled": true,
       "blocks": {
         "announcement-bar-0": {
           "type": "announcement",
           "settings": {
             "text": "Welcome to our store",
+            "text_alignment": "center",
+            "color_scheme": "background-1",
             "link": ""
           }
         }
@@ -25,38 +28,36 @@
       "block_order": [
         "announcement-bar-0"
       ],
-      "settings": {
-        "auto_rotate": false,
-        "change_slides_speed": 5,
-        "color_scheme": "scheme-1",
-        "show_line_separator": true,
-        "show_social": false,
-        "enable_country_selector": false,
-        "enable_language_selector": false
-      }
+      "settings": {}
     },
     "header": {
       "type": "header",
       "settings": {
-        "logo_position": "middle-left",
-        "mobile_logo_position": "center",
+        "logo_position": "middle-center",
         "menu": "main-menu",
+        "heading_menu_size_custom": 18,
         "menu_type_desktop": "dropdown",
-        "sticky_header_type": "on-scroll-up",
-        "show_line_separator": true,
-        "color_scheme": "scheme-1",
-        "menu_color_scheme": "scheme-1",
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "enable_customer_avatar": true,
+        "sticky_header_type": "none",
+        "show_line_separator": false,
+        "mobile_logo_position": "center",
         "margin_bottom": 0,
         "padding_top": 20,
         "padding_bottom": 20
+      }
+    },
+    "2fdc4d38-0d9a-442f-aa28-acdb8ef7e8ef": {
+      "type": "header-time",
+      "settings": {
+        "pc_date_time": false,
+        "mobile_date_time": false,
+        "shop_date_time_color": "#ffffff",
+        "shop_date_time_size": 13
       }
     }
   },
   "order": [
     "announcement-bar",
-    "header"
+    "header",
+    "2fdc4d38-0d9a-442f-aa28-acdb8ef7e8ef"
   ]
 }

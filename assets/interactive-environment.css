@@ -1,0 +1,92 @@
+/* Interactive Environment Styles */
+.environment-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto;
+  margin: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.environment-image {
+  width: auto;
+  height: 100vh;
+  display: block;
+}
+
+.interactive-point {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.environment-nav a {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border: 2px solid;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.environment-nav a:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.environment-nav h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Mobile styles */
+@media screen and (max-width: 767px) {
+  .environment-container {
+    height: 80vh;
+  }
+  
+  .environment-image {
+    height: 80vh;
+  }
+  
+  .environment-nav a {
+    padding: 8px 15px;
+  }
+  
+  .environment-nav h3 {
+    font-size: 14px;
+  }
+}
+
+/* Animation for arrow hover */
+.environment-nav a:hover .icon {
+  animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+.environment-nav a.prev:hover .icon {
+  animation-name: bounce-reverse;
+}
+
+@keyframes bounce-reverse {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-5px); }
+}
