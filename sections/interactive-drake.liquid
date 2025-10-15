@@ -1,111 +1,700 @@
 {% comment %}
-  Premium Interactive Drake Environment
-  - Animated navigation points
-  - Smooth transitions
-  - Premium styling
+  Enhanced Interactive Drake Section
+  - JavaScript-powered pulsing animations
+  - Advanced hover/click interactions
+  - Shopify Liquid integration
 {% endcomment %}
 
-<link href="{{ 'interactive-environment.css' | asset_url }}" rel="stylesheet" preload>
-<script src="{{ 'interactive-environment.js' | asset_url }}" defer></script>
-
-<div class="interactive-drake" data-section-type="interactive-drake">
-  <div class="environment-container">
-    {% if section.settings.image %}
-      <img class="environment-image" 
-           src="{{ section.settings.image | image_url: width: 3000 }}" 
-           alt="{{ section.settings.image.alt }}"
-           loading="eager"
-           width="3000"
-           height="{{ 3000 | divided_by: section.settings.image.aspect_ratio | round }}">
-    {% endif %}
-
-    {% for block in section.blocks %}
-      <div class="interactive-point-wrapper" 
-           style="left: {{ block.settings.x_position }}%; 
-                  top: {{ block.settings.y_position }}%;">
-        <a href="{{ block.settings.link }}" 
-           class="interactive-point {{ block.settings.direction }}"
-           aria-label="{{ block.settings.label }}"
-           data-direction="{{ block.settings.direction }}"
-           style="--bg-color: {{ block.settings.bg_color }};
-                  --text-color: {{ block.settings.text_color }};
-                  --border-color: {{ block.settings.border_color }};
-                  --arrow-color: {{ block.settings.arrow_color }};">
-          <span class="point-arrow">
-            <svg width="13" height="11" viewBox="0 0 13 11" fill="none">
-              <line x1="11.7052" y1="4.77742" x2="6.8748" y2="9.60777" stroke="var(--arrow-color)" stroke-width="2"></line>
-              <path d="M10.2912 4.77745L6.89487 1.38135" stroke="var(--arrow-color)" stroke-width="2"></path>
-              <line x1="10.5151" y1="5.45581" x2="0.998047" y2="5.45581" stroke="var(--arrow-color)" stroke-width="2"></line>
-            </svg>
-          </span>
-          <span class="point-label">{{ block.settings.label }}</span>
-        </a>
-      </div>
-    {% endfor %}
-  </div>
-</div>
-
 <style>
-  .interactive-point-wrapper {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  .interactive-drake {
+    height: {{ section.settings.section_height | default: 100 }}vh;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: {% if section.settings.enable_horizontal_scroll %}scroll{% else %}hidden{% endif %};
+    overflow-y: {% if section.settings.enable_vertical_scroll %}scroll{% else %}hidden{% endif %};
+    position: relative;
+    background: {{ section.settings.background_color | default: '#000' }};
+    display: block;
+    line-height: 0;
+    /* Hide scrollbar */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    /* Enable smooth touch scrolling */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
   
-  .interactive-point {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .interactive-drake::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Mobile: horizontally scrollable */
+  .interactive-drake img {
+    height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_height | default: 100 }}%{% else %}100%{% endif %};
+    min-width: {% if section.settings.force_mobile_full_width %}100%{% else %}{{ section.settings.mobile_min_width | default: 150 }}vw{% endif %};
+    min-height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_min_height | default: 100 }}vh{% else %}500px{% endif %};
+    max-width: none;
+    object-fit: {{ section.settings.object_fit | default: 'cover' }};
+    object-position: {{ section.settings.object_position | default: 'center' }};
+    z-index: 0;
+  }
+  
+  /* Larger screens: cover entire viewport */
+  @media (min-width: 1024px) {
+    .interactive-drake {
+      overflow-x: {% if section.settings.enable_horizontal_scroll %}scroll{% else %}hidden{% endif %};
+      overflow-y: {% if section.settings.enable_vertical_scroll %}scroll{% else %}hidden{% endif %};
+    }
+    .interactive-drake img {
+      height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_height | default: 100 }}%{% else %}100%{% endif %};
+      width: {% if section.settings.enable_horizontal_scroll %}auto{% else %}100%{% endif %};
+      min-width: {% if section.settings.enable_horizontal_scroll %}100%{% else %}100%{% endif %};
+      min-height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_min_height | default: 100 }}vh{% else %}auto{% endif %};
+      object-fit: {{ section.settings.object_fit | default: 'cover' }};
+      object-position: {{ section.settings.object_position | default: 'center' }};
+    }
+  }
+  
+  .hotspot {
+    position: absolute;
+    width: var(--hotspot-size, 20px);
+    height: var(--hotspot-size, 20px);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    color: var(--hotspot-color, #ff0000);
+    overflow: visible;
+  }
+
+  .hotspot-core,
+  .hotspot-icon,
+  .hotspot-svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hotspot-core {
+    display: block;
+    background: currentColor;
+  }
+
+  .hotspot-icon {
+    display: none;
+    object-fit: contain;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+  }
+
+  .hotspot-svg {
+    display: none;
+    place-items: center;
+  }
+
+  .hotspot-svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .hotspot.use-image .hotspot-core,
+  .hotspot.use-svg .hotspot-core {
+    display: none;
+  }
+
+  .hotspot.use-image .hotspot-icon {
+    display: block;
+  }
+
+  .hotspot.use-svg .hotspot-svg {
+    display: grid;
+  }
+
+  .pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 0 var(--pulse-color, currentColor);
+    opacity: 0.7;
+    animation: pulse-ring var(--pulse-speed, 1.5s) infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hotspot:hover .pulse-ring {
+    animation: none;
+    opacity: 0;
+  }
+
+  .hotspot.use-explore .pulse-ring {
+    display: none !important;
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      box-shadow: 0 0 0 0 var(--pulse-color, currentColor);
+      opacity: 0.7;
+    }
+    70% {
+      transform: translate(-50%, -50%) scale(2.5);
+      box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+      opacity: 0;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(3);
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      opacity: 0;
+    }
+  }
+  
+  .hotspot-ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+  
+  .hotspot-tooltip {
+    position: absolute;
+    bottom: calc(100% + var(--tooltip-offset, 0px));
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--tooltip-bg, rgba(0, 0, 0, 0.8)) !important;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+    box-sizing: border-box;
+  }
+
+  .hotspot-tooltip[data-width-mode="dynamic"] {
+    width: auto;
+    min-width: min-content;
+    max-width: 300px;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .hotspot-tooltip[data-width-mode="fixed"] {
+    width: var(--tooltip-width, 200px);
+    white-space: normal;
+    text-align: var(--tooltip-align, center);
+  }
+
+  .hotspot:hover .hotspot-tooltip {
+    opacity: 1;
+    display: block;
+  }
+
+  .hotspot.use-explore {
+    --explore-size: var(--hotspot-size, 24px);
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    animation: none !important;
+  }
+
+  .hotspot-explore {
+    position: relative;
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+  }
+
+  .hotspot-explore .explore-core {
+    position: absolute;
+    right: 0;
+    top: 0;
     display: flex;
     align-items: center;
-    padding: 8px 16px;
-    border-radius: 24px;
-    border: 2px solid var(--border-color);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    text-decoration: none;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    justify-content: flex-start;
+    width: 24px;
+    height: 24px;
+    border-radius: 12.5px;
+    border: 1px solid white;
+    background-color: transparent;
+    color: white;
+    transition: all 0.7s;
     overflow: hidden;
-    max-width: 40px;
+    box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
-  
-  .interactive-point:hover {
-    max-width: 300px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+  .hotspot-explore:hover .explore-core {
+    width: var(--expanded-width, auto);
+    padding-right: 15px;
+    padding-left: 22px;
   }
-  
-  .interactive-point.prev .point-arrow {
+
+  .hotspot-explore[data-direction="left"]:hover .explore-core {
+    width: var(--expanded-width, auto);
+    padding-left: 15px;
+    padding-right: 22px;
+  }
+
+  .hotspot-explore .explore-icon {
+    opacity: 1 !important;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    flex-shrink: 0;
+  }
+
+  .hotspot-explore:hover .explore-icon {
+    opacity: 1 !important;
+  }
+
+  .hotspot-explore .explore-text {
+    opacity: 0;
+    transition: opacity 0.5s;
+    white-space: nowrap;
+    line-height: 24px;
+    padding-right: 18px;
+    visibility: hidden;
+  }
+
+  .hotspot-explore:hover .explore-text {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .hotspot-explore[data-direction="left"] .explore-core {
+    left: 0;
+    right: auto;
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .hotspot-explore[data-direction="left"] .explore-icon {
+    left: 5px;
+    right: auto;
+  }
+
+  .hotspot-explore[data-direction="left"] .explore-icon svg {
     transform: scaleX(-1);
   }
-  
-  .point-label {
-    opacity: 0;
-    white-space: nowrap;
-    padding-left: 8px;
-    transform: translateX(-10px);
-    transition: all 0.3s ease;
-  }
-  
-  .interactive-point:hover .point-label {
-    opacity: 1;
-    transform: translateX(0);
+
+  .hotspot-explore[data-direction="left"] .explore-text {
+    padding-left: 18px;
+    padding-right: 0;
   }
 </style>
 
+<div class="interactive-drake">
+  {% if section.settings.image != blank %}
+    <img 
+      src="{{ section.settings.image | image_url: width: 2000 }}" 
+      alt="{{ section.settings.image.alt }}"
+      width="{{ section.settings.image.width }}"
+      height="{{ section.settings.image.height }}"
+      loading="lazy"
+      id="drake-background"
+    >
+  {% endif %}
+  
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when 'hotspot' %}
+        {% assign tooltip_bg_color = block.settings.tooltip_bg | default: '#000000' %}
+        {% assign tooltip_bg_rgb = tooltip_bg_color | color_to_rgb | replace: 'rgb(', '' | replace: ')', '' %}
+        {% assign tooltip_opacity = block.settings.tooltip_opacity | default: 80 | divided_by: 100.0 %}
+        {% assign hotspot_classes = 'hotspot' %}
+        {% if block.settings.dot_type == 'image' and block.settings.custom_icon != blank %}
+          {% assign hotspot_classes = hotspot_classes | append: ' use-image' %}
+        {% elsif block.settings.dot_type == 'svg' and block.settings.svg_code != blank %}
+          {% assign hotspot_classes = hotspot_classes | append: ' use-svg' %}
+        {% endif %}
+        <div
+          class="{{ hotspot_classes }}"
+          id="hotspot-{{ forloop.index }}"
+          data-speed="{{ block.settings.pulse_speed | default: 1.5 }}"
+          data-x-percent="{{ block.settings.x_position }}"
+          data-y-percent="{{ block.settings.y_position }}"
+          style="
+            --hotspot-size: {{ block.settings.size | default: 20 }}px;
+            --hotspot-color: {{ block.settings.color }};
+            --pulse-color: {{ block.settings.pulse_color | default: block.settings.color }};
+            --pulse-speed: {{ block.settings.pulse_speed | default: 1.5 }}s;
+            color: {{ block.settings.color }};
+            left: {{ block.settings.x_position }}%;
+            top: {{ block.settings.y_position }}%;
+          "
+        >
+          <span class="pulse-ring"></span>
+          {% if block.settings.dot_type == 'image' and block.settings.custom_icon != blank %}
+            <img
+              class="hotspot-icon"
+              src="{{ block.settings.custom_icon | image_url: width: 600 }}"
+              width="{{ block.settings.size | default: 20 }}"
+              height="{{ block.settings.size | default: 20 }}"
+              alt="{{ block.settings.tooltip | escape }}"
+            >
+          {% elsif block.settings.dot_type == 'svg' and block.settings.svg_code != blank %}
+            <div class="hotspot-svg">
+              {{ block.settings.svg_code }}
+            </div>
+          {% else %}
+            <span class="hotspot-core" style="background: {{ block.settings.color }};"></span>
+          {% endif %}
+          {% if block.settings.tooltip != blank %}
+            <div
+              class="hotspot-tooltip"
+              data-width-mode="{{ block.settings.tooltip_width_mode | default: 'dynamic' }}"
+              style="
+                --tooltip-bg: rgba({{ tooltip_bg_rgb }}, {{ tooltip_opacity }});
+                --tooltip-width: {{ block.settings.tooltip_width | default: 200 }}px;
+                --tooltip-offset: {{ block.settings.tooltip_offset | default: 0 }}px;
+                --tooltip-align: {{ block.settings.tooltip_align | default: 'center' }};
+              "
+            >
+              {{ block.settings.tooltip }}
+            </div>
+          {% endif %}
+        </div>
+      {% when 'explore_button' %}
+        {% assign explore_color = block.settings.color | default: '#FFFFFF' %}
+        <div
+          class="hotspot use-explore"
+          id="hotspot-{{ forloop.index }}"
+          data-x-percent="{{ block.settings.x_position }}"
+          data-y-percent="{{ block.settings.y_position }}"
+          style="
+            --hotspot-size: {{ block.settings.size | default: 24 }}px;
+            --expanded-width: {{ block.settings.expanded_width | default: 150 }}px;
+            color: {{ explore_color }};
+            left: {{ block.settings.x_position }}%;
+            top: {{ block.settings.y_position }}%;
+          "
+        >
+          <a
+            class="hotspot-explore"
+            data-direction="{{ block.settings.arrow_direction | default: 'right' }}"
+            href="{{ block.settings.link | default: '#' }}"
+            aria-label="{{ block.settings.label | default: 'Explore' | escape }}"
+            style="color: {{ block.settings.arrow_color | default: block.settings.color | default: '#FFFFFF' }};"
+          >
+            <span class="explore-core" style="
+              border: {{ block.settings.border_width | default: 1 }}px solid {{ block.settings.border_color | default: block.settings.color | default: '#FFFFFF' }};
+              background-color: {{ block.settings.bg_color | default: 'transparent' }};
+             --expanded-width: {{ block.settings.expanded_width | default: 150 }}px;
+              height: {{ block.settings.size | default: 24 }}px;
+              border-radius: {{ block.settings.size | default: 24 | divided_by: 2.0 }}px;
+            ">
+              <span class="explore-icon" style="color: {{ block.settings.arrow_color | default: '#FFFFFF' }};">
+                <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="11.7052" y1="4.77742" x2="6.8748" y2="9.60777" stroke="currentColor" stroke-width="2"></line>
+                  <path d="M10.2912 4.77745L6.89487 1.38135" stroke="currentColor" stroke-width="2"></path>
+                  <line x1="10.5151" y1="5.45581" x2="0.998047" y2="5.45581" stroke="currentColor" stroke-width="2"></line>
+                </svg>
+              </span>
+              {% if block.settings.label != blank %}
+                <span class="explore-text">{{ block.settings.label }}</span>
+              {% endif %}
+            </span>
+          </a>
+          <style>
+            .hotspot-explore[data-direction="right"] .explore-core {
+              border-width: {{ block.settings.border_width | default: 1 }}px;
+            }
+            .hotspot-explore[data-direction="right"] .explore-core:hover {
+              width: var(--expanded-width, auto);
+              padding-right: 15px;
+              padding-left: 22px;
+            }
+            .hotspot-explore[data-direction="left"] .explore-core {
+              border-width: {{ block.settings.border_width | default: 1 }}px;
+            }
+            .hotspot-explore[data-direction="left"] .explore-core:hover {
+              width: var(--expanded-width, auto);
+              padding-left: 15px;
+              padding-right: 22px;
+            }
+          </style>
+        </div>
+    {% endcase %}
+  {% endfor %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.querySelector('.interactive-drake');
+    const img = document.getElementById('drake-background');
+    const hotspots = document.querySelectorAll('.hotspot');
+    let animationId;
+    
+    // Function to position hotspots based on image dimensions
+    function positionHotspots() {
+      if (!img) return;
+      
+      const imgWidth = img.offsetWidth || img.naturalWidth;
+      const imgHeight = img.offsetHeight || img.naturalHeight;
+      
+      // If image has no dimensions yet, try again in a moment
+      if (imgWidth === 0 || imgHeight === 0) {
+        setTimeout(positionHotspots, 100);
+        return;
+      }
+      
+      hotspots.forEach(hotspot => {
+        const xPercent = parseFloat(hotspot.dataset.xPercent) || 50;
+        const yPercent = parseFloat(hotspot.dataset.yPercent) || 50;
+        
+        // Calculate pixel positions based on image dimensions
+        const xPos = (imgWidth * xPercent) / 100;
+        const yPos = (imgHeight * yPercent) / 100;
+        
+        hotspot.style.left = xPos + 'px';
+        hotspot.style.top = yPos + 'px';
+      });
+    }
+    
+    // Position hotspots on load and resize
+    if (img) {
+      if (img.complete && img.naturalWidth > 0) {
+        setTimeout(positionHotspots, 50);
+      } else {
+        img.addEventListener('load', positionHotspots);
+      }
+    }
+    
+    window.addEventListener('resize', positionHotspots);
+    
+    // Reposition hotspots when section is edited in theme customizer
+    document.addEventListener('shopify:section:load', function() {
+      setTimeout(positionHotspots, 100);
+    });
+    document.addEventListener('shopify:block:select', positionHotspots);
+    
+    function animateHotspots(time) {
+      hotspots.forEach(hotspot => {
+        const speed = parseFloat(hotspot.dataset.speed) || 1;
+        const scale = 1 + 0.2 * Math.sin(time * 0.001 * speed);
+        hotspot.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        
+        // Create ripple effect
+        if (Math.random() < 0.02) {
+          createRipple(hotspot);
+        }
+      });
+      
+      animationId = requestAnimationFrame(animateHotspots);
+    }
+    
+    function createRipple(hotspot) {
+      const ripple = document.createElement('div');
+      ripple.className = 'hotspot-ripple';
+      ripple.style.left = '50%';
+      ripple.style.top = '50%';
+      ripple.style.width = '20px';
+      ripple.style.height = '20px';
+      ripple.style.background = hotspot.style.background;
+      ripple.style.opacity = '0.7';
+      
+      hotspot.appendChild(ripple);
+      
+      const duration = 2000;
+      const startTime = performance.now();
+      
+      function rippleAnimation(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = elapsed / duration;
+        
+        if (progress >= 1) {
+          ripple.remove();
+          return;
+        }
+        
+        const scale = 1 + progress * 3;
+        const opacity = 0.7 * (1 - progress);
+        
+        ripple.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        ripple.style.opacity = opacity;
+        
+        requestAnimationFrame(rippleAnimation);
+      }
+      
+      requestAnimationFrame(rippleAnimation);
+    }
+    
+    // Start animation
+    animationId = requestAnimationFrame(animateHotspots);
+    
+    // Handle interactions
+    hotspots.forEach(hotspot => {
+      hotspot.addEventListener('click', function() {
+        // Custom click handler - could trigger modal, navigation, etc.
+        console.log('Hotspot clicked:', this.id);
+      });
+    });
+    
+    // Cleanup on section unload
+    document.addEventListener('shopify:section:unload', function() {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', positionHotspots);
+      document.removeEventListener('shopify:section:load', positionHotspots);
+      document.removeEventListener('shopify:block:select', positionHotspots);
+      if (img) {
+        img.removeEventListener('load', positionHotspots);
+      }
+    });
+  });
+</script>
+
 {% schema %}
 {
-  "name": "Premium Interactive Drake",
+  "name": "Interactive Drake",
   "settings": [
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Environment Image"
+      "label": "Background Image",
+      "info": "Recommended sizes: 1280×720px, 1920×1080px, 2560×1440px, 3840×2160px. Use landscape aspect ratios (16:9) for best results."
+    },
+    {
+      "type": "header",
+      "content": "Section Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "section_height",
+      "label": "Section Height",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "unit": "vh",
+      "default": 100,
+      "info": "Height of the entire section (100vh = full viewport height)"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Scroll Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_horizontal_scroll",
+      "label": "Enable Horizontal Scroll",
+      "default": true,
+      "info": "Allow users to scroll horizontally on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_vertical_scroll",
+      "label": "Enable Vertical Scroll",
+      "default": false,
+      "info": "Allow users to scroll vertically (for tall images)"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image Height (when vertical scroll enabled)",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "%",
+      "default": 100,
+      "info": "Height of image as percentage of container"
+    },
+    {
+      "type": "range",
+      "id": "image_min_height",
+      "label": "Image Minimum Height (when vertical scroll enabled)",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "vh",
+      "default": 100,
+      "info": "Minimum height to enable vertical scrolling"
+    },
+    {
+      "type": "header",
+      "content": "Image Display"
+    },
+    {
+      "type": "select",
+      "id": "object_fit",
+      "label": "Image Fit Mode",
+      "options": [
+        {"value": "cover", "label": "Cover (fill container, may crop)"},
+        {"value": "contain", "label": "Contain (show full image, may letterbox)"},
+        {"value": "fill", "label": "Fill (stretch to fit)"}
+      ],
+      "default": "cover",
+      "info": "Controls how the image fits its container"
+    },
+    {
+      "type": "select",
+      "id": "object_position",
+      "label": "Image Position",
+      "options": [
+        {"value": "center", "label": "Center"},
+        {"value": "top", "label": "Top"},
+        {"value": "bottom", "label": "Bottom"},
+        {"value": "left", "label": "Left"},
+        {"value": "right", "label": "Right"},
+        {"value": "top left", "label": "Top Left"},
+        {"value": "top right", "label": "Top Right"},
+        {"value": "bottom left", "label": "Bottom Left"},
+        {"value": "bottom right", "label": "Bottom Right"}
+      ],
+      "default": "center",
+      "info": "Controls which part of the image is visible when cropped"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "force_mobile_full_width",
+      "label": "Force Full Width on Mobile",
+      "default": true,
+      "info": "When enabled, image will span full width on mobile devices"
+    },
+    {
+      "type": "range",
+      "id": "mobile_min_width",
+      "label": "Mobile Horizontal Width",
+      "min": 100,
+      "max": 300,
+      "step": 10,
+      "unit": "vw",
+      "default": 150,
+      "info": "Minimum width of the image on mobile when horizontal scroll is allowed"
     }
   ],
   "blocks": [
     {
-      "type": "point",
-      "name": "Navigation Point",
+      "type": "hotspot",
+      "name": "Hotspot",
       "settings": [
+        {
+          "type": "header",
+          "content": "Position"
+        },
         {
           "type": "range",
           "id": "x_position",
@@ -113,7 +702,7 @@
           "max": 100,
           "step": 1,
           "unit": "%",
-          "label": "Horizontal Position",
+          "label": "X Position",
           "default": 50
         },
         {
@@ -123,13 +712,242 @@
           "max": 100,
           "step": 1,
           "unit": "%",
-          "label": "Vertical Position",
+          "label": "Y Position",
           "default": 50
         },
         {
-          "type": "url",
-          "id": "link",
-          "label": "Link"
+          "type": "header",
+          "content": "Hotspot Style"
+        },
+        {
+          "type": "select",
+          "id": "dot_type",
+          "label": "Dot Type",
+          "default": "color",
+          "options": [
+            { "value": "color", "label": "Color Dot" },
+            { "value": "image", "label": "Custom Image" },
+            { "value": "svg", "label": "SVG Icon" }
+          ]
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Dot Image",
+          "info": "Only used for Custom Image type"
+        },
+        {
+          "type": "textarea",
+          "id": "svg_code",
+          "label": "Inline SVG Code",
+          "info": "Only used for SVG Icon type"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Hotspot Color",
+          "default": "#FF0000"
+        },
+        {
+          "type": "color",
+          "id": "pulse_color",
+          "label": "Pulse Color",
+          "default": "#FF0000"
+        },
+        {
+          "type": "range",
+          "id": "size",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "label": "Hotspot Size",
+          "default": 20
+        },
+        {
+          "type": "range",
+          "id": "pulse_speed",
+          "min": 0.5,
+          "max": 5,
+          "step": 0.1,
+          "label": "Pulse Speed (seconds)",
+          "default": 1.5
+        },
+        {
+          "type": "header",
+          "content": "Tooltip Settings"
+        },
+        {
+          "type": "text",
+          "id": "tooltip",
+          "label": "Tooltip Text"
+        },
+        {
+          "type": "color",
+          "id": "tooltip_bg",
+          "label": "Tooltip Background",
+          "default": "#000000"
+        },
+        {
+          "type": "range",
+          "id": "tooltip_opacity",
+          "label": "Tooltip Opacity",
+          "min": 10,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 80
+        },
+        {
+          "type": "select",
+          "id": "tooltip_width_mode",
+          "label": "Tooltip Width Mode",
+          "options": [
+            { "value": "dynamic", "label": "Dynamic (fits text)" },
+            { "value": "fixed", "label": "Fixed width" }
+          ],
+          "default": "dynamic"
+        },
+        {
+          "type": "range",
+          "id": "tooltip_width",
+          "label": "Tooltip Width",
+          "info": "Only applies when width mode is set to Fixed",
+          "min": 100,
+          "max": 400,
+          "step": 10,
+          "unit": "px",
+          "default": 200
+        },
+        {
+          "type": "range",
+          "id": "tooltip_offset",
+          "label": "Tooltip Vertical Offset",
+          "min": -50,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 0
+        },
+        {
+          "type": "select",
+          "id": "tooltip_align",
+          "label": "Tooltip Text Alignment",
+          "info": "Only applies when width mode is set to Fixed",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        }
+      ]
+    },
+    {
+      "type": "explore_button",
+      "name": "Explore Button",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Position"
+        },
+        {
+          "type": "range",
+          "id": "x_position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "X Position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "y_position",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Y Position",
+          "default": 50
+        },
+        {
+          "type": "header",
+          "content": "Button Style"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Button Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "size",
+          "min": 20,
+          "max": 60,
+          "step": 2,
+          "unit": "px",
+          "label": "Button Diameter",
+          "default": 24
+        },
+        {
+          "type": "header",
+          "content": "Button Customization"
+        },
+        {
+          "type": "color",
+          "id": "border_color",
+          "label": "Border Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background Color",
+          "default": "transparent"
+        },
+        {
+          "type": "color",
+          "id": "arrow_color",
+          "label": "Arrow Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "range",
+          "id": "border_width",
+          "label": "Border Width",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "unit": "px",
+          "default": 1
+        },
+       {
+  "type": "range",
+  "id": "expanded_width",
+  "label": "Expanded Width",
+  "min": 100,
+  "max": 500,
+  "step": 50,
+  "unit": "px",
+  "default": 100,
+  "info": "Width when hovered"
+}
+,
+        {
+          "type": "select",
+          "id": "arrow_direction",
+          "label": "Arrow Direction",
+          "default": "right",
+          "options": [
+            { "value": "right", "label": "Right" },
+            { "value": "left", "label": "Left" }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Content"
         },
         {
           "type": "text",
@@ -138,45 +956,16 @@
           "default": "Explore"
         },
         {
-          "type": "select",
-          "id": "direction",
-          "label": "Arrow Direction",
-          "options": [
-            { "value": "prev", "label": "Left" },
-            { "value": "next", "label": "Right" }
-          ],
-          "default": "next"
-        },
-        {
-          "type": "color",
-          "id": "bg_color",
-          "label": "Background Color",
-          "default": "#000000"
-        },
-        {
-          "type": "color",
-          "id": "text_color",
-          "label": "Text Color",
-          "default": "#ffffff"
-        },
-        {
-          "type": "color",
-          "id": "border_color",
-          "label": "Border Color",
-          "default": "#ffffff"
-        },
-        {
-          "type": "color",
-          "id": "arrow_color",
-          "label": "Arrow Color",
-          "default": "#ffffff"
+          "type": "url",
+          "id": "link",
+          "label": "Link URL"
         }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Premium Interactive Drake",
+      "name": "Interactive Drake",
       "category": "Custom"
     }
   ]

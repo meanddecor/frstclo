@@ -1,0 +1,28 @@
+{% render 'footer-base' %}
+
+<footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="footer__content-top page-width">
+    <div class="footer__blocks-wrapper">
+      {% for block in section.blocks %}
+        <div class="footer-block" {{ block.shopify_attributes }}>
+          {% case block.type %}
+            {% when 'menu' %}
+              {% render 'footer-menu', block: block %}
+            {% when 'newsletter' %}
+              {% render 'footer-newsletter', block: block %}
+          {% endcase %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+  <div class="footer__content-bottom">
+    <div class="footer__content-bottom-wrapper page-width">
+      <div class="footer__copyright caption">
+        <small class="copyright__content">
+          {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url }}
+        </small>
+      </div>
+    </div>
+  </div>
+</footer>
