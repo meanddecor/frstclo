@@ -326,6 +326,9 @@ html, body{
       overflow: inherit !important;
       filter: drop-shadow(0px 0px {{ settings.card_glow_size }}px {{ settings.card_glow_color }});
   }
+  .card--no-glow .card__media {
+      filter: none !important;
+  }
   {% endif %}
   {% if settings.on_card_border %}
     .card__media {

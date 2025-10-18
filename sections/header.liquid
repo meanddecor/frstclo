@@ -1,3 +1,7 @@
+{%- if section.settings.header_style == 'drawer_minimal' -%}
+  <link rel="stylesheet" href="{{ 'header-drawer-minimal.css' | asset_url }}" media="print" onload="this.media='all'">
+  <noscript>{{ 'header-drawer-minimal.css' | asset_url | stylesheet_tag }}</noscript>
+{%- endif -%}
 <link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -120,6 +124,9 @@
 <script src="{{ 'details-modal.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'search-form.js' | asset_url }}" defer="defer"></script>
+{%- if section.settings.header_style == 'drawer_minimal' -%}
+  <script src="{{ 'header-drawer-minimal.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
 {%- if settings.cart_type == "drawer" -%}
   <script src="{{ 'cart-drawer.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
@@ -140,6 +147,12 @@
   </symbol>
 </svg>
 <{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
+  
+  {%- if section.settings.header_style == 'drawer_minimal' -%}
+    {%- comment -%} Render Drawer Minimal Header Style {%- endcomment -%}
+    {% render 'header-drawer-minimal', section: section %}
+  {%- else -%}
+    {%- comment -%} Render Default Header Style {%- endcomment -%}
   <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu != blank %} header--has-menu{% endif %}">
     {%- if section.settings.menu != blank -%}
       <header-drawer data-breakpoint="tablet">
@@ -660,6 +673,7 @@
       </a>
     </div>
   </header>
+  {%- endif -%}
 </{% if section.settings.sticky_header_type != 'none' %}sticky-header{% else %}div{% endif %}>
 
 {%- if settings.cart_type == "notification" -%}
@@ -823,6 +837,36 @@
   "name": "t:sections.header.name",
   "class": "section-header",
   "settings": [
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header Style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "drawer_minimal",
+          "label": "Drawer Minimal"
+        }
+      ],
+      "default": "default",
+      "info": "Choose between default header or drawer minimal style with sliding menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "drawer_minimal_custom_icon",
+      "label": "Custom Menu Icon",
+      "info": "Optional custom image/SVG for drawer minimal hamburger menu. Leave empty to use default hamburger icon."
+    },
+    {
+      "type": "checkbox",
+      "id": "drawer_minimal_animate_custom_icon",
+      "label": "Animate Custom Menu Icon",
+      "info": "Enable rotation and scale animation for custom icon when menu opens/closes",
+      "default": true
+    },
     {
       "type": "header",
       "content": "t:sections.header.settings.logo_header.content"

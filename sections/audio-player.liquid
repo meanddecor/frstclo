@@ -1,112 +1,531 @@
 {% if section.settings.enable_audio_player %}
-  <div id="music-icon" style="position: fixed; left: 10px; bottom: 10px; z-index: 9999;">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
-      viewBox="0 0 24 24"
-      fill="{{ section.settings.audio_player_color }}"
-    >
-      {% if audioPlayer.paused == false %}
-        <path d="M0 0h24v24H0z" fill="none"/><path d="M9 6h2v12h-2zm4 0h2v12h-2z"/>
-      {% else %}
-         <path d="M8 5v14l11-7z"/>
-      {% endif %}
-    </svg>
-  </div>
-  {% assign audio_file_url = settings.audio_file_url %}
+  
+  {% if section.settings.player_style == 'minimal' %}
+    {%- comment -%} Minimal Player Style {%- endcomment -%}
+    <div id="music-icon" style="position: fixed; left: 10px; bottom: 10px; z-index: 9999;">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+        fill="{{ section.settings.audio_player_color }}"
+      >
+        {% if audioPlayer.paused == false %}
+          <path d="M0 0h24v24H0z" fill="none"/><path d="M9 6h2v12h-2zm4 0h2v12h-2z"/>
+        {% else %}
+           <path d="M8 5v14l11-7z"/>
+        {% endif %}
+      </svg>
+    </div>
+    {% assign audio_file_url = section.settings.audio_file_url %}
 
-  {% if audio_file_url %}
-    <audio id="audio-player" src="{{ section.settings.audio_file_url }}" type="audio/mp3" playsinline loop preload="metadata"></audio>
-  {% endif %}
+    {% if audio_file_url %}
+      <audio id="audio-player" src="{{ section.settings.audio_file_url }}" type="audio/mp3" playsinline loop preload="metadata"></audio>
+    {% endif %}
 
-  <script>
-      const musicIcon = document.getElementById("music-icon");
-      const audioPlayer = document.getElementById("audio-player");
-      const playButton =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="{{ section.settings.audio_player_color }}"><path d="M8 5v14l11-7z"/></svg>';
-      const pauseButton =
-        '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="{{ section.settings.audio_player_color }}"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 6h2v12h-2zm4 0h2v12h-2z"/></svg>';
-      const isAudioPlaying = "isAudioPlaying";
-      const currentAudioTime = "currentAudioTime";
+    <script>
+      (function() {
+        const musicIcon = document.getElementById("music-icon");
+        const audioPlayer = document.getElementById("audio-player");
+        
+        // Only run if elements exist
+        if (!musicIcon || !audioPlayer) return;
+        
+        const playButton =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="{{ section.settings.audio_player_color }}"><path d="M8 5v14l11-7z"/></svg>';
+        const pauseButton =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="{{ section.settings.audio_player_color }}"><path d="M0 0h24v24H0z" fill="none"/><path d="M9 6h2v12h-2zm4 0h2v12h-2z"/></svg>';
+        const isAudioPlaying = "isAudioPlaying_minimal";
+        const currentAudioTime = "currentAudioTime_minimal";
+        let autoStartTriggered = false;
 
-      const checkMusic = () => {
-        if (audioPlayer.paused) {
-          musicIcon.innerHTML = playButton;
-        } else {
-          musicIcon.innerHTML = pauseButton;
+        const checkMusic = () => {
+          if (audioPlayer.paused) {
+            musicIcon.innerHTML = playButton;
+          } else {
+            musicIcon.innerHTML = pauseButton;
+          }
+        };
+
+        musicIcon.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent triggering auto-start
+          if (audioPlayer.paused) {
+            // Pause all other audio elements on the page
+            document.querySelectorAll('audio').forEach(a => {
+              if (a !== audioPlayer) a.pause();
+            });
+            
+            const savedTime = localStorage.getItem(currentAudioTime);
+            if (savedTime && parseFloat(savedTime) > 0) {
+              audioPlayer.currentTime = parseFloat(savedTime);
+            }
+            audioPlayer.play();
+            localStorage.setItem(isAudioPlaying, "true");
+          } else {
+            audioPlayer.pause();
+            localStorage.setItem(isAudioPlaying, "false");
+          }
+          checkMusic();
+        });
+
+        const startPlayerIfAudioIsPlaying = () => {
+          if (autoStartTriggered) return;
+          autoStartTriggered = true;
+          
+          if (localStorage.getItem(isAudioPlaying) == "true") {
+            // Pause all other audio elements on the page
+            document.querySelectorAll('audio').forEach(a => {
+              if (a !== audioPlayer) a.pause();
+            });
+            
+            const savedTime = localStorage.getItem(currentAudioTime);
+            if (savedTime && parseFloat(savedTime) > 0) {
+              audioPlayer.currentTime = parseFloat(savedTime);
+            }
+            audioPlayer.play();
+            checkMusic();
+          }
+        };
+
+        window.addEventListener("click", startPlayerIfAudioIsPlaying, { once: true });
+        window.addEventListener("touchstart", startPlayerIfAudioIsPlaying, { once: true });
+
+        window.addEventListener("DOMContentLoaded", () => {
+          if (!localStorage.getItem(isAudioPlaying)) {
+            localStorage.setItem(isAudioPlaying, "true");
+          }
+          checkMusic();
+        });
+
+        setInterval(() => {
+          if (audioPlayer.currentTime !== 0) {
+            localStorage.setItem(currentAudioTime, audioPlayer.currentTime);
+          }
+        }, 500);
+
+        window.addEventListener("beforeunload", () => {
+          if (audioPlayer.currentTime !== 0) {
+            localStorage.setItem(currentAudioTime, audioPlayer.currentTime);
+          }
+        });
+      })();
+    </script>
+  
+  {% elsif section.settings.player_style == 'enhanced' %}
+    {%- comment -%} Enhanced Player Style {%- endcomment -%}
+    <style>
+      .music-container{
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 15px;
+        display: flex;
+        padding: 20px 30px;
+        position: fixed;
+        z-index: 10;
+        bottom: 15px;
+        top: auto;
+        right: 15px;
+        left: auto;
+        width: auto;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .img-container {
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+
+      .img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+        animation: rotate 3s linear infinite;
+        animation-play-state: paused;
+      }
+
+      /* CD center circle effect */
+      .img-container::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 25px;
+        height: 25px;
+        background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(200,200,200,0.8) 50%, rgba(100,100,100,0.6) 100%);
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        pointer-events: none;
+      }
+
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
         }
-      };
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-      musicIcon.addEventListener("click", () => {
-        if (audioPlayer.paused) {
-          audioPlayer.play();
-          audioPlayer.currentTime = localStorage.getItem(currentAudioTime);
+      .music-container.play .img-container img{
+        animation-play-state: running;
+      }
+      
+      .music-container.play .music-info {
+        opacity: 1;
+        transform: translateY(-60%);
+      }
+      
+      .music-info {
+        background-color: rgb(0, 0, 0, 0.5);
+        border-radius: 15px 15px 0 0;
+        position: absolute;
+        top: 0;
+        left: 20px;
+        width: calc(100% - 40px);
+        opacity: 0;
+        transform: translateY(0%);
+        padding: 10px 10px 10px 20px;
+        transition: transform 0.3s ease-in, opacity 0.3s ease-in;
+        display:none;
+      }
+
+      .music-info h4{
+        margin: 0;
+      }
+
+      .progress-container {
+        background: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px 0;
+        height: 4px; 
+        width: 100%; 
+      }
+
+      .progress{
+        background-color: #fe8daa;
+        border-radius: 5px;
+        height: 100%;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+      
+      .navigation {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .action-btn{
+        background-color:rgba(0, 0, 0, 0);
+        border: 0;
+        color: #dfdbdf;
+        font-size: 10px;
+        cursor: pointer;
+        padding: 10px;
+        margin: 0;
+      }
+
+      .action-btn:focus {
+        outline: 0;
+      }
+
+      .action-btn-big{
+        color: #cdc2d0;
+        font-size: 30px;
+      }
+      
+      @media (max-width: 768px) {
+        .action-btn-big {
+          font-size: 20px;
+        }
+        
+        .music-container {
+          padding: 15px 20px;
+          gap: 10px;
+        }
+        
+        .img-container {
+          width: 60px;
+          height: 60px;
+        }
+        
+        .img-container::after {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    </style>
+
+    <div class="music-container" data-file-url="{{ section.settings.audio_file_url }}" music-image-url="{{ section.settings.music_img | image_url: width: 500 }}">
+      <div id="title" class="music-info">
+        <h4>{{ section.settings.song_title | default: 'Now Playing' }}</h4>
+        <div class="progress-container">
+          <div class="progress"></div>
+        </div>
+      </div>
+
+      <audio preload="metadata" loop id="audio"></audio>
+
+      {% if section.settings.show_disk %}
+        <div class="img-container">
+          <img alt="music-cover" id="cover" width="80" height="80" loading="lazy">
+        </div>
+      {% endif %}
+
+      <div class="navigation">
+        <button id="play" style="color: {{ section.settings.music_btn_color }}" class="action-btn action-btn-big">
+          <i class="fas fa-play"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const musicContainer = document.querySelector('.music-container')
+        const playBtn = document.querySelector('#play')
+        const audio = document.querySelector('#audio')
+        const progress = document.querySelector('.progress')
+        const progressContainer = document.querySelector('.progress-container')
+        const title = document.querySelector('#title h4')
+        const cover = document.querySelector('#cover')
+        
+        // Check if required elements exist
+        if (!musicContainer || !playBtn || !audio || !progress || !title) {
+          console.error('Music player elements not found');
+          return;
+        }
+        
+        const fileUrl = musicContainer.getAttribute('data-file-url');
+        const musicImgUrl = musicContainer.getAttribute('music-image-url');
+        const isAudioPlaying = "isAudioPlaying_enhanced";
+        const currentAudioTime = "currentAudioTime_enhanced";
+
+        // Validate audio URL
+        if (!fileUrl) {
+          console.error('Audio file URL not provided');
+          return;
+        }
+
+        // Song titles
+        const songs = ['{{ section.settings.song_title | default: "Now Playing" }}']
+
+        // Keep track of songs
+        let songIndex = 0
+        let duration = 0;
+
+        // Initially load song info DOM
+        loadSong(songs[songIndex])
+
+        function loadSong(song){
+          if (title) title.innerText = song
+          audio.src = fileUrl
+          if (cover && musicImgUrl) {
+            cover.src = musicImgUrl
+          }
+        }
+
+        // Save audio time periodically
+        setInterval(function() {
+          if (audio && !audio.paused && audio.currentTime > 0) {
+            localStorage.setItem(currentAudioTime, audio.currentTime);
+          }
+        }, 500);
+
+        let hasAutoStarted = false;
+
+        function playSong(){
+          // Pause all other audio elements on the page
+          document.querySelectorAll('audio').forEach(a => {
+            if (a !== audio) a.pause();
+          });
+          
+          musicContainer.classList.add('play')
+          const playIcon = playBtn.querySelector('i.fas')
+          if (playIcon) {
+            playIcon.classList.remove('fa-play')
+            playIcon.classList.add('fa-pause')
+          }
+          audio.muted = false;
+          
+          // Restore saved time only once on load
+          if (!hasAutoStarted) {
+            const savedTime = localStorage.getItem(currentAudioTime);
+            if (savedTime && parseFloat(savedTime) > 0) {
+              audio.currentTime = parseFloat(savedTime);
+            }
+            hasAutoStarted = true;
+          }
+          
+          audio.play().catch(function(error) {
+            console.log('Play prevented:', error);
+          });
+          
           localStorage.setItem(isAudioPlaying, "true");
-        } else {
-          audioPlayer.pause();
+        }
+
+        function pauseSong(){
+          musicContainer.classList.remove('play')
+          const playIcon = playBtn.querySelector('i.fas')
+          if (playIcon) {
+            playIcon.classList.remove('fa-pause')
+            playIcon.classList.add('fa-play')
+          }
+          audio.pause();
           localStorage.setItem(isAudioPlaying, "false");
         }
-        checkMusic();
-      });
 
-      const startPlayerIfAudioIsPlaying = () => {
-        if (localStorage.getItem(isAudioPlaying) == "true") {
-          audioPlayer.play();
-          checkMusic();
+        function updateProgress(e){
+          if (!audio.duration) return;
+          
+          const currentTime = e.srcElement.currentTime
+          const progressPercent = (currentTime / audio.duration) * 100
+          if (progress) {
+            progress.style.width = `${progressPercent}%`
+          }
         }
-      };
 
-      window.addEventListener("click", startPlayerIfAudioIsPlaying);
-      window.addEventListener("touchstart", startPlayerIfAudioIsPlaying);
+        // Play button click
+        playBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent triggering other click listeners
+          const isPlaying = musicContainer.classList.contains('play')
+          if(isPlaying) {
+            pauseSong()
+          }
+          else{
+            playSong()
+          }
+        })
 
-      window.addEventListener("DOMContentLoaded", () => {
-        if (!localStorage.getItem(isAudioPlaying)) {
-          localStorage.setItem(isAudioPlaying, "true");
-        }
-        if (localStorage.getItem(isAudioPlaying) === "true") {
-          audioPlayer.play();
-          audioPlayer.currentTime = localStorage.getItem(currentAudioTime);
-        }
-        checkMusic();
-      });
+        // Auto-start player if it was playing (like minimal style)
+        let autoStartTriggered = false;
+        const startPlayerIfAudioIsPlaying = (e) => {
+          if (autoStartTriggered) return;
+          autoStartTriggered = true;
+          
+          if (localStorage.getItem(isAudioPlaying) == "true") {
+            playSong();
+          }
+        };
 
-      setInterval(() => {
-        if (audioPlayer.currentTime !== 0) {
-        localStorage.setItem(currentAudioTime, audioPlayer.currentTime);
-      }
-      }, 500);
+        window.addEventListener("click", startPlayerIfAudioIsPlaying, { once: true });
+        window.addEventListener("touchstart", startPlayerIfAudioIsPlaying, { once: true });
 
-      window.addEventListener("beforeunload", () => {
-        if (audioPlayer.currentTime !== 0) {
-        localStorage.setItem(currentAudioTime, audioPlayer.currentTime);
-        }
-      });
-  </script>
+        // Initialize on page load
+        window.addEventListener("DOMContentLoaded", () => {
+          if (!localStorage.getItem(isAudioPlaying)) {
+            localStorage.setItem(isAudioPlaying, "true");
+          }
+          // Only auto-play if explicitly set to true
+          if (localStorage.getItem(isAudioPlaying) === "true" && !autoStartTriggered) {
+            // Don't auto-play immediately, wait for user interaction
+            // This respects browser autoplay policies
+          }
+        });
+
+        audio.addEventListener('timeupdate', updateProgress)
+        audio.addEventListener("loadedmetadata", function() {
+          duration = audio.duration;
+          console.log('Audio loaded, duration:', duration);
+        });
+
+        // Handle audio errors
+        audio.addEventListener('error', function(e) {
+          console.error('Audio error:', e);
+          console.error('Failed to load audio from:', fileUrl);
+        });
+
+        // Save time before page unload
+        window.addEventListener("beforeunload", () => {
+          if (audio.currentTime > 0) {
+            localStorage.setItem(currentAudioTime, audio.currentTime);
+          }
+        });
+      })();
+    </script>
+  {% endif %}
+  
 {% endif %}
 
 {% schema %}
 {
-"name": "Music Player",
-"settings": [
-{
-"type": "checkbox",
-"id": "enable_audio_player",
-"label": "Enable Music Player",
-"default": false
-},
-{
-"type": "text",
-"id": "audio_file_url",
-"label": "Music File URL"
-},
-{
-"type": "color",
-"id": "audio_player_color",
-"label": "Player Button Color",
-"default": "#ffffff"
-}
-]
+  "name": "Music Player",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_audio_player",
+      "label": "Enable Music Player",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "player_style",
+      "label": "Player Style",
+      "options": [
+        {
+          "value": "minimal",
+          "label": "Minimal (Simple Icon)"
+        },
+        {
+          "value": "enhanced",
+          "label": "Enhanced (Album Art & Progress)"
+        }
+      ],
+      "default": "minimal"
+    },
+    {
+      "type": "text",
+      "id": "audio_file_url",
+      "label": "Music File URL"
+    },
+    {
+      "type": "header",
+      "content": "Minimal Player Settings"
+    },
+    {
+      "type": "color",
+      "id": "audio_player_color",
+      "label": "Player Button Color",
+      "default": "#ffffff",
+      "info": "For minimal player style"
+    },
+    {
+      "type": "header",
+      "content": "Enhanced Player Settings"
+    },
+    {
+      "type": "text",
+      "id": "song_title",
+      "label": "Song Title",
+      "default": "Now Playing",
+      "info": "For enhanced player style"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_disk",
+      "label": "Show Album Cover",
+      "default": true,
+      "info": "For enhanced player style"
+    },
+    {
+      "type": "image_picker",
+      "id": "music_img",
+      "label": "Album Cover Image",
+      "info": "For enhanced player style"
+    },
+    {
+      "type": "color",
+      "id": "music_btn_color",
+      "label": "Play Button Color",
+      "default": "#cdc2d0",
+      "info": "For enhanced player style"
+    }
+  ]
 }
 {% endschema %}
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.7.0.js" defer></script>
