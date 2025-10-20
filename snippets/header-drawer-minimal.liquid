@@ -65,6 +65,7 @@
 
     {%- comment -%} Header Icons (Search, Account, Cart) {%- endcomment -%}
     <div class="header-drawer-minimal__icons header__icons">
+      {%- if section.settings.enable_search -%}
       {%- comment -%} Search Icon {%- endcomment -%}
       <details-modal class="header__search">
         <details>
@@ -145,7 +146,9 @@
           </div>
         </details>
       </details-modal>
+      {%- endif -%}
 
+      {%- if section.settings.enable_account -%}
       {%- comment -%} Account Icon {%- endcomment -%}
       {%- if shop.customer_accounts_enabled -%}
         <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__icon header__icon--account link focus-inset">
@@ -161,7 +164,9 @@
           </span>
         </a>
       {%- endif -%}
+      {%- endif -%}
 
+      {%- if section.settings.enable_cart -%}
       {%- comment -%} Cart Icon {%- endcomment -%}
       <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
         {%- liquid
@@ -181,6 +186,7 @@
           </div>
         {%- endif -%}
       </a>
+      {%- endif -%}
     </div>
 
     {%- comment -%} Menu Container (Slides from behind) {%- endcomment -%}
@@ -191,12 +197,24 @@
             <div class="header-drawer-minimal__menu-item{% if link.active %} header-drawer-minimal__menu-item--active{% endif %}">
               {%- if link.links != blank -%}
                 {%- comment -%} Parent link with submenu {%- endcomment -%}
-                <a href="{{ link.url }}" {% if link.current %} aria-current="page"{% endif %}>
-                  {{ link.title | escape }}
-                </a>
-                <button class="header-drawer-minimal__submenu-toggle" aria-label="Toggle {{ link.title | escape }} submenu">
-                  {% render 'icon-caret' %}
-                </button>
+                <div class="header-drawer-minimal__menu-item-wrapper">
+                  <a href="{{ link.url }}" {% if link.current %} aria-current="page"{% endif %}>
+                    {{ link.title | escape }}
+                  </a>
+                  <button class="header-drawer-minimal__submenu-toggle" aria-label="Toggle {{ link.title | escape }} submenu">
+                    {%- if section.settings.drawer_submenu_icon != blank -%}
+                      <img 
+                        src="{{ section.settings.drawer_submenu_icon | image_url: width: 48 }}" 
+                        alt="Toggle submenu"
+                        class="header-drawer-minimal__submenu-icon-image"
+                        width="20"
+                        height="20"
+                      >
+                    {%- else -%}
+                      <span class="header-drawer-minimal__submenu-icon">+</span>
+                    {%- endif -%}
+                  </button>
+                </div>
                 <div class="header-drawer-minimal__submenu">
                   {%- for childlink in link.links -%}
                     <div class="header-drawer-minimal__submenu-item">

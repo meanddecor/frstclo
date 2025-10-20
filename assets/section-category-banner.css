@@ -1,0 +1,152 @@
+.category-banner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.category-banner__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.category-banner__link {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: block;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.category-banner__img,
+.category-banner__placeholder,
+.category-banner__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Video responsive visibility */
+.category-banner__video--desktop {
+  display: block;
+}
+
+.category-banner__video--mobile {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  .category-banner__video--desktop {
+    display: none;
+  }
+  
+  .category-banner__video--mobile {
+    display: block;
+  }
+}
+
+.category-banner__placeholder {
+  background-color: #f3f3f3;
+}
+
+/* Scroll Indicator */
+.category-banner__scroll {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  z-index: 20;
+  animation: scrollBounce 2s ease-in-out infinite;
+  pointer-events: auto;
+}
+
+.category-banner__scroll svg {
+  width: 40px;
+  height: 42px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.category-banner__scroll svg .cls-1 {
+  fill: #000;
+}
+
+.category-banner__scroll svg .cls-2 {
+  fill: #000;
+}
+
+.category-banner__scroll-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #000;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Bounce Animation */
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 767px) {
+  .category-banner__image-wrap {
+    height: 100vh;
+    min-height: 600px;
+  }
+  
+  .category-banner__scroll {
+    bottom: 1.5rem;
+  }
+  
+  .category-banner__scroll svg {
+    width: 32px;
+    height: 34px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .category-banner__image-wrap {
+    height: 100vh;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .category-banner__image-wrap {
+    height: 100vh;
+  }
+  
+  .category-banner__scroll:hover {
+    animation-play-state: paused;
+    transform: translateX(-50%) translateY(-5px);
+    transition: transform 0.3s ease;
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .category-banner__scroll svg .cls-1,
+  .category-banner__scroll svg .cls-2 {
+    fill: #fff;
+  }
+  
+  .category-banner__scroll-text {
+    color: #fff;
+  }
+}

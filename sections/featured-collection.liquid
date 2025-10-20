@@ -45,6 +45,32 @@
     opacity: 0.85 !important;
     color: {{ section.settings.button_text_color }} !important;
   }
+
+  {%- if section.settings.disable_gradient == false and section.settings.glow_color -%}
+  .section-{{ section.id }} .card__inner {
+    box-shadow: 0 0 40px 10px {{ section.settings.glow_color | color_modify: 'alpha', 0.3 }} !important;
+  }
+  {%- endif -%}
+
+  .section-{{ section.id }} .collection__title {
+    text-align: {{ section.settings.title_alignment }};
+  }
+
+  .section-{{ section.id }} .collection__title-image {
+    display: block;
+    max-width: 300px;
+    height: auto;
+    {% if section.settings.title_alignment == 'center' %}
+    margin-left: auto;
+    margin-right: auto;
+    {% elsif section.settings.title_alignment == 'right' %}
+    margin-left: auto;
+    margin-right: 0;
+    {% else %}
+    margin-left: 0;
+    margin-right: auto;
+    {% endif %}
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -70,7 +96,16 @@
 <div class="color-{{ section.settings.color_scheme }} isolate{% if section.settings.disable_gradient == false %} gradient{% endif %} section-{{ section.id }}">
   <div class="collection section-{{ section.id }}-padding{% if section.settings.full_width %} collection--full-width{% endif %}">
     <div class="collection__title title-wrapper title-wrapper--no-top-margin page-width{% if show_mobile_slider %} title-wrapper--self-padded-tablet-down{% endif %}{% if show_desktop_slider %} collection__title--desktop-slider{% endif %}">
-      {%- if section.settings.title != blank -%}
+      {%- if section.settings.title_image != blank -%}
+        <img 
+          src="{{ section.settings.title_image | image_url: width: 600 }}" 
+          alt="{{ section.settings.title | escape }}" 
+          class="collection__title-image"
+          loading="lazy"
+          width="{{ section.settings.title_image.width }}"
+          height="{{ section.settings.title_image.height }}"
+        >
+      {%- elsif section.settings.title != blank -%}
         <h2 class="title {{ section.settings.heading_size }}">{{ section.settings.title | escape }}</h2>
       {%- endif -%}
       {%- if section.settings.description != blank
@@ -107,7 +142,10 @@
               show_rating: section.settings.show_rating,
               show_quick_add: section.settings.enable_quick_add,
               section_id: section.id,
-              disable_card_gradient: section.settings.disable_gradient
+              disable_card_gradient: section.settings.disable_gradient,
+              show_product_title: section.settings.show_product_name,
+              show_price: section.settings.show_price,
+              show_compare_price: section.settings.show_compare_price
             %}
           </li>
         {%- else -%}
@@ -196,6 +234,32 @@
       ],
       "default": "h0",
       "label": "Heading Size"
+    },
+    {
+      "type": "select",
+      "id": "title_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center",
+      "label": "Title Alignment"
+    },
+    {
+      "type": "image_picker",
+      "id": "title_image",
+      "label": "Title Image (Optional)",
+      "info": "Use an image instead of text for the title. Leave empty to use text title."
     },
     {
       "type": "richtext",
@@ -327,6 +391,13 @@
       "default": false
     },
     {
+      "type": "color",
+      "id": "glow_color",
+      "label": "Glow Color",
+      "default": "#FF0000",
+      "info": "Choose the color for the product card glow effect"
+    },
+    {
       "type": "header",
       "content": "Product Card Settings"
     },
@@ -374,6 +445,25 @@
       "id": "enable_quick_add",
       "default": false,
       "label": "Enable Quick Add to Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_name",
+      "default": true,
+      "label": "Show Product Name"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "default": true,
+      "label": "Show Product Price"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_price",
+      "default": true,
+      "label": "Show Compare At Price",
+      "info": "Shows the original price when product is on sale"
     },
     {
       "type": "header",

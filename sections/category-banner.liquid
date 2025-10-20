@@ -1,0 +1,205 @@
+{{ 'section-category-banner.css' | asset_url | stylesheet_tag }}
+
+<div class="category-banner {{ section.settings.css_class }}">
+  <div class="category-banner__image-wrap">
+    {%- if section.settings.link_url != blank -%}
+      <a class="category-banner__link" href="{{ section.settings.link_url }}">
+    {%- endif -%}
+    
+    {%- if section.settings.video_url_desktop != blank or section.settings.video_url_mobile != blank -%}
+      {%- comment -%} Video Content {%- endcomment -%}
+      {%- if section.settings.video_url_desktop != blank -%}
+        <video 
+          class="category-banner__video category-banner__video--desktop" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          {%- if section.settings.show_video_controls %} controls{% endif %}>
+          <source src="{{ section.settings.video_url_desktop }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      {%- endif -%}
+      
+      {%- if section.settings.video_url_mobile != blank -%}
+        <video 
+          class="category-banner__video category-banner__video--mobile" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          {%- if section.settings.show_video_controls %} controls{% endif %}>
+          <source src="{{ section.settings.video_url_mobile }}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      {%- endif -%}
+    {%- else -%}
+      {%- comment -%} Image Content {%- endcomment -%}
+      <picture>
+        {%- if section.settings.image_desktop != blank -%}
+          <source media="(min-width: 1024px)" srcset="{{ section.settings.image_desktop | image_url: width: 2400 }}">
+        {%- endif -%}
+        
+        {%- if section.settings.image_tablet != blank -%}
+          <source media="(min-width: 768px)" srcset="{{ section.settings.image_tablet | image_url: width: 1536 }}">
+        {%- endif -%}
+        
+        {%- if section.settings.image_mobile != blank -%}
+          <img 
+            src="{{ section.settings.image_mobile | image_url: width: 1536 }}" 
+            class="category-banner__img" 
+            alt="{{ section.settings.image_alt | escape }}" 
+            loading="{{ section.settings.image_loading }}"
+            width="{{ section.settings.image_mobile.width }}"
+            height="{{ section.settings.image_mobile.height }}">
+        {%- elsif section.settings.image_desktop != blank -%}
+          <img 
+            src="{{ section.settings.image_desktop | image_url: width: 2400 }}" 
+            class="category-banner__img" 
+            alt="{{ section.settings.image_alt | escape }}" 
+            loading="{{ section.settings.image_loading }}"
+            width="{{ section.settings.image_desktop.width }}"
+            height="{{ section.settings.image_desktop.height }}">
+        {%- else -%}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'category-banner__placeholder' }}
+        {%- endif -%}
+      </picture>
+    {%- endif -%}
+    
+    {%- if section.settings.show_scroll_indicator -%}
+      <div class="category-banner__scroll">
+        <svg height="42.427" viewBox="0 0 40.898 42.427" width="40.898" xmlns="http://www.w3.org/2000/svg">
+          <g data-name="Group 38" id="Group_38" transform="translate(-167.612 -659.514)">
+            {%- if section.settings.show_svg_text -%}
+            <path class="cls-1" d="M-16.718-1.648a.773.773,0,0,0-.3-.65,3.569,3.569,0,0,0-1.07-.461,5.167,5.167,0,0,1-1.23-.519,1.642,1.642,0,0,1-.875-1.433,1.559,1.559,0,0,1,.631-1.274,2.552,2.552,0,0,1,1.637-.5,2.765,2.765,0,0,1,1.191.246,1.955,1.955,0,0,1,.822.7,1.8,1.8,0,0,1,.3,1.009h-1.107a1,1,0,0,0-.314-.784,1.3,1.3,0,0,0-.9-.283,1.354,1.354,0,0,0-.846.233.776.776,0,0,0-.3.65.7.7,0,0,0,.325.587,3.746,3.746,0,0,0,1.072.457,4.932,4.932,0,0,1,1.2.505,1.908,1.908,0,0,1,.664.65,1.694,1.694,0,0,1,.211.859,1.523,1.523,0,0,1-.613,1.272,2.659,2.659,0,0,1-1.663.472,3.126,3.126,0,0,1-1.277-.257,2.144,2.144,0,0,1-.905-.71,1.769,1.769,0,0,1-.323-1.055h1.112a1.035,1.035,0,0,0,.36.844,1.578,1.578,0,0,0,1.033.3,1.371,1.371,0,0,0,.872-.235A.759.759,0,0,0-16.718-1.648Zm8.68-.435a2.31,2.31,0,0,1-.756,1.6,2.577,2.577,0,0,1-1.753.573,2.5,2.5,0,0,1-1.347-.363,2.38,2.38,0,0,1-.9-1.031,3.719,3.719,0,0,1-.33-1.551v-.6a3.746,3.746,0,0,1,.321-1.6,2.418,2.418,0,0,1,.921-1.063,2.568,2.568,0,0,1,1.386-.374,2.467,2.467,0,0,1,1.705.576,2.4,2.4,0,0,1,.751,1.626H-9.146a1.581,1.581,0,0,0-.4-1,1.329,1.329,0,0,0-.947-.305,1.3,1.3,0,0,0-1.114.53,2.645,2.645,0,0,0-.4,1.553v.567a2.806,2.806,0,0,0,.371,1.582,1.233,1.233,0,0,0,1.088.545A1.437,1.437,0,0,0-9.563-1.1a1.535,1.535,0,0,0,.417-.98Zm5.054-.382H-4.223V0H-5.335V-6.4h2.25a2.619,2.619,0,0,1,1.709.5,1.756,1.756,0,0,1,.6,1.437,1.8,1.8,0,0,1-.31,1.074,1.971,1.971,0,0,1-.864.666L-.51-.057V0H-1.7Zm-1.239-.892h1.143A1.271,1.271,0,0,0-2.2-3.641a.988.988,0,0,0,.316-.776,1.052,1.052,0,0,0-.292-.8A1.241,1.241,0,0,0-3.05-5.5H-4.223ZM7.1-3.032a3.926,3.926,0,0,1-.325,1.65,2.459,2.459,0,0,1-.929,1.09,2.556,2.556,0,0,1-1.391.38,2.563,2.563,0,0,1-1.386-.38,2.5,2.5,0,0,1-.94-1.083A3.8,3.8,0,0,1,1.789-3v-.36A3.892,3.892,0,0,1,2.121-5.01a2.494,2.494,0,0,1,.936-1.1,2.548,2.548,0,0,1,1.386-.38,2.571,2.571,0,0,1,1.386.376A2.462,2.462,0,0,1,6.763-5.03,3.884,3.884,0,0,1,7.1-3.388ZM5.986-3.366A2.8,2.8,0,0,0,5.584-5a1.316,1.316,0,0,0-1.14-.567A1.312,1.312,0,0,0,3.316-5,2.743,2.743,0,0,0,2.9-3.4v.369A2.776,2.776,0,0,0,3.312-1.4a1.323,1.323,0,0,0,1.14.576,1.308,1.308,0,0,0,1.136-.562,2.836,2.836,0,0,0,.4-1.644ZM11.027-.888h2.9V0H9.915V-6.4h1.112Zm6.579,0h2.9V0H16.494V-6.4h1.112Z" data-name="Path 270" id="Path_270" transform="translate(188 666)"></path>
+            {%- endif -%}
+            <path class="cls-2" d="M25.754,11.325c-.8-.813.146-1.857.467-2.535a9.36,9.36,0,0,1,.7-1.383,3.28,3.28,0,0,0,.5-1.142,15.726,15.726,0,0,1-3.338,1.054,29.13,29.13,0,0,1-4.761,0,36.724,36.724,0,0,1-4.1-.518c-1.946-.311-3.891-.639-5.845-.853A31.571,31.571,0,0,0,6.06,5.918c-.7,0-1.392-.048-2.085,0a26.532,26.532,0,0,0-3.08.347c-.843.16-1.029-.215-.81-1.336,1.641-.153,3.32-.3,4.994-.468a17.645,17.645,0,0,1,2.334-.253c1.218.045,2.432.238,3.647.376.278.033.552.113.829.153,2.254.31,4.512.576,6.76.935a13.6,13.6,0,0,0,6.887-.334,3.351,3.351,0,0,0,.588-.415c-.393-.236-.455-1.432-.588-1.651-.72-1.181-.72-1.458-.72-3.237.975-.271,1.447.985,2.11,2.056.184.3.759,1,.864,1.181.551.935,1.417,1.735,1.417,2.4a6.625,6.625,0,0,1-1.094,3.22c-1.188,1.923-1.188,1.624-1.536,1.923Z" id="handwritten-arrow-dark-next" transform="translate(193.325 672.734) rotate(90)"></path>
+          </g>
+        </svg>
+        {%- if section.settings.scroll_text != blank -%}
+          <span class="category-banner__scroll-text">{{ section.settings.scroll_text }}</span>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    
+    {%- if section.settings.link_url != blank -%}
+      </a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image/Video Banner",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video"
+    },
+    {
+      "type": "text",
+      "id": "video_url_desktop",
+      "label": "Desktop video URL",
+      "info": "Full URL to MP4 video file for desktop. Video takes priority over images if provided."
+    },
+    {
+      "type": "text",
+      "id": "video_url_mobile",
+      "label": "Mobile video URL",
+      "info": "Full URL to MP4 video file for mobile. If not provided, desktop video will be used on all devices."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_video_controls",
+      "label": "Show video controls",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Images"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image",
+      "info": "Recommended: 2400 x 1600px or larger"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_tablet",
+      "label": "Tablet image (optional)",
+      "info": "Recommended: 1536 x 1024px or larger"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image (optional)",
+      "info": "Recommended: 768 x 1024px or larger"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Image alt text",
+      "info": "Describe the image for accessibility"
+    },
+    {
+      "type": "select",
+      "id": "image_loading",
+      "label": "Image loading",
+      "options": [
+        {
+          "value": "eager",
+          "label": "Eager"
+        },
+        {
+          "value": "lazy",
+          "label": "Lazy"
+        }
+      ],
+      "default": "lazy"
+    },
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL",
+      "info": "Makes the entire banner clickable. Use # for anchor links (e.g., #product-search-results) or any page URL"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show scroll indicator",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_svg_text",
+      "label": "Show 'SCROLL' text in SVG",
+      "default": true,
+      "info": "Toggle the SCROLL text within the SVG icon"
+    },
+    {
+      "type": "text",
+      "id": "scroll_text",
+      "label": "Scroll indicator text",
+      "default": "SCROLL"
+    },
+    {
+      "type": "text",
+      "id": "css_class",
+      "label": "Custom CSS class",
+      "info": "Add custom classes for styling"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image/Video Banner"
+    }
+  ]
+}
+{% endschema %}

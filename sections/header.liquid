@@ -39,6 +39,35 @@
     margin-left: -1.2rem;
   }
 
+  /* Drawer Minimal Menu Customization */
+  .header-drawer-minimal__menu-item a,
+  .header-drawer-minimal__menu-item > a,
+  .header-drawer-minimal__menu-item-wrapper > a {
+    font-size: {{ section.settings.drawer_menu_text_size }}px !important;
+    letter-spacing: {{ section.settings.drawer_menu_letter_spacing }}px !important;
+  }
+  .header-drawer-minimal__submenu-toggle {
+    padding-left: {{ section.settings.drawer_icon_padding }}px !important;
+  }
+  .header-drawer-minimal__menu-item {
+    padding: {{ section.settings.drawer_menu_item_spacing }}px 0 !important;
+  }
+  .header-drawer-minimal__menu-content {
+    gap: {{ section.settings.drawer_menu_gap }}px !important;
+  }
+  /* Submenu Customization */
+  .header-drawer-minimal__submenu-item a,
+  .header-drawer-minimal__submenu a {
+    font-size: {{ section.settings.drawer_submenu_text_size }}px !important;
+  }
+  .header-drawer-minimal__submenu {
+    padding-left: {{ section.settings.drawer_submenu_indent }}px !important;
+    margin-top: {{ section.settings.drawer_submenu_top_spacing }}px !important;
+  }
+  .header-drawer-minimal__submenu-item {
+    padding: {{ section.settings.drawer_submenu_item_spacing }}px 0 !important;
+  }
+
   .header__heading-logo {
     max-width: {{ settings.logo_width }}px;
   }
@@ -324,6 +353,7 @@
       </header-drawer>
     {%- endif -%}
 
+    {%- if section.settings.enable_search -%}
     {%- if section.settings.logo_position == 'top-center' or section.settings.menu == blank -%}
       <details-modal class="header__search">
         <details>
@@ -406,6 +436,7 @@
           </div>
         </details>
       </details-modal>
+    {%- endif -%}
     {%- endif -%}
 
     {%- if section.settings.logo_position != 'middle-center' -%}
@@ -556,6 +587,7 @@
     {%- endif -%}
 
     <div class="header__icons">
+      {%- if section.settings.enable_search -%}
       <details-modal class="header__search">
         <details>
           <summary class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle" aria-haspopup="dialog" aria-label="{{ 'general.search.search' | t }}">
@@ -637,7 +669,9 @@
           </div>
         </details>
       </details-modal>
+      {%- endif -%}
 
+      {%- if section.settings.enable_account -%}
       {%- if shop.customer_accounts_enabled -%}
         <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="header__icon header__icon--account link focus-inset{% if section.settings.menu != blank %} small-hide{% endif %}">
           {% render 'icon-account' %}
@@ -652,7 +686,9 @@
           </span>
         </a>
       {%- endif -%}
+      {%- endif -%}
 
+      {%- if section.settings.enable_cart -%}
       <a href="{{ routes.cart_url }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
         {%- liquid
           if cart == empty
@@ -671,6 +707,7 @@
           </div>
         {%- endif -%}
       </a>
+      {%- endif -%}
     </div>
   </header>
   {%- endif -%}
@@ -866,6 +903,144 @@
       "label": "Animate Custom Menu Icon",
       "info": "Enable rotation and scale animation for custom icon when menu opens/closes",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Header Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Enable Search Icon",
+      "default": true,
+      "info": "Show/hide the search icon in the header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_account",
+      "label": "Enable Account Icon",
+      "default": true,
+      "info": "Show/hide the account login icon in the header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_cart",
+      "label": "Enable Cart Icon",
+      "default": true,
+      "info": "Show/hide the shopping cart icon in the header"
+    },
+    {
+      "type": "header",
+      "content": "Drawer Minimal Menu Styling"
+    },
+    {
+      "type": "range",
+      "id": "drawer_menu_text_size",
+      "min": 12,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Menu Text Size (Parent Items)",
+      "default": 18,
+      "info": "Font size for all parent menu items - applies equally to all"
+    },
+    {
+      "type": "range",
+      "id": "drawer_menu_item_spacing",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Menu Item Spacing",
+      "default": 12,
+      "info": "Adjust vertical spacing for each menu item"
+    },
+    {
+      "type": "range",
+      "id": "drawer_menu_gap",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Menu Gap",
+      "default": 8,
+      "info": "Spacing between menu items"
+    },
+    {
+      "type": "range",
+      "id": "drawer_menu_letter_spacing",
+      "min": -2,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Menu Letter Spacing",
+      "default": 0,
+      "info": "Adjust letter spacing for menu text"
+    },
+    {
+      "type": "header",
+      "content": "Drawer Submenu Styling"
+    },
+    {
+      "type": "image_picker",
+      "id": "drawer_submenu_icon",
+      "label": "Custom Submenu Toggle Icon",
+      "info": "Upload a custom icon/SVG for the submenu toggle. Leave empty to use default plus (+) icon."
+    },
+    {
+      "type": "range",
+      "id": "drawer_icon_padding",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon Padding",
+      "default": 6,
+      "info": "Space between menu text and plus/minus icon"
+    },
+    {
+      "type": "range",
+      "id": "drawer_submenu_text_size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "label": "Submenu Text Size (Child Items)",
+      "default": 14,
+      "info": "Font size for all child menu items - applies equally to all"
+    },
+    {
+      "type": "range",
+      "id": "drawer_submenu_indent",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Submenu Indent",
+      "default": 16,
+      "info": "Left padding for submenu items"
+    },
+    {
+      "type": "range",
+      "id": "drawer_submenu_item_spacing",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Submenu Item Spacing",
+      "default": 8,
+      "info": "Vertical spacing for each submenu item"
+    },
+    {
+      "type": "range",
+      "id": "drawer_submenu_top_spacing",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Submenu Top Spacing",
+      "default": 4,
+      "info": "Space between parent item and submenu"
     },
     {
       "type": "header",
