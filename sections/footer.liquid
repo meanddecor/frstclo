@@ -1,253 +1,228 @@
 {% comment %}theme-check-disable UndefinedObject{% endcomment %}
-{{ 'section-footer.css' | asset_url | stylesheet_tag }}
-<link rel="stylesheet" href="{{ 'component-newsletter.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-list-payment.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-list-social.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="{{ 'disclosure.css' | asset_url }}" media="print" onload="this.media='all'">
 
-<noscript>{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-list-payment.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-list-social.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'component-rte.css' | asset_url | stylesheet_tag }}</noscript>
-<noscript>{{ 'disclosure.css' | asset_url | stylesheet_tag }}</noscript>
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Colors: color_background, color_text
+- Typography: type_body_font, font_size_base
+- Layout: page_width, spacing_sections
+{% endcomment %}
 
-{%- case section.settings.footer_style -%}
-  {%- when 'rich' -%}
-    {% render 'footer-rich' %}
-  {%- else -%}
-    {% render 'footer-minimal' %}
-{%- endcase -%}
+{%- liquid
+  assign footer_bg_color = section.settings.background_color | default: settings.color_background
+  assign footer_text_color = section.settings.text_color | default: settings.color_text
+  assign link_color = section.settings.link_color | default: settings.color_text
+  assign link_hover_color = section.settings.link_hover_color | default: settings.color_primary
+  assign font_family = settings.type_body_font.family | default: 'inherit'
+  assign font_size_mobile = section.settings.font_size_mobile | default: 16
+  assign font_size_desktop = section.settings.font_size_desktop | default: 15
+  assign show_policies = section.settings.show_policies
+  assign show_credit = section.settings.show_credit
+  assign credit_text = section.settings.credit_text | default: 'SITE BY MADE.'
+  assign credit_url = section.settings.credit_url | default: 'https://frstsubject.com'
+-%}
+
+{%- style -%}
+  .footer-{{ section.id }} {
+    background: {{ footer_bg_color }};
+    color: {{ footer_text_color }};
+    font-family: {{ font_family }}, sans-serif;
+    font-size: {{ settings.font_size_base | default: 14 }}px;
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .footer-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  .footer-{{ section.id }} .footer-nav {
+    display: flex;
+    margin-bottom: {{ section.settings.nav_spacing }}px;
+    margin-top: {{ section.settings.nav_spacing }}px;
+  }
+
+  @media (max-width: 500px) {
+    .footer-{{ section.id }} .footer-nav {
+      flex-direction: column;
+      align-items: center;
+    }
+    .footer-{{ section.id }} .footer-nav a {
+      font-size: {{ font_size_mobile }}px;
+    }
+    .footer-{{ section.id }} .footer-nav a:not(:last-child) {
+      margin-bottom: {{ section.settings.link_spacing_mobile }}px;
+    }
+  }
+
+  @media (min-width: 501px) {
+    .footer-{{ section.id }} .footer-nav {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer-{{ section.id }} .footer-nav a {
+      font-size: {{ font_size_desktop }}px;
+    }
+    .footer-{{ section.id }} .footer-nav a:not(:last-child) {
+      margin-right: {{ section.settings.link_spacing_desktop }}px;
+    }
+  }
+
+  .footer-{{ section.id }} .footer-nav a {
+    color: {{ link_color }};
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-{{ section.id }} .footer-nav a:hover {
+    color: {{ link_hover_color }};
+  }
+
+  .footer-{{ section.id }} .copyright {
+    text-align: center;
+  }
+
+  .footer-{{ section.id }} .copyright__content {
+    display: block;
+    color: {{ footer_text_color }};
+  }
+
+  .footer-{{ section.id }} .bymade {
+    margin: {{ section.settings.credit_spacing }}px 0;
+  }
+
+  .footer-{{ section.id }} .bymade a {
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .footer-{{ section.id }} .bymade a:hover {
+    opacity: 0.7;
+  }
+{%- endstyle -%}
+
+<footer class="footer footer-{{ section.id }}" role="contentinfo">
+  {%- if show_policies -%}
+    <div class="page-width" style="max-width: {{ settings.page_width | default: 1200 }}px;">
+      <div class="footer-nav">
+        {%- for policy in shop.policies -%}
+          {%- if policy != blank -%}
+            <a href="{{ policy.url }}">{{ policy.title }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="copyright">
+    <small class="copyright__content" style="margin: {{ section.settings.copyright_spacing }}px 0;">
+      &copy; {{ 'now' | date: "%Y" }}, {{ section.settings.store_name | default: shop.name }}
+    </small>
+    {%- if show_credit -%}
+      <small class="copyright__content eyecey">
+        <a href="{{ credit_url }}">{{ credit_text }}</a>
+      </small>
+    {%- endif -%}
+  </div>
+</footer>
 
 {% schema %}
 {
-  "name": "t:sections.footer.name",
-  "blocks": [
-    {
-      "type": "@app"
-    },
-    {
-      "type": "link_list",
-      "name": "t:sections.footer.blocks.link_list.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "default": "Quick links",
-          "label": "t:sections.footer.blocks.link_list.settings.heading.label"
-        },
-        {
-          "type": "link_list",
-          "id": "menu",
-          "default": "footer",
-          "label": "t:sections.footer.blocks.link_list.settings.menu.label",
-          "info": "t:sections.footer.blocks.link_list.settings.menu.info"
-        }
-      ]
-    },
-    {
-      "type": "brand_information",
-      "name": "t:sections.footer.blocks.brand_information.name",
-      "settings": [
-        {
-          "type": "paragraph",
-          "content": "t:sections.footer.blocks.brand_information.settings.paragraph.content"
-        },
-        {
-          "type": "header",
-          "content": "t:sections.footer.blocks.brand_information.settings.header__1.content"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_social",
-          "default": true,
-          "label": "t:sections.footer.blocks.brand_information.settings.show_social.label",
-          "info": "t:sections.footer.blocks.brand_information.settings.show_social.info"
-        }
-      ]
-    },
-    {
-      "type": "text",
-      "name": "t:sections.footer.blocks.text.name",
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "default": "Heading",
-          "label": "t:sections.footer.blocks.text.settings.heading.label"
-        },
-        {
-          "type": "richtext",
-          "id": "subtext",
-          "default": "<p>Share contact information, store details, and brand content with your customers.</p>",
-          "label": "t:sections.footer.blocks.text.settings.subtext.label"
-        }
-      ]
-    },
-    {
-      "type": "image",
-      "name": "Image",
-      "settings": [
-        {
-          "type": "image_picker",
-          "id": "image",
-          "label": "Image"
-        },
-        {
-          "type": "range",
-          "id": "image_width",
-          "min": 50,
-          "max": 550,
-          "step": 5,
-          "unit": "px",
-          "label": "Image width",
-          "default": 100
-        },
-        {
-          "type": "select",
-          "id": "alignment",
-          "label": "Image alignment on large screen",
-          "options": [
-            {
-              "value": "",
-              "label": "Left"
-            },
-            {
-              "value": "center",
-              "label": "Center"
-            },
-            {
-              "value": "right",
-              "label": "Right"
-            }
-          ],
-          "default": "center"
-        }
-      ]
-    }
-  ],
+  "name": "Footer",
   "settings": [
     {
       "type": "header",
-      "content": "Footer Style"
-    },
-    {
-      "type": "select",
-      "id": "footer_style",
-      "label": "Footer Style",
-      "options": [
-        {
-          "value": "minimal",
-          "label": "Minimal"
-        },
-        {
-          "value": "rich",
-          "label": "Rich"
-        }
-      ],
-      "default": "minimal"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__1.content",
-      "info": "t:sections.footer.settings.header__1.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "newsletter_enable",
-      "default": true,
-      "label": "t:sections.footer.settings.newsletter_enable.label"
+      "content": "Content"
     },
     {
       "type": "text",
-      "id": "newsletter_heading",
-      "default": "Subscribe to our emails",
-      "label": "t:sections.footer.settings.newsletter_heading.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__9.content",
-      "info": "t:sections.footer.settings.header__9.info"
+      "id": "store_name",
+      "label": "Store Name",
+      "info": "Leave blank to use your shop name",
+      "default": "COZY WW"
     },
     {
       "type": "checkbox",
-      "id": "enable_follow_on_shop",
-      "default": false,
-      "label": "t:sections.footer.settings.enable_follow_on_shop.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__2.content",
-      "info": "t:sections.footer.settings.header__2.info"
+      "id": "show_policies",
+      "label": "Show Policy Links",
+      "info": "Displays links to policies configured in Shopify Settings > Policies",
+      "default": true
     },
     {
       "type": "checkbox",
-      "id": "show_social",
-      "default": true,
-      "label": "t:sections.footer.settings.show_social.label"
+      "id": "show_credit",
+      "label": "Show Credit Link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "credit_text",
+      "label": "Credit Text",
+      "default": "SITE BY MADE."
+    },
+    {
+      "type": "url",
+      "id": "credit_url",
+      "label": "Credit URL"
     },
     {
       "type": "header",
-      "content": "t:sections.footer.settings.header__3.content",
-      "info": "t:sections.footer.settings.header__4.info"
+      "content": "Colors"
     },
     {
-      "type": "checkbox",
-      "id": "enable_country_selector",
-      "default": true,
-      "label": "t:sections.footer.settings.enable_country_selector.label"
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "info": "Leave blank to use global theme background color"
     },
     {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__5.content",
-      "info": "t:sections.footer.settings.header__6.info"
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "info": "Leave blank to use global theme text color"
     },
     {
-      "type": "checkbox",
-      "id": "enable_language_selector",
-      "default": true,
-      "label": "t:sections.footer.settings.enable_language_selector.label"
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "info": "Leave blank to use text color"
     },
     {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__7.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "payment_enable",
-      "default": true,
-      "label": "t:sections.footer.settings.payment_enable.label"
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link Hover Color",
+      "info": "Leave blank to use primary color"
     },
     {
       "type": "header",
-      "content": "t:sections.footer.settings.header__8.content",
-      "info": "t:sections.footer.settings.header__8.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_policy",
-      "default": false,
-      "label": "t:sections.footer.settings.show_policy.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.spacing"
+      "content": "Typography"
     },
     {
       "type": "range",
-      "id": "margin_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
+      "id": "font_size_mobile",
+      "min": 12,
+      "max": 24,
+      "step": 1,
       "unit": "px",
-      "label": "t:sections.footer.settings.margin_top.label",
-      "default": 0
+      "label": "Font Size (Mobile)",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Desktop)",
+      "default": 15
     },
     {
       "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
+      "content": "Spacing"
     },
     {
       "type": "range",
@@ -256,7 +231,7 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
+      "label": "Padding Top",
       "default": 36
     },
     {
@@ -266,71 +241,59 @@
       "max": 100,
       "step": 4,
       "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
+      "label": "Padding Bottom",
       "default": 36
+    },
+    {
+      "type": "range",
+      "id": "nav_spacing",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Navigation Spacing (Top/Bottom)",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "link_spacing_mobile",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Link Spacing (Mobile)",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "link_spacing_desktop",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Link Spacing (Desktop)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "copyright_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Copyright Spacing",
+      "default": 9
+    },
+    {
+      "type": "range",
+      "id": "credit_spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Credit Link Spacing",
+      "default": 5
     }
-  ],
-  "default": {
-    "blocks": [
-      {
-        "type": "link_list"
-      },
-      {
-        "type": "text"
-      }
-    ]
-  }
+  ]
 }
 {% endschema %}
-
-{% javascript %}
-  class LocalizationForm extends HTMLElement {
-    constructor() {
-      super();
-      this.elements = {
-        input: this.querySelector('input[name="locale_code"], input[name="country_code"]'),
-        button: this.querySelector('button'),
-        panel: this.querySelector('.disclosure__list-wrapper'),
-      };
-      this.elements.button.addEventListener('click', this.openSelector.bind(this));
-      this.elements.button.addEventListener('focusout', this.closeSelector.bind(this));
-      this.addEventListener('keyup', this.onContainerKeyUp.bind(this));
-
-      this.querySelectorAll('a').forEach(item => item.addEventListener('click', this.onItemClick.bind(this)));
-    }
-
-    hidePanel() {
-      this.elements.button.setAttribute('aria-expanded', 'false');
-      this.elements.panel.setAttribute('hidden', true);
-    }
-
-    onContainerKeyUp(event) {
-      if (event.code.toUpperCase() !== 'ESCAPE') return;
-
-      this.hidePanel();
-      this.elements.button.focus();
-    }
-
-    onItemClick(event) {
-      event.preventDefault();
-      const form = this.querySelector('form');
-      this.elements.input.value = event.currentTarget.dataset.value;
-      if (form) form.submit();
-    }
-
-    openSelector() {
-      this.elements.button.focus();
-      this.elements.panel.toggleAttribute('hidden');
-      this.elements.button.setAttribute('aria-expanded', (this.elements.button.getAttribute('aria-expanded') === 'false').toString());
-    }
-
-    closeSelector(event) {
-      const shouldClose = event.relatedTarget && event.relatedTarget.nodeName === 'BUTTON';
-      if (event.relatedTarget === null || shouldClose) {
-        this.hidePanel();
-      }
-    }
-  }
-
-  customElements.define('localization-form', LocalizationForm);
-{% endjavascript %}

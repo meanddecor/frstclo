@@ -1,0 +1,96 @@
+{% comment %}
+  Color Swatch Configuration
+  
+  Map color variant names to hex color codes or CSS values.
+  Add your product colors below in the format:
+  when 'Color Name' %} #hexcode
+  @
+  You can also use gradients, patterns, or images.
+{% endcomment %}
+
+{%- liquid
+  assign color_name = color | strip | downcase
+  assign swatch_value = ''
+  
+  case color_name
+    when 'black'
+      assign swatch_value = '#000000'
+    when 'white'
+      assign swatch_value = '#FFFFFF'
+    when 'red'
+      assign swatch_value = '#FF0000'
+    when 'blue'
+      assign swatch_value = '#0000FF'
+    when 'navy'
+      assign swatch_value = '#000080'
+    when 'green'
+      assign swatch_value = '#008000'
+    when 'yellow'
+      assign swatch_value = '#FFFF00'
+    when 'orange'
+      assign swatch_value = '#FFA500'
+    when 'pink'
+      assign swatch_value = '#FFC0CB'
+    when 'purple'
+      assign swatch_value = '#800080'
+    when 'brown'
+      assign swatch_value = '#A52A2A'
+    when 'grey', 'gray'
+      assign swatch_value = '#808080'
+    when 'beige'
+      assign swatch_value = '#F5F5DC'
+    when 'cream'
+      assign swatch_value = '#FFFDD0'
+    when 'tan'
+      assign swatch_value = '#D2B48C'
+    when 'burgundy'
+      assign swatch_value = '#800020'
+    when 'maroon'
+      assign swatch_value = '#800000'
+    when 'olive'
+      assign swatch_value = '#808000'
+    when 'teal'
+      assign swatch_value = '#008080'
+    when 'turquoise'
+      assign swatch_value = '#40E0D0'
+    when 'gold'
+      assign swatch_value = '#FFD700'
+    when 'silver'
+      assign swatch_value = '#C0C0C0'
+    when 'charcoal'
+      assign swatch_value = '#36454F'
+    when 'khaki'
+      assign swatch_value = '#C3B091'
+    when 'light blue', 'lightblue', 'sky blue', 'skyblue'
+      assign swatch_value = '#87CEEB'
+    when 'dark blue', 'darkblue'
+      assign swatch_value = '#00008B'
+    when 'light green', 'lightgreen', 'lime'
+      assign swatch_value = '#90EE90'
+    when 'dark green', 'darkgreen'
+      assign swatch_value = '#006400'
+    when 'light grey', 'light gray', 'lightgrey', 'lightgray'
+      assign swatch_value = '#D3D3D3'
+    when 'dark grey', 'dark gray', 'darkgrey', 'darkgray'
+      assign swatch_value = '#A9A9A9'
+    when 'ivory'
+      assign swatch_value = '#FFFFF0'
+    when 'coral'
+      assign swatch_value = '#FF7F50'
+    when 'lavender'
+      assign swatch_value = '#E6E6FA'
+    when 'mint'
+      assign swatch_value = '#98FF98'
+    when 'peach'
+      assign swatch_value = '#FFE5B4'
+    when 'rose'
+      assign swatch_value = '#FF007F'
+    when 'sage'
+      assign swatch_value = '#9CAF88'
+    when 'sand'
+      assign swatch_value = '#C2B280'
+    else
+      assign swatch_value = color_name
+  endcase
+-%}
+{{- swatch_value -}}

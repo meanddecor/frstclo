@@ -1,3 +1,5 @@
+{{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
+
 {%- style -%}
   .section-{{ section.id }}-padding {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -10,304 +12,131 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
-  
-  /* MINIMAL CONTACT FORM - YEEZY/BALENCIAGA INSPIRED */
-  .minimal-contact-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 60vh;
-  }
-  
-  .minimal-contact-wrapper {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-  
-  .minimal-contact-title {
-    text-align: center;
-    font-size: clamp(28px, 5vw, 40px);
-    font-weight: 400;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 60px;
-    color: #000;
-  }
-  
-  .minimal-contact-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  /* Form Fields */
-  .minimal-form-field {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .minimal-form-field input,
-  .minimal-form-field textarea {
-    width: 100%;
-    padding: 14px 16px;
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    border: 1px solid {{ section.settings.field_border_color }};
-    border-radius: 0;
-    background: {{ section.settings.field_bg_color }};
-    color: {{ section.settings.field_text_color }};
-    transition: all 0.3s ease;
-    outline: none;
-  }
-  
-  .minimal-form-field input::placeholder,
-  .minimal-form-field textarea::placeholder {
-    color: {{ section.settings.field_placeholder_color }};
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-  }
-  
-  .minimal-form-field input:focus,
-  .minimal-form-field textarea:focus {
-    border-color: {{ section.settings.field_text_color }};
-    background: rgba(0, 0, 0, 0.02);
-  }
-  
-  .minimal-form-field textarea {
-    min-height: 160px;
-    resize: vertical;
-    font-family: inherit;
-  }
-  
-  /* Labels - Hidden but accessible */
-  .minimal-form-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-  
-  /* Submit Button */
-  .minimal-form-submit {
-    margin-top: 10px;
-  }
-  
-  .minimal-submit-btn {
-    width: 100%;
-    padding: 16px 24px;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    border: 2px solid {{ section.settings.button_border_color }};
-    background: {{ section.settings.button_bg_color }};
-    color: {{ section.settings.button_text_color }};
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 0;
-  }
-  
-  .minimal-submit-btn:hover {
-    background: {{ section.settings.button_hover_bg_color }};
-    color: {{ section.settings.button_hover_text_color }};
-    border-color: {{ section.settings.button_hover_border_color }};
-  }
-  
-  /* Success Message */
-  .minimal-form-success {
-    text-align: center;
-    padding: 30px 20px;
-    margin-bottom: 30px;
-    border: 1px solid #ccc;
-    background: rgba(0, 0, 0, 0.05);
-  }
-  
-  .minimal-form-success h2 {
-    font-size: 16px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #000;
-    margin: 0;
-  }
-  
-  /* Error Messages */
-  .minimal-form-error {
-    text-align: center;
-    padding: 20px;
-    margin-bottom: 30px;
-    border: 1px solid #ccc;
-    background: rgba(0, 0, 0, 0.05);
-  }
-  
-  .minimal-form-error h2 {
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #000;
-    margin: 0 0 10px 0;
-  }
-  
-  .minimal-error-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .minimal-error-list li {
-    font-size: 12px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  
-  .minimal-error-list a {
-    color: #000;
-    text-decoration: none;
-  }
-  
-  .minimal-error-list a:hover {
-    text-decoration: underline;
-  }
-  
-  .minimal-field-error {
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    color: #000;
-    margin-top: 5px;
-  }
-  
-  /* Responsive */
-  @media screen and (max-width: 749px) {
-    .minimal-contact-title {
-      font-size: 24px;
-      margin-bottom: 40px;
-    }
-    
-    .minimal-form-field input,
-    .minimal-form-field textarea {
-      padding: 12px 14px;
-      font-size: 13px;
-    }
-    
-    .minimal-submit-btn {
-      padding: 14px 20px;
-      font-size: 13px;
-    }
-  }
 {%- endstyle -%}
 
-<div class="minimal-contact-section section-{{ section.id }}-padding">
-  <div class="minimal-contact-wrapper">
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="contact page-width page-width--narrow section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
-      <h1 class="minimal-contact-title">
+      <h2 class="title title-wrapper--no-top-margin {{ section.settings.heading_size }}">
         {{ section.settings.heading | escape }}
-      </h1>
+      </h2>
     {%- else -%}
-      <h1 class="minimal-contact-title">Contact</h1>
+      <h2 class="visually-hidden">{{ 'templates.contact.form.title' | t }}</h2>
     {%- endif -%}
-    
-    {%- form 'contact', id: 'ContactForm', class: 'minimal-contact-form' -%}
+    {%- form 'contact', id: 'ContactForm', class: 'isolate' -%}
       {%- if form.posted_successfully? -%}
-        <div class="minimal-form-success" tabindex="-1" autofocus>
-          <h2>Message Sent Successfully</h2>
-        </div>
+        <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+          {% render 'icon-success' %}
+          {{ 'templates.contact.form.post_success' | t }}
+        </h2>
       {%- elsif form.errors -%}
-        <div class="minimal-form-error">
-          <h2 role="alert" tabindex="-1" autofocus>
-            There was an error with your submission
+        <div class="form__message">
+          <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+            {% render 'icon-error' %}
+            {{ 'templates.contact.form.error_heading' | t }}
           </h2>
-          <ul class="minimal-error-list" role="list">
-            <li>
-              <a href="#ContactForm-email">
-                {{ form.errors.translated_fields.email | capitalize }}
-                {{ form.errors.messages.email }}
-              </a>
-            </li>
-          </ul>
         </div>
+        <ul class="form-status-list caption-large" role="list">
+          <li>
+            <a href="#ContactForm-email" class="link">
+              {{ form.errors.translated_fields.email | capitalize }}
+              {{ form.errors.messages.email }}
+            </a>
+          </li>
+        </ul>
       {%- endif -%}
-      
-      <div class="minimal-form-field">
-        <label class="minimal-form-label" for="ContactForm-name">Name</label>
-        <input
-          type="text"
-          id="ContactForm-name"
-          name="contact[{{ 'templates.contact.form.name' | t }}]"
-          value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
-          placeholder="Name"
-          autocomplete="name"
-          required
-        >
+      <div class="contact__fields">
+        <div class="field">
+          <input
+            class="field__input"
+            autocomplete="given-name"
+            type="text"
+            id="ContactForm-first-name"
+            name="contact[first_name]"
+            value="{% if form['first_name'] %}{{ form['first_name'] }}{% elsif customer %}{{ customer.first_name }}{% endif %}"
+            placeholder="First name"
+          >
+          <label class="field__label" for="ContactForm-first-name">First name</label>
+        </div>
+        <div class="field">
+          <input
+            class="field__input"
+            autocomplete="family-name"
+            type="text"
+            id="ContactForm-last-name"
+            name="contact[last_name]"
+            value="{% if form['last_name'] %}{{ form['last_name'] }}{% elsif customer %}{{ customer.last_name }}{% endif %}"
+            placeholder="Last name"
+          >
+          <label class="field__label" for="ContactForm-last-name">Last name</label>
+        </div>
+        <div class="field field--with-error">
+          <input
+            autocomplete="email"
+            type="email"
+            id="ContactForm-email"
+            class="field__input"
+            name="contact[email]"
+            spellcheck="false"
+            autocapitalize="off"
+            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+            aria-required="true"
+            {% if form.errors contains 'email' %}
+              aria-invalid="true"
+              aria-describedby="ContactForm-email-error"
+            {% endif %}
+            placeholder="Email address"
+          >
+          <label class="field__label" for="ContactForm-email">
+            Email address
+            <span aria-hidden="true">*</span></label
+          >
+          {%- if form.errors contains 'email' -%}
+            <small class="contact__field-error" id="ContactForm-email-error">
+              <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+              <span class="form__message">
+                {%- render 'icon-error' -%}
+                {{- form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email -}}
+              </span>
+            </small>
+          {%- endif -%}
+        </div>
+        <div class="field">
+          <input
+            class="field__input"
+            type="text"
+            id="ContactForm-order-number"
+            name="contact[order_number]"
+            value="{% if form['order_number'] %}{{ form['order_number'] }}{% endif %}"
+            placeholder="Order number"
+          >
+          <label class="field__label" for="ContactForm-order-number">Order number</label>
+        </div>
       </div>
-      
-      <div class="minimal-form-field">
-        <label class="minimal-form-label" for="ContactForm-email">Email *</label>
-        <input
-          type="email"
-          id="ContactForm-email"
-          name="contact[email]"
-          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
-          placeholder="Email *"
-          autocomplete="email"
-          spellcheck="false"
-          autocapitalize="off"
-          aria-required="true"
-          {% if form.errors contains 'email' %}
-            aria-invalid="true"
-            aria-describedby="ContactForm-email-error"
-          {% endif %}
-          required
-        >
-        {%- if form.errors contains 'email' -%}
-          <small class="minimal-field-error" id="ContactForm-email-error">
-            <span class="visually-hidden">Error:</span>
-            {{ form.errors.translated_fields.email | capitalize }}
-            {{ form.errors.messages.email }}
-          </small>
-        {%- endif -%}
-      </div>
-      
-      <div class="minimal-form-field">
-        <label class="minimal-form-label" for="ContactForm-phone">Phone</label>
-        <input
-          type="tel"
-          id="ContactForm-phone"
-          name="contact[{{ 'templates.contact.form.phone' | t }}]"
-          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
-          placeholder="Phone"
-          autocomplete="tel"
-        >
-      </div>
-      
-      <div class="minimal-form-field">
-        <label class="minimal-form-label" for="ContactForm-body">Message</label>
+      <div class="field">
         <textarea
+          rows="10"
           id="ContactForm-body"
+          class="text-area field__input"
           name="contact[{{ 'templates.contact.form.comment' | t }}]"
           placeholder="Message"
-          rows="8"
-          required
-        >{{ form.body }}</textarea>
+        >
+          {{- form.body -}}
+        </textarea>
+        <label class="form__label field__label" for="ContactForm-body">
+          Message
+        </label>
       </div>
-      
-      <div class="minimal-form-submit">
-        <button type="submit" class="minimal-submit-btn">
-          Send Message
+      <div class="contact__button{% if section.settings.send_button_full_width %} contact__button--full-width{% endif %}">
+        <button type="submit" class="button{% if section.settings.send_button_full_width %} button--full-width{% endif %}">
+          {{ 'templates.contact.form.send' | t }}
         </button>
+        {%- if section.settings.show_back_button -%}
+          <button type="button" class="button button--secondary" onclick="history.back()">
+            Back
+          </button>
+        {%- endif -%}
       </div>
     {%- endform -%}
   </div>
@@ -327,74 +156,6 @@
       "id": "heading",
       "default": "Contact form",
       "label": "Heading"
-    },
-    {
-      "type": "header",
-      "content": "Field Colors"
-    },
-    {
-      "type": "color",
-      "id": "field_border_color",
-      "label": "Field border color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "field_bg_color",
-      "label": "Field background color",
-      "default": "transparent"
-    },
-    {
-      "type": "color",
-      "id": "field_text_color",
-      "label": "Field text color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "field_placeholder_color",
-      "label": "Placeholder color",
-      "default": "rgba(0, 0, 0, 0.5)"
-    },
-    {
-      "type": "header",
-      "content": "Button Colors"
-    },
-    {
-      "type": "color",
-      "id": "button_border_color",
-      "label": "Button border color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "button_bg_color",
-      "label": "Button background color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Button text color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_border_color",
-      "label": "Button hover border color",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_bg_color",
-      "label": "Button hover background color",
-      "default": "transparent"
-    },
-    {
-      "type": "color",
-      "id": "button_hover_text_color",
-      "label": "Button hover text color",
-      "default": "#000000"
     },
     {
       "type": "select",
@@ -443,6 +204,22 @@
       ],
       "default": "background-1",
       "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_back_button",
+      "label": "Show back button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "send_button_full_width",
+      "label": "Send button full width",
+      "default": false
     },
     {
       "type": "header",

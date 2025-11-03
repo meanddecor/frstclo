@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-luxury",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "product_type": {
+          "type": "product_type",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "custom_text": {
+          "type": "custom_text",
+          "disabled": true,
+          "settings": {
+            "text": "Main material: 100% leather"
+          }
+        },
+        "sku": {
+          "type": "sku",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "product_type",
+        "description",
+        "custom_text",
+        "sku"
+      ],
+      "settings": {
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,157 +1,91 @@
 {% if section.settings.enable_timer %}
 <style>
-.countdown-wrapper {
-  background-color: {{ section.settings.background_color }};
+.countdown-timer {
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: {{ section.settings.section_padding }}px 1rem;
+  align-items: center;
+  margin: 20px 0;
 }
 
-.countdown-container {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  border: 2px solid #e5e7eb;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.2);
-  max-width: 48rem;
-  width: 100%;
-}
-
-.countdown-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.timer-card {
-  background-color: white;
-  border-radius: 0.75rem;
-  padding: 1.25rem 0.75rem;
+.timer-item {
   text-align: center;
-  border: 2px solid #e5e7eb;
+  margin: 0 10px;
 }
 
-.timer-number {
+.timer-item span {
+  display: block;
   font-size: {{ section.settings.timer_number_size }}px;
   font-weight: bold;
-  color: {{ section.settings.timer_number_color }};
-  margin-bottom: 0.5rem;
-  line-height: 1;
+  color: {{ section.settings.timer_number_color }} !important;
 }
 
-.timer-label {
-  color: {{ section.settings.timer_text_color }};
+.timer-item p {
   font-size: {{ section.settings.timer_text_size }}px;
-  font-weight: 500;
+  color: {{section.settings.timer_text_color}} !important;
+  text-transform: uppercase;
+  margin-top: 5px;
 }
 
-@media screen and (max-width: 768px) {
-  .countdown-container {
-    padding: 1rem;
-  }
-  
-  .countdown-grid {
-    gap: 0.75rem;
-  }
-  
-  .timer-card {
-    padding: 1.5rem 0.5rem;
-  }
-  
-  .timer-number {
-    font-size: calc({{ section.settings.timer_number_size }}px * 0.75);
-    margin-bottom: 0.5rem;
-  }
-  
-  .timer-label {
-    font-size: calc({{ section.settings.timer_text_size }}px * 0.9);
-  }
+  @media screen and (min-width: 750px){
+.banner--medium:not(.banner--adapt) {
+    min-height: auto !important;
 }
-
-@media screen and (max-width: 480px) {
-  .countdown-wrapper {
-    padding: {{ section.settings.section_padding }}px 0.5rem;
-  }
-  
-  .countdown-container {
-    padding: 0.75rem;
-  }
-  
-  .countdown-grid {
-    gap: 0.5rem;
-  }
-  
-  .timer-card {
-    padding: 1.25rem 0.5rem;
-    border-radius: 0.5rem;
-  }
-  
-  .timer-number {
-    font-size: calc({{ section.settings.timer_number_size }}px * 0.65);
-    margin-bottom: 0.4rem;
-  }
-  
-  .timer-label {
-    font-size: calc({{ section.settings.timer_text_size }}px * 0.8);
-  }
+    .banner__content {
+    padding: 0rem !important;
 }
+}
+  @media screen and (max-width: 749px){
+.banner--medium:not(.banner--mobile-bottom):not(.banner--adapt) .banner__content {
+    min-height: auto !important;
+}
+  }
 </style>
 
-<div class="countdown-wrapper">
-  <div class="countdown-container">
-    <div class="countdown-grid">
-      <div class="timer-card">
-        <div class="timer-number days">0</div>
-        <div class="timer-label">Days</div>
-      </div>
-      <div class="timer-card">
-        <div class="timer-number hours">0</div>
-        <div class="timer-label">Hours</div>
-      </div>
-      <div class="timer-card">
-        <div class="timer-number minutes">0</div>
-        <div class="timer-label">Minutes</div>
-      </div>
-      <div class="timer-card">
-        <div class="timer-number seconds">0</div>
-        <div class="timer-label">Seconds</div>
-      </div>
-    </div>
+
+<div class="countdown-timer">
+  <div class="timer-item">
+    <span class="days"></span>
+    <p>Days</p>
+  </div>
+  <div class="timer-item">
+    <span class="hours"></span>
+    <p>Hours</p>
+  </div>
+  <div class="timer-item">
+    <span class="minutes"></span>
+    <p>Minutes</p>
+  </div>
+  <div class="timer-item">
+    <span class="seconds"></span>
+    <p>Seconds</p>
   </div>
 </div>
 
 <script>
-(function() {
-  var timerDate = '{{ section.settings.timer_date }}';
-  var targetDate = new Date(timerDate.replace(/-/g, '/'));
+function countdownTimer(endTime) {
+  var timerInterval = setInterval(function() {
+    var totalSeconds = Math.floor((endTime - new Date()) / 1000);
 
-  function updateCountdown() {
-    var now = new Date().getTime();
-    var distance = targetDate - now;
-
-    if (distance < 0) {
-      document.querySelector('.countdown-grid .days').textContent = '0';
-      document.querySelector('.countdown-grid .hours').textContent = '0';
-      document.querySelector('.countdown-grid .minutes').textContent = '0';
-      document.querySelector('.countdown-grid .seconds').textContent = '0';
-      return;
+    if (totalSeconds <= 0) {
+      clearInterval(timerInterval);
+      totalSeconds = 0;
     }
 
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    var days = Math.floor(totalSeconds / (60 * 60 * 24));
+    var hours = Math.floor((totalSeconds / (60 * 60)) % 24);
+    var minutes = Math.floor((totalSeconds / 60) % 60);
+    var seconds = Math.floor(totalSeconds % 60);
 
-    document.querySelector('.countdown-grid .days').textContent = days;
-    document.querySelector('.countdown-grid .hours').textContent = hours;
-    document.querySelector('.countdown-grid .minutes').textContent = minutes;
-    document.querySelector('.countdown-grid .seconds').textContent = seconds;
-  }
+    document.querySelector('.countdown-timer .days').innerHTML = days;
+    document.querySelector('.countdown-timer .hours').innerHTML = hours;
+    document.querySelector('.countdown-timer .minutes').innerHTML = minutes;
+    document.querySelector('.countdown-timer .seconds').innerHTML = seconds;
+  }, 1000);
+}
 
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
-})();
+var timerDate = '{{ section.settings.timer_date }}';
+var endTime = new Date(timerDate.replace(/-/g, '/'));
+countdownTimer(endTime);
 </script>
 {% endif %}
 {% schema %}
@@ -159,78 +93,49 @@
   "name": "Countdown Timer",
   "settings": [
     {
-      "type": "checkbox",
-      "id": "enable_timer",
-      "label": "Enable Timer",
+        "type": "checkbox",
+        "id": "enable_timer",
+        "label": "Enable Timer",
       "info": "Don't forget to turn off the password page when the timer ends",
-      "default": false
+        "default": false
     },
     {
       "type": "text",
       "id": "timer_date",
-      "label": "Timer End Date (yyyy-mm-dd hh:mm:ss)",
-      "info": "For example: 2025-12-31 23:59:59",
-      "default": "2025-12-31 23:59:59"
-    },
-    {
-      "type": "header",
-      "content": "Section Settings"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Background Color",
-      "default": "#f9fafb"
-    },
-    {
-      "type": "range",
-      "id": "section_padding",
-      "label": "Section Vertical Padding",
-      "min": 20,
-      "max": 120,
-      "step": 10,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "header",
-      "content": "Number Settings"
+      "label": "Select the timer end date (yyyy-mm-dd hh:mm:ss)",
+      "info": "For example: 2023-03-27 00:00:00"
     },
     {
       "type": "color",
       "id": "timer_number_color",
-      "label": "Number Color",
-      "default": "#111827"
+      "label": "Select Color of Numbers",
+      "default": "#ffffff"
     },
     {
-      "type": "range",
-      "id": "timer_number_size",
-      "label": "Number Size",
-      "min": 24,
-      "max": 80,
-      "step": 2,
-      "unit": "px",
-      "default": 48
-    },
-    {
-      "type": "header",
-      "content": "Label Settings"
+        "type": "range",
+        "id": "timer_number_size",
+        "label": "Number Text Size",
+        "min": 7,
+        "max": 70,
+        "step": 1,
+        "unit": "px",
+        "default": 40
     },
     {
       "type": "color",
       "id": "timer_text_color",
-      "label": "Label Color",
-      "default": "#6b7280"
+      "label": "Select Color of Text",
+      "default": "#ffffff"
     },
     {
-      "type": "range",
-      "id": "timer_text_size",
-      "label": "Label Size",
-      "min": 12,
-      "max": 28,
-      "step": 2,
-      "unit": "px",
-      "default": 16
+        "type": "range",
+        "id": "timer_text_size",
+        "label": "Description Text Size",
+        "min": 7,
+        "max": 40,
+        "step": 1,
+        "unit": "px",
+        "default": 14
     }
   ]
 }

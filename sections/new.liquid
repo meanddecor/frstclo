@@ -1,0 +1,336 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{%- if section.settings.enable_quick_add -%}
+  <link rel="stylesheet" href="{{ 'quick-add.css' | asset_url }}" media="print" onload="this.media='all'">
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- style -%}
+  .bordered-grid-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .bordered-grid-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Section title */
+  .bordered-grid-{{ section.id }} .section-title {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .bordered-grid-{{ section.id }} .section-title h2 {
+    font-size: 32px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+  }
+
+  /* Grid container */
+  .bordered-grid-{{ section.id }} .product-grid-container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .bordered-grid-{{ section.id }} .product-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+    gap: 0;
+    background: white;
+  }
+
+  /* Product card */
+  .bordered-grid-{{ section.id }} .product-card {
+    border: 1px solid #000;
+    background: white;
+    transition: transform 0.2s ease;
+    position: relative;
+    margin-left: -1px;
+    margin-top: -1px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bordered-grid-{{ section.id }} .product-card:hover {
+    transform: translateY(-3px);
+    z-index: 10;
+  }
+
+  /* Image container */
+  .bordered-grid-{{ section.id }} .product-image {
+    width: 100%;
+    padding-bottom: 100%;
+    background: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid #000;
+  }
+
+  .bordered-grid-{{ section.id }} .product-image img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .bordered-grid-{{ section.id }} .product-card:hover .product-image img {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  /* Product info */
+  .bordered-grid-{{ section.id }} .product-info {
+    padding: 20px 15px;
+    text-align: center;
+    background: white;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .bordered-grid-{{ section.id }} .product-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    color: #333;
+  }
+
+  .bordered-grid-{{ section.id }} .product-title a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  .bordered-grid-{{ section.id }} .product-price {
+    font-size: 15px;
+    font-weight: 500;
+    color: #666;
+  }
+
+  /* Responsive: Desktop large (1400px+) */
+  @media (min-width: 1400px) {
+    .bordered-grid-{{ section.id }} .product-grid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .bordered-grid-{{ section.id }} .product-card {
+      min-height: 400px;
+    }
+  }
+
+  /* Responsive: Desktop (1024-1399px) */
+  @media (min-width: 1024px) and (max-width: 1399px) {
+    .bordered-grid-{{ section.id }} .product-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .bordered-grid-{{ section.id }} .product-card {
+      min-height: 380px;
+    }
+  }
+
+  /* Responsive: Tablet (750-1023px) */
+  @media (min-width: 750px) and (max-width: 1023px) {
+    .bordered-grid-{{ section.id }} .product-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .bordered-grid-{{ section.id }} .product-card {
+      min-height: 350px;
+    }
+  }
+
+  /* Responsive: Mobile (480-749px) */
+  @media (min-width: 480px) and (max-width: 749px) {
+    .bordered-grid-{{ section.id }} .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .bordered-grid-{{ section.id }} .product-card {
+      min-height: 300px;
+    }
+    .bordered-grid-{{ section.id }} .product-title {
+      font-size: 11px;
+    }
+    .bordered-grid-{{ section.id }} .product-price {
+      font-size: 14px;
+    }
+  }
+
+  /* Responsive: Small mobile (below 480px) */
+  @media (max-width: 479px) {
+    .bordered-grid-{{ section.id }} .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .bordered-grid-{{ section.id }} .product-card {
+      min-height: 250px;
+    }
+    .bordered-grid-{{ section.id }} .product-info {
+      padding: 15px 10px;
+    }
+    .bordered-grid-{{ section.id }} .product-title {
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    .bordered-grid-{{ section.id }} .product-price {
+      font-size: 13px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="bordered-grid-{{ section.id }} page-width">
+  {%- if section.settings.title != blank -%}
+    <div class="section-title">
+      <h2>{{ section.settings.title }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="product-grid-container">
+    <div class="product-grid">
+      {%- for product in section.settings.collection.products limit: section.settings.products_to_show -%}
+        <div class="product-card">
+          <a href="{{ product.url }}" class="product-image">
+            {%- if product.featured_media -%}
+              <img
+                src="{{ product.featured_media | image_url: width: 600 }}"
+                alt="{{ product.featured_media.alt | escape }}"
+                loading="lazy"
+                width="600"
+                height="600"
+              >
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+          </a>
+          
+          <div class="product-info">
+            <h3 class="product-title">
+              <a href="{{ product.url }}">{{ product.title }}</a>
+            </h3>
+            
+            <div class="product-price">
+              {%- if product.price_varies -%}
+                {{ product.price_min | money }} - {{ product.price_max | money }}
+              {%- else -%}
+                {{ product.price | money }}
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- else -%}
+        {%- for i in (1..8) -%}
+          <div class="product-card">
+            <div class="product-image">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            </div>
+            <div class="product-info">
+              <h3 class="product-title">
+                <a href="#">Product Title</a>
+              </h3>
+              <div class="product-price">$99.00</div>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.show_view_all and section.settings.collection != blank -%}
+    <div style="text-align: center; margin-top: 40px;">
+      <a href="{{ section.settings.collection.url }}" class="button">
+        View All
+      </a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Bordered Product Grid",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 50,
+      "step": 1,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Desktop columns",
+      "info": "Automatically adjusts to 5 columns on larger screens"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View All' button",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "label": "Enable quick add",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bordered Product Grid"
+    }
+  ]
+}
+{% endschema %}

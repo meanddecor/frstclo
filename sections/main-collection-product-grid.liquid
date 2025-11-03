@@ -29,6 +29,15 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  #product-grid .card__heading a,
+  #product-grid .card__heading {
+    color: {{ section.settings.product_title_color }} !important;
+  }
+
+  #product-grid .price .price-item {
+    color: {{ section.settings.product_price_color }} !important;
+  }
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding">
@@ -203,6 +212,22 @@
       "step": 1,
       "default": 4,
       "label": "t:sections.main-collection-product-grid.settings.columns_desktop.label"
+    },
+    {
+      "type": "header",
+      "content": "Product text colors"
+    },
+    {
+      "type": "color",
+      "id": "product_title_color",
+      "label": "Product title color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "product_price_color",
+      "label": "Product price color",
+      "default": "#000000"
     },
     {
       "type": "header",

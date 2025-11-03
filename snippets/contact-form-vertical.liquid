@@ -1,0 +1,141 @@
+{% comment %}
+  Vertical Contact Form Variation
+  All fields aligned vertically: Name, Phone, Email, Message
+{% endcomment %}
+
+{%- form 'contact', id: 'ContactFormVertical', class: 'isolate contact-form-vertical' -%}
+  {%- if form.posted_successfully? -%}
+    <h2 class="form-status form-status-list form__message" tabindex="-1" autofocus>
+      {% render 'icon-success' %}
+      {{ 'templates.contact.form.post_success' | t }}
+    </h2>
+  {%- elsif form.errors -%}
+    <div class="form__message">
+      <h2 class="form-status caption-large text-body" role="alert" tabindex="-1" autofocus>
+        {% render 'icon-error' %}
+        {{ 'templates.contact.form.error_heading' | t }}
+      </h2>
+    </div>
+    <ul class="form-status-list caption-large" role="list">
+      {%- for field in form.errors -%}
+        <li>
+          <a href="#ContactFormVertical-{{ field }}" class="link">
+            {{ form.errors.translated_fields[field] | capitalize }}
+            {{ form.errors.messages[field] }}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- comment -%} Name Field {%- endcomment -%}
+  <div class="field">
+    <input
+      class="field__input"
+      autocomplete="name"
+      type="text"
+      id="ContactFormVertical-name"
+      name="contact[name]"
+      value="{% if form['name'] %}{{ form['name'] }}{% elsif customer %}{{ customer.name }}{% endif %}"
+      placeholder="{{ 'templates.contact.form.name' | t | default: 'Name' }}"
+      aria-required="true"
+    >
+    <label class="field__label" for="ContactFormVertical-name">
+      {{ 'templates.contact.form.name' | t | default: 'Name' }}
+      <span aria-hidden="true">*</span>
+    </label>
+  </div>
+
+  {%- comment -%} Phone Number Field {%- endcomment -%}
+  <div class="field">
+    <input
+      class="field__input"
+      autocomplete="tel"
+      type="tel"
+      id="ContactFormVertical-phone"
+      name="contact[phone]"
+      value="{% if form['phone'] %}{{ form['phone'] }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+      placeholder="{{ 'templates.contact.form.phone' | t | default: 'Phone number' }}"
+    >
+    <label class="field__label" for="ContactFormVertical-phone">
+      {{ 'templates.contact.form.phone' | t | default: 'Phone number' }}
+    </label>
+  </div>
+
+  {%- comment -%} Email Field {%- endcomment -%}
+  <div class="field field--with-error">
+    <input
+      autocomplete="email"
+      type="email"
+      id="ContactFormVertical-email"
+      class="field__input"
+      name="contact[email]"
+      spellcheck="false"
+      autocapitalize="off"
+      value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+      aria-required="true"
+      {% if form.errors contains 'email' %}
+        aria-invalid="true"
+        aria-describedby="ContactFormVertical-email-error"
+      {% endif %}
+      placeholder="{{ 'templates.contact.form.email' | t | default: 'Email' }}"
+    >
+    <label class="field__label" for="ContactFormVertical-email">
+      {{ 'templates.contact.form.email' | t | default: 'Email' }}
+      <span aria-hidden="true">*</span>
+    </label>
+    {%- if form.errors contains 'email' -%}
+      <small class="contact__field-error" id="ContactFormVertical-email-error">
+        <span class="visually-hidden">{{ 'accessibility.error' | t }}</span>
+        <span class="form__message">
+          {%- render 'icon-error' -%}
+          {{- form.errors.translated_fields.email | capitalize }}
+          {{ form.errors.messages.email -}}
+        </span>
+      </small>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Message Field {%- endcomment -%}
+  <div class="field">
+    <textarea
+      rows="10"
+      id="ContactFormVertical-body"
+      class="text-area field__input"
+      name="contact[{{ 'templates.contact.form.comment' | t }}]"
+      placeholder="{{ 'templates.contact.form.comment' | t | default: 'Message' }}"
+      aria-required="true"
+    >
+      {{- form.body -}}
+    </textarea>
+    <label class="form__label field__label" for="ContactFormVertical-body">
+      {{ 'templates.contact.form.comment' | t | default: 'Message' }}
+      <span aria-hidden="true">*</span>
+    </label>
+  </div>
+
+  {%- comment -%} Submit Button {%- endcomment -%}
+  <div class="contact__button{% if send_button_full_width %} contact__button--full-width{% endif %}">
+    <button type="submit" class="button{% if send_button_full_width %} button--full-width{% endif %}">
+      {{ 'templates.contact.form.send' | t }}
+    </button>
+  </div>
+{%- endform -%}
+
+<style>
+  .contact-form-vertical .field {
+    margin-bottom: 2rem;
+  }
+
+  .contact-form-vertical .field:last-of-type {
+    margin-bottom: 1rem;
+  }
+
+  .contact-form-vertical .field__input {
+    width: 100%;
+  }
+
+  .contact-form-vertical .text-area {
+    min-height: 150px;
+  }
+</style>
