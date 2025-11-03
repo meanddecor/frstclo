@@ -388,28 +388,76 @@
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" class="enter-block enter-block--menu enter-block--{{ block.settings.position_preset }}"
                  style="{% if block.settings.use_custom_position %}
                           {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
                           {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
                           {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
                           {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
-                        {% endif %}"
+                        {% endif %}
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;"
                  {{ block.shopify_attributes }}>
-              <ul style="text-align: {{ block.settings.alignment }}; list-style: none;">
-                {% assign menu_handle = block.settings.navigation %}
+              {% comment %}
+              ✅ GLOBAL SETTINGS APPLIED:
+              - Typography: type_header_font, type_body_font, custom_font_name_heading, custom_font_name_regular, enable_custom_font
+              {% endcomment %}
+              {% comment %} Font Family Selection Logic {% endcomment %}
+              {% assign menu_font_family = 'Arial, sans-serif' %}
+              {% if block.settings.font_family == 'type_header_font' %}
+                {% assign menu_font_family = settings.type_header_font.family %}
+              {% elsif block.settings.font_family == 'type_body_font' %}
+                {% assign menu_font_family = settings.type_body_font.family %}
+              {% elsif block.settings.font_family == 'custom_heading_font' and settings.enable_custom_font and settings.custom_font_name_heading != blank %}
+                {% assign menu_font_family = settings.custom_font_name_heading %}
+              {% elsif block.settings.font_family == 'custom_regular_font' and settings.enable_custom_font and settings.custom_font_name_regular != blank %}
+                {% assign menu_font_family = settings.custom_font_name_regular %}
+              {% elsif block.settings.font_family == 'arial' %}
+                {% assign menu_font_family = 'Arial, sans-serif' %}
+              {% elsif block.settings.font_family == 'helvetica' %}
+                {% assign menu_font_family = 'Helvetica, sans-serif' %}
+              {% elsif block.settings.font_family == 'times' %}
+                {% assign menu_font_family = 'Times New Roman, serif' %}
+              {% elsif block.settings.font_family == 'courier' %}
+                {% assign menu_font_family = 'Courier New, monospace' %}
+              {% elsif block.settings.font_family == 'georgia' %}
+                {% assign menu_font_family = 'Georgia, serif' %}
+              {% elsif block.settings.font_family == 'verdana' %}
+                {% assign menu_font_family = 'Verdana, sans-serif' %}
+              {% elsif block.settings.font_family == 'custom' and block.settings.custom_font_name != blank %}
+                {% assign menu_font_family = block.settings.custom_font_name %}
+              {% endif %}
+              {% assign menu_align = block.settings.alignment | default: 'center' %}
+              {% assign menu_align_items = 'center' %}
+              {% if menu_align == 'left' %}
+                {% assign menu_align_items = 'flex-start' %}
+              {% elsif menu_align == 'right' %}
+                {% assign menu_align_items = 'flex-end' %}
+              {% endif %}
+              {% assign menu_handle = block.settings.navigation %}
+              <ul style="font-family: {{ menu_font_family | escape }};
+                          list-style: none;
+                          margin: 0 auto;
+                          padding: 0;
+                          text-align: {{ menu_align }};
+                          display: flex;
+                          flex-direction: column;
+                          align-items: {{ menu_align_items }};">
                 {% for link in linklists[menu_handle].links %}
                   <li style="margin: {{ block.settings.spacing }}px 0; text-align: {{ block.settings.alignment }}; list-style: none;">
-                    <a href="{{ link.url }}" 
-                       style="font-size: {{ block.settings.font_size }}px; 
-                              font-weight: bold;
+                    <a href="{{ link.url }}"
+                       style="font-size: {{ block.settings.font_size }}px;
+                              font-weight: {{ block.settings.font_weight }};
                               color: {{ block.settings.text_color }};
                               text-decoration: none;
                               padding: 3px;
                               text-transform: {{ block.settings.text_transform }};
+                              font-family: {{ menu_font_family | escape }};
+                              letter-spacing: {{ block.settings.letter_spacing }}px;
                               {% if block.settings.enable_glow %}
-                                -webkit-animation: pulse 1.5s ease-in-out infinite alternate;
-                                -webkit-backface-visibility: hidden;
+                                animation: pulse 2s infinite;
+                                text-shadow: 0 0 10px {{ block.settings.text_color }};
                               {% endif %}
                               display: inline-block;">
                       {% if block.settings.enable_numbering %}
@@ -1068,14 +1116,75 @@ document.addEventListener('DOMContentLoaded', function() {
           "info": "Select navigation menu to display"
         },
         {
+          "type": "header",
+          "content": "⚡ Font Settings"
+        },
+        {
+          "type": "select",
+          "id": "font_family",
+          "label": "Font Family",
+          "default": "type_header_font",
+          "options": [
+            { "value": "type_header_font", "label": "Theme Header Font" },
+            { "value": "type_body_font", "label": "Theme Body Font" },
+            { "value": "custom_heading_font", "label": "Custom Heading Font (if enabled)" },
+            { "value": "custom_regular_font", "label": "Custom Regular Font (if enabled)" },
+            { "value": "arial", "label": "Arial" },
+            { "value": "helvetica", "label": "Helvetica" },
+            { "value": "times", "label": "Times New Roman" },
+            { "value": "courier", "label": "Courier New" },
+            { "value": "georgia", "label": "Georgia" },
+            { "value": "verdana", "label": "Verdana" },
+            { "value": "custom", "label": "Custom Font Name (enter below)" }
+          ],
+          "info": "Choose font for menu text"
+        },
+        {
+          "type": "text",
+          "id": "custom_font_name",
+          "label": "Custom Font Name",
+          "info": "Enter exact font family name (e.g., 'Montserrat', 'Roboto'). Only used when 'Custom Font Name' is selected above.",
+          "placeholder": "e.g., Montserrat, Roboto"
+        },
+        {
           "type": "range",
           "id": "font_size",
           "label": "Font Size",
           "min": 12,
-          "max": 40,
+          "max": 60,
           "step": 1,
           "default": 18,
           "unit": "px"
+        },
+        {
+          "type": "select",
+          "id": "font_weight",
+          "label": "Font Weight",
+          "default": "bold",
+          "options": [
+            { "value": "300", "label": "Light (300)" },
+            { "value": "400", "label": "Regular (400)" },
+            { "value": "500", "label": "Medium (500)" },
+            { "value": "600", "label": "Semi-Bold (600)" },
+            { "value": "bold", "label": "Bold (700)" },
+            { "value": "800", "label": "Extra Bold (800)" },
+            { "value": "900", "label": "Black (900)" }
+          ]
+        },
+        {
+          "type": "range",
+          "id": "letter_spacing",
+          "label": "Letter Spacing",
+          "min": -5,
+          "max": 20,
+          "step": 0.5,
+          "default": 0,
+          "unit": "px",
+          "info": "Adjust spacing between letters"
+        },
+        {
+          "type": "header",
+          "content": "Text Styling"
         },
         {
           "type": "color",
@@ -1090,15 +1199,15 @@ document.addEventListener('DOMContentLoaded', function() {
           "default": "uppercase",
           "options": [
             { "value": "none", "label": "None" },
-            { "value": "uppercase", "label": "Uppercase" },
-            { "value": "lowercase", "label": "Lowercase" },
-            { "value": "capitalize", "label": "Capitalize" }
+            { "value": "uppercase", "label": "UPPERCASE" },
+            { "value": "lowercase", "label": "lowercase" },
+            { "value": "capitalize", "label": "Capitalize Each Word" }
           ]
         },
         {
           "type": "select",
           "id": "alignment",
-          "label": "Alignment",
+          "label": "Text Alignment",
           "default": "center",
           "options": [
             { "value": "left", "label": "Left" },
@@ -1114,7 +1223,8 @@ document.addEventListener('DOMContentLoaded', function() {
           "max": 50,
           "step": 2,
           "default": 10,
-          "unit": "px"
+          "unit": "px",
+          "info": "Space between menu items"
         },
         {
           "type": "checkbox",
@@ -1606,7 +1716,7 @@ document.addEventListener('DOMContentLoaded', function() {
           "type": "text",
           "id": "credit_text",
           "label": "Credit Text",
-          "default": "FKXMEDIA"
+          "default": "NGAGE By FRST MADE."
         },
         {
           "type": "header",

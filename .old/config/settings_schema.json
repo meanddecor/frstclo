@@ -3,9 +3,9 @@
     "name": "theme_info",
     "theme_name": "FKXPREMIUM",
     "theme_version": "1.0",
-    "theme_author": "FKXMEDIA",
-    "theme_documentation_url": "https://fkxmedia.com/pages/contact",
-    "theme_support_url": "https://fkxmedia.com/pages/contact/"
+    "theme_author": "NGAGE By FRST MADE.",
+    "theme_documentation_url": "https://made.frstsubject.com/pages/contact",
+    "theme_support_url": "https://made.frstsubject.com/pages/contact"
   },
   {
     "name": "t:settings_schema.logo.name",
@@ -376,7 +376,7 @@
       },
       {
         "type": "header",
-        "content": "FKXMEDIA Copyright"
+        "content": "NGAGE By FRST MADE. Copyright"
       },
       {
         "type": "color",
