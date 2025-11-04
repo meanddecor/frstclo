@@ -1,0 +1,730 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Logo: settings.logo, settings.logo_width (fallback only)
+- Typography: Applied via CSS variables and section settings
+- Colors: Applied via CSS variables and section settings
+
+✅ SECTION SETTINGS APPLIED - ALL RESPONSIVE BREAKPOINTS WORKING:
+- Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit
+- Text-Only Header: text_only_burger_color, text_only_cross_color, text_only_menu_text_color, text_only_menu_font_size
+- Text-Only Header: text_only_menu_letter_spacing, text_only_menu_font_weight
+- Text-Only Header: text_only_logo_text_color, text_only_logo_font_size, text_only_logo_letter_spacing
+- Spacing: text_only_spacing_scale (unified spacing control)
+- XL Breakpoint (1200px+): text_only_xl_max_width
+- LG Breakpoint (990-1199px): text_only_lg_max_width, text_only_lg_logo_width, text_only_lg_logo_font_size, text_only_lg_menu_font_size, text_only_lg_menu_gap, text_only_lg_horizontal_padding
+- MD Breakpoint (768-989px): text_only_md_max_width, text_only_md_logo_width, text_only_md_logo_font_size, text_only_md_menu_font_size, text_only_md_menu_gap, text_only_md_horizontal_padding
+- SM Breakpoint (640-767px): text_only_sm_max_width, text_only_sm_logo_width, text_only_sm_logo_font_size, text_only_sm_menu_font_size, text_only_sm_menu_gap, text_only_sm_horizontal_padding
+- XS Breakpoint (480-639px & below): text_only_xs_max_width, text_only_xs_logo_width, text_only_xs_logo_font_size, text_only_xs_menu_font_size, text_only_xs_menu_gap, text_only_xs_horizontal_padding
+- Mobile Menu: text_only_mobile_menu_style, text_only_show_scroll_fade, text_only_scroll_snap
+- Cart/Account: text_only_cart_text_color
+- Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, text_only_mobile_menu_font_size, text_only_mobile_menu_letter_spacing, text_only_mobile_menu_font_weight
+
+🔧 FIXED: Removed hardcoded clamp() values and conflicting mobile menu overrides that were preventing responsive settings from applying
+{% endcomment %}
+<style>
+  :root {
+    --text-only-logo-width: {{ section.settings.text_only_logo_width | default: 100 }}px;
+    --text-only-logo-object-fit: {{ section.settings.text_only_logo_object_fit | default: 'contain' }};
+    --text-only-burger-color: {{ section.settings.text_only_burger_color | default: '#000000' }};
+    --text-only-cross-color: {{ section.settings.text_only_cross_color | default: '#000000' }};
+    --text-only-menu-text-color: {{ section.settings.text_only_menu_text_color | default: '#000000' }};
+    --text-only-cart-text-color: {{ section.settings.text_only_cart_text_color | default: '#000000' }};
+    --text-only-menu-font-size: {{ section.settings.text_only_menu_font_size | default: 11 }}px;
+    --text-only-menu-letter-spacing: {{ section.settings.text_only_menu_letter_spacing | default: 0.8 }}px;
+    --text-only-menu-font-weight: {{ section.settings.text_only_menu_font_weight | default: 700 }};
+    --text-only-logo-text-color: {{ section.settings.text_only_logo_text_color | default: '#000000' }};
+    --text-only-logo-font-size: {{ section.settings.text_only_logo_font_size | default: 24 }}px;
+    --text-only-logo-letter-spacing: {{ section.settings.text_only_logo_letter_spacing | default: 1.5 }}px;
+    --text-only-mobile-menu-bg: {{ section.settings.text_only_mobile_menu_bg | default: '#000000' }};
+    --text-only-mobile-menu-text-color: {{ section.settings.text_only_mobile_menu_text_color | default: '#ffffff' }};
+    --text-only-mobile-menu-font-size: {{ section.settings.text_only_mobile_menu_font_size | default: 18 }}px;
+    --text-only-mobile-menu-letter-spacing: {{ section.settings.text_only_mobile_menu_letter_spacing | default: 0.8 }}px;
+    --text-only-mobile-menu-font-weight: {{ section.settings.text_only_mobile_menu_font_weight | default: 700 }};
+    --text-only-spacing-scale: {{ section.settings.text_only_spacing_scale | default: 100 | divided_by: 100.0 }};
+  }
+
+  {%- liquid
+    assign mobile_menu_style = section.settings.text_only_mobile_menu_style | default: 'fullscreen'
+    assign show_scroll_fade = section.settings.text_only_show_scroll_fade
+    assign scroll_snap = section.settings.text_only_scroll_snap
+  -%}
+
+  .text-only-header-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: calc(1.25rem * var(--text-only-spacing-scale));
+    padding: 1.25rem calc(1.25rem * var(--text-only-spacing-scale));
+    box-sizing: border-box;
+  }
+
+  /* XL Desktop - 1200px and above */
+  @media screen and (min-width: 1200px) {
+    .text-only-header-wrapper {
+      max-width: {{ section.settings.text_only_xl_max_width | default: 1600 }}px;
+      margin: 0 auto;
+    }
+    
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: var(--text-only-logo-font-size) !important;
+    }
+    
+    .text-only-logo-wrapper img {
+      width: var(--text-only-logo-width);
+    }
+    
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: var(--text-only-menu-font-size) !important;
+    }
+  }
+
+  .text-only-logo-wrapper {
+    grid-column: 2;
+    text-align: center;
+    padding: 0;
+  }
+
+  .text-only-logo-wrapper a {
+    text-decoration: none;
+    color: var(--text-only-logo-text-color) !important;
+  }
+
+  .text-only-logo-wrapper .h2,
+  .text-only-logo-wrapper span {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: var(--text-only-logo-letter-spacing) !important;
+    color: var(--text-only-logo-text-color) !important;
+    margin: 0;
+  }
+
+  .text-only-logo-wrapper img {
+    max-width: 100%;
+    object-fit: var(--text-only-logo-object-fit);
+    height: auto;
+  }
+
+  .text-only-header-menu {
+    grid-column: 1;
+    display: flex;
+    gap: calc(1.5625rem * var(--text-only-spacing-scale));
+    align-items: center;
+    justify-self: start;
+  }
+
+  .text-only-header-menu .text-only-menu-item {
+    position: relative;
+  }
+
+  .text-only-header-menu .text-only-menu-link {
+    text-transform: uppercase;
+    font-weight: var(--text-only-menu-font-weight) !important;
+    letter-spacing: var(--text-only-menu-letter-spacing) !important;
+    color: var(--text-only-menu-text-color) !important;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .text-only-header-menu .text-only-menu-link:hover {
+    opacity: 0.6;
+  }
+
+  .text-only-right-nav {
+    grid-column: 3;
+    display: flex;
+    gap: calc(1.5625rem * var(--text-only-spacing-scale));
+    align-items: center;
+    justify-self: end;
+  }
+
+  .text-only-right-nav a,
+  .text-only-right-nav a span,
+  #TextOnlyCartCount {
+    text-transform: uppercase;
+    font-weight: var(--text-only-menu-font-weight) !important;
+    letter-spacing: var(--text-only-menu-letter-spacing) !important;
+    color: var(--text-only-cart-text-color) !important;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .text-only-right-nav a:hover {
+    opacity: 0.6;
+  }
+
+  .text-only-submenu {
+    display: none;
+    position: absolute;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: rgb(var(--color-background));
+    z-index: 100;
+    left: 0;
+    margin-top: 15px;
+    flex-direction: column;
+    padding: 15px 0;
+    min-width: 180px;
+  }
+
+  .text-only-submenu a {
+    padding: 8px 20px;
+    display: block;
+    text-decoration: none;
+    text-align: left;
+    font-size: calc(var(--text-only-menu-font-size) - 1px) !important;
+    color: var(--text-only-menu-text-color) !important;
+    text-transform: uppercase;
+    font-weight: var(--text-only-menu-font-weight) !important;
+    letter-spacing: var(--text-only-menu-letter-spacing) !important;
+  }
+
+  .text-only-submenu a:hover {
+    background: rgba(var(--color-foreground), 0.05);
+  }
+
+  .text-only-has-children > a::after {
+    content: ' ▾';
+    font-size: 9px;
+  }
+
+  .text-only-has-children.active > a::after {
+    content: ' ▴';
+  }
+
+  .text-only-burger-menu {
+    display: none;
+    cursor: pointer;
+    z-index: 997;
+  }
+
+  .text-only-burger-menu svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .text-only-burger-menu .text-only-burger line {
+    stroke: var(--text-only-burger-color) !important;
+  }
+
+  .text-only-burger-menu .text-only-cross path {
+    stroke: var(--text-only-cross-color) !important;
+  }
+
+  /* LG Large Tablet/Small Desktop - 990px to 1199px */
+  @media screen and (max-width: 1199px) and (min-width: 990px) {
+    .text-only-header-wrapper {
+      padding-left: {{ section.settings.text_only_lg_horizontal_padding | default: 30 }}px;
+      padding-right: {{ section.settings.text_only_lg_horizontal_padding | default: 30 }}px;
+      gap: calc({{ section.settings.text_only_lg_menu_gap | default: 20 }}px * var(--text-only-spacing-scale));
+      max-width: {{ section.settings.text_only_lg_max_width | default: 1400 }}px;
+      margin: 0 auto;
+    }
+
+    .text-only-header-menu,
+    .text-only-right-nav {
+      gap: calc({{ section.settings.text_only_lg_menu_gap | default: 20 }}px * var(--text-only-spacing-scale));
+    }
+
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: {{ section.settings.text_only_lg_logo_font_size | default: 22 }}px !important;
+    }
+
+    .text-only-logo-wrapper img {
+      width: {{ section.settings.text_only_lg_logo_width | default: 300 }}px;
+      max-width: 100%;
+    }
+
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: {{ section.settings.text_only_lg_menu_font_size | default: 10 }}px !important;
+    }
+  }
+
+  /* MD Tablet - 768px to 989px */
+  @media screen and (max-width: 989px) and (min-width: 768px) {
+    .text-only-header-wrapper {
+      padding-left: {{ section.settings.text_only_md_horizontal_padding | default: 25 }}px;
+      padding-right: {{ section.settings.text_only_md_horizontal_padding | default: 25 }}px;
+      gap: calc({{ section.settings.text_only_md_menu_gap | default: 16 }}px * var(--text-only-spacing-scale));
+      max-width: {{ section.settings.text_only_md_max_width | default: 1200 }}px;
+      margin: 0 auto;
+    }
+
+    .text-only-header-menu,
+    .text-only-right-nav {
+      gap: calc({{ section.settings.text_only_md_menu_gap | default: 16 }}px * var(--text-only-spacing-scale));
+    }
+
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: {{ section.settings.text_only_md_logo_font_size | default: 20 }}px !important;
+    }
+
+    .text-only-logo-wrapper img {
+      width: {{ section.settings.text_only_md_logo_width | default: 300 }}px;
+      max-width: 100%;
+    }
+
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: {{ section.settings.text_only_md_menu_font_size | default: 9 }}px !important;
+    }
+  }
+
+  /* SM Large Mobile - 640px to 767px */
+  @media screen and (max-width: 767px) and (min-width: 640px) {
+    .text-only-header-wrapper {
+      padding-left: {{ section.settings.text_only_sm_horizontal_padding | default: 20 }}px;
+      padding-right: {{ section.settings.text_only_sm_horizontal_padding | default: 20 }}px;
+      gap: calc({{ section.settings.text_only_sm_menu_gap | default: 12 }}px * var(--text-only-spacing-scale));
+      max-width: {{ section.settings.text_only_sm_max_width | default: 1000 }}px;
+      margin: 0 auto;
+    }
+
+    .text-only-header-menu,
+    .text-only-right-nav {
+      gap: calc({{ section.settings.text_only_sm_menu_gap | default: 12 }}px * var(--text-only-spacing-scale));
+    }
+
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: {{ section.settings.text_only_sm_logo_font_size | default: 18 }}px !important;
+    }
+
+    .text-only-logo-wrapper img {
+      width: {{ section.settings.text_only_sm_logo_width | default: 200 }}px;
+      max-width: 100%;
+    }
+
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: {{ section.settings.text_only_sm_menu_font_size | default: 8 }}px !important;
+    }
+  }
+
+  /* XS Small Mobile - 480px to 639px */
+  @media screen and (max-width: 639px) and (min-width: 480px) {
+    .text-only-header-wrapper {
+      padding-left: {{ section.settings.text_only_xs_horizontal_padding | default: 16 }}px;
+      padding-right: {{ section.settings.text_only_xs_horizontal_padding | default: 16 }}px;
+      gap: calc({{ section.settings.text_only_xs_menu_gap | default: 10 }}px * var(--text-only-spacing-scale));
+      max-width: {{ section.settings.text_only_xs_max_width | default: 800 }}px;
+      margin: 0 auto;
+    }
+
+    .text-only-header-menu,
+    .text-only-right-nav {
+      gap: calc({{ section.settings.text_only_xs_menu_gap | default: 10 }}px * var(--text-only-spacing-scale));
+    }
+
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: {{ section.settings.text_only_xs_logo_font_size | default: 16 }}px !important;
+    }
+
+    .text-only-logo-wrapper img {
+      width: {{ section.settings.text_only_xs_logo_width | default: 150 }}px;
+      max-width: 100%;
+    }
+
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: {{ section.settings.text_only_xs_menu_font_size | default: 7 }}px !important;
+    }
+  }
+
+  /* XXS Extra Small Mobile - below 480px */
+  @media screen and (max-width: 479px) {
+    .text-only-header-wrapper {
+      padding-left: {{ section.settings.text_only_xs_horizontal_padding | default: 16 }}px;
+      padding-right: {{ section.settings.text_only_xs_horizontal_padding | default: 16 }}px;
+      gap: calc({{ section.settings.text_only_xs_menu_gap | default: 10 }}px * var(--text-only-spacing-scale));
+      max-width: {{ section.settings.text_only_xs_max_width | default: 800 }}px;
+      margin: 0 auto;
+    }
+
+    .text-only-header-menu,
+    .text-only-right-nav {
+      gap: calc({{ section.settings.text_only_xs_menu_gap | default: 10 }}px * var(--text-only-spacing-scale));
+    }
+
+    .text-only-logo-wrapper .h2,
+    .text-only-logo-wrapper span {
+      font-size: {{ section.settings.text_only_xs_logo_font_size | default: 16 }}px !important;
+    }
+
+    .text-only-logo-wrapper img {
+      width: {{ section.settings.text_only_xs_logo_width | default: 150 }}px;
+      max-width: 100%;
+    }
+
+    .text-only-header-menu .text-only-menu-link,
+    .text-only-right-nav a,
+    .text-only-right-nav a span,
+    #TextOnlyCartCount {
+      font-size: {{ section.settings.text_only_xs_menu_font_size | default: 7 }}px !important;
+    }
+  }
+
+  /* Mobile menu behavior - below 640px */
+  @media screen and (max-width: 639px) {
+    .text-only-header-wrapper {
+      grid-template-columns: auto 1fr auto;
+    }
+
+    .text-only-burger-menu {
+      display: flex;
+      grid-column: 1;
+    }
+
+    .text-only-header-menu {
+      display: none;
+    }
+
+    {%- if mobile_menu_style == 'fullscreen' -%}
+    .text-only-header-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--text-only-mobile-menu-bg);
+      z-index: 996;
+      gap: 30px;
+    }
+    {%- elsif mobile_menu_style == 'horizontal_scroll' -%}
+    .text-only-burger-menu {
+      display: none !important;
+    }
+
+    .text-only-header-wrapper {
+      grid-template-columns: 1fr auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .text-only-header-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .text-only-header-menu {
+      display: flex !important;
+      grid-column: 1 / -1;
+      order: 3;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 0.625rem calc(1.25rem * var(--text-only-spacing-scale));
+    }
+
+    .text-only-header-menu::-webkit-scrollbar {
+      display: none;
+    }
+
+    .text-only-header-menu .text-only-menu-item {
+      flex-shrink: 0;
+    }
+
+    .text-only-logo-wrapper {
+      grid-column: 1;
+      order: 1;
+      justify-self: start;
+    }
+
+    .text-only-right-nav {
+      grid-column: 2;
+      order: 2;
+    }
+    {%- endif -%}
+
+    .text-only-header-menu.active {
+      display: flex !important;
+    }
+
+    .text-only-header-menu .text-only-menu-item {
+      text-align: center;
+    }
+
+    .text-only-header-menu .text-only-menu-link {
+      font-size: var(--text-only-mobile-menu-font-size) !important;
+      color: var(--text-only-mobile-menu-text-color) !important;
+      font-weight: var(--text-only-mobile-menu-font-weight) !important;
+      letter-spacing: var(--text-only-mobile-menu-letter-spacing) !important;
+    }
+
+    .text-only-logo-wrapper {
+      grid-column: 2;
+    }
+
+    .text-only-right-nav {
+      grid-column: 3;
+      gap: 0.875rem;
+    }
+
+    .text-only-account {
+      display: none;
+    }
+
+    .text-only-account-mobile {
+      display: block;
+    }
+
+    .text-only-submenu {
+      position: static;
+      background: none;
+      box-shadow: none;
+      margin-top: 10px;
+      padding: 10px 0;
+    }
+
+    .text-only-submenu a {
+      font-size: calc(var(--text-only-mobile-menu-font-size) - 4px) !important;
+      text-align: center;
+      padding: 8px 0;
+      color: var(--text-only-mobile-menu-text-color) !important;
+      font-weight: var(--text-only-mobile-menu-font-weight) !important;
+      letter-spacing: var(--text-only-mobile-menu-letter-spacing) !important;
+    }
+  }
+
+  @media screen and (min-width: 640px) {
+    .text-only-account-mobile {
+      display: none;
+    }
+  }
+
+  {%- if mobile_menu_style == 'horizontal_scroll' -%}
+  @media screen and (max-width: 639px) {
+    .text-only-header-menu {
+      {%- if scroll_snap -%}
+      scroll-snap-type: x proximity;
+      {%- endif -%}
+      scroll-behavior: smooth;
+    }
+
+    {%- if scroll_snap -%}
+    .text-only-header-menu .text-only-menu-item {
+      scroll-snap-align: start;
+    }
+    {%- endif -%}
+
+    {%- if show_scroll_fade -%}
+    .text-only-header-menu::before,
+    .text-only-header-menu::after {
+      content: '';
+      position: sticky;
+      width: 30px;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .text-only-header-menu::before {
+      left: 0;
+      background: linear-gradient(to right, rgb(var(--color-background)), transparent);
+    }
+
+    .text-only-header-menu::after {
+      right: 0;
+      background: linear-gradient(to left, rgb(var(--color-background)), transparent);
+      margin-left: auto;
+    }
+    {%- endif -%}
+  }
+  {%- endif -%}
+</style>
+
+<div class="text-only-header-wrapper">
+    <!-- Burger Menu (Mobile Only) -->
+    <div class="text-only-burger-menu">
+      <svg xmlns="http://www.w3.org/2000/svg" class="text-only-burger" viewBox="0 0 30 30" fill="none">
+        <line x1="5" y1="10" x2="25" y2="10" stroke-width="1.5"></line>
+        <line x1="5" y1="20" x2="25" y2="20" stroke-width="1.5"></line>
+      </svg>
+      <svg class="text-only-cross" style="display: none;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="none">
+        <path d="M8 22L22 8" stroke-width="1.5"></path>
+        <path d="M8 8L22 22" stroke-width="1.5"></path>
+      </svg>
+    </div>
+
+    <!-- Left Navigation Menu -->
+    <div class="text-only-header-menu">
+      {%- if section.settings.menu != blank -%}
+        {%- for link in section.settings.menu.links -%}
+          <div class="text-only-menu-item{% if link.links != blank %} text-only-has-children{% endif %}">
+            <a href="{{ link.url }}" class="text-only-menu-link">{{ link.title | escape }}</a>
+            {%- if link.links != blank -%}
+              <div class="text-only-submenu">
+                {%- for childlink in link.links -%}
+                  <a href="{{ childlink.url }}" class="text-only-submenu-link">{{ childlink.title | escape }}</a>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+      
+      {%- if shop.customer_accounts_enabled -%}
+        <div class="text-only-menu-item">
+          <a class="text-only-account-mobile text-only-menu-link" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+            {%- if customer -%}ACCOUNT{%- else -%}ACCOUNT{%- endif -%}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+    
+    <!-- Center Logo -->
+    <div class="text-only-logo-wrapper">
+      {%- if request.page_type == 'index' -%}
+        <h1 class="text-only-header-heading">
+      {%- endif -%}
+        <a href="{{ routes.root_url }}" class="text-only-header-heading-link">
+          {%- if section.settings.text_only_custom_logo_text != blank -%}
+            <span class="h2">{{ section.settings.text_only_custom_logo_text }}</span>
+          {%- elsif section.settings.text_only_logo != blank -%}
+            {%- assign logo_alt = section.settings.text_only_logo.alt | default: shop.name | escape -%}
+            {%- assign logo_height = section.settings.text_only_logo_width | divided_by: section.settings.text_only_logo.aspect_ratio -%}
+            {{ section.settings.text_only_logo | image_url: width: 500 | image_tag:
+              class: 'text-only-header-logo',
+              widths: '50, 100, 150, 200, 250, 300, 400, 500',
+              height: logo_height,
+              width: section.settings.text_only_logo_width,
+              alt: logo_alt
+            }}
+          {%- elsif settings.logo != blank -%}
+            {%- assign logo_alt = settings.logo.alt | default: shop.name | escape -%}
+            {%- assign logo_height = section.settings.text_only_logo_width | divided_by: settings.logo.aspect_ratio -%}
+            {{ settings.logo | image_url: width: 500 | image_tag:
+              class: 'text-only-header-logo',
+              widths: '50, 100, 150, 200, 250, 300, 400, 500',
+              height: logo_height,
+              width: section.settings.text_only_logo_width,
+              alt: logo_alt
+            }}
+          {%- else -%}
+            <span class="h2">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+      {%- if request.page_type == 'index' -%}
+        </h1>
+      {%- endif -%}
+    </div>
+    
+    <!-- Right Navigation -->
+    <div class="text-only-right-nav">
+      {%- if shop.customer_accounts_enabled -%}
+        <a class="text-only-account" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
+          {%- if customer -%}ACCOUNT{%- else -%}ACCOUNT{%- endif -%}
+        </a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}">
+        CART (<span id="TextOnlyCartCount">{{ cart.item_count }}</span>)
+      </a>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var burgerMenu = document.querySelector('.text-only-burger-menu');
+  var headerMenu = document.querySelector('.text-only-header-menu');
+  var burgerIcon = document.querySelector('.text-only-burger');
+  var crossIcon = document.querySelector('.text-only-cross');
+  var body = document.body;
+
+  // Burger menu toggle
+  if (burgerMenu && headerMenu) {
+    burgerMenu.addEventListener('click', function() {
+      var isOpen = headerMenu.classList.contains('active');
+      
+      headerMenu.classList.toggle('active');
+      
+      if (isOpen) {
+        burgerIcon.style.display = 'block';
+        crossIcon.style.display = 'none';
+        body.style.overflow = '';
+      } else {
+        burgerIcon.style.display = 'none';
+        crossIcon.style.display = 'block';
+        body.style.overflow = 'hidden';
+      }
+    });
+  }
+
+  // Submenu dropdown handling
+  var menuItems = document.querySelectorAll('.text-only-header-menu > .text-only-menu-item.text-only-has-children');
+  menuItems.forEach(function(item) {
+    var link = item.querySelector('.text-only-menu-link');
+    if (link) {
+      link.addEventListener('click', function(event) {
+        // Only prevent default on desktop
+        if (window.innerWidth >= 990) {
+          event.preventDefault();
+        }
+        
+        var active = document.querySelector('.text-only-menu-item.active');
+        if (active && active !== item) {
+          active.classList.remove('active');
+          var activeSubmenu = active.querySelector('.text-only-submenu');
+          if (activeSubmenu) activeSubmenu.style.display = 'none';
+        }
+        
+        var submenu = item.querySelector('.text-only-submenu');
+        if (submenu) {
+          submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
+          item.classList.toggle('active');
+        }
+      });
+    }
+  });
+
+  // Close submenus when clicking outside
+  document.addEventListener('click', function(event) {
+    if (!event.target.closest('.text-only-menu-item')) {
+      var submenus = document.querySelectorAll('.text-only-submenu');
+      submenus.forEach(function(submenu) {
+        submenu.style.display = 'none';
+      });
+      var activeItems = document.querySelectorAll('.text-only-menu-item.active');
+      activeItems.forEach(function(item) {
+        item.classList.remove('active');
+      });
+    }
+  });
+
+  // Update cart count when cart changes
+  document.addEventListener('cart:refresh', function() {
+    updateCartCount();
+  });
+  
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        var cartCount = document.getElementById('TextOnlyCartCount');
+        if (cartCount) {
+          cartCount.textContent = cart.item_count;
+        }
+      })
+      .catch(error => console.error('Error updating cart count:', error));
+  }
+});
+</script>

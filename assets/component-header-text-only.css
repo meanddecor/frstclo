@@ -1,0 +1,259 @@
+/* === TEXT-ONLY NAVIGATION HEADER === */
+
+/* Base header layout */
+.header--text-only .header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 20px 0;
+  gap: 40px;
+}
+
+/* Left navigation */
+.header--text-only .header__inline-menu {
+  justify-self: start;
+}
+
+.header--text-only .list-menu--inline {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Center logo (text) */
+.header--text-only .header__heading {
+  justify-self: center;
+  margin: 0;
+}
+
+.header--text-only .header__heading-link {
+  text-decoration: none;
+  color: #000000;
+}
+
+/* Hide image logo, show text */
+.header--text-only .header__heading-logo {
+  display: none !important;
+}
+
+.header--text-only .header__heading-link span.h2,
+.header--text-only .header__heading-link .h2 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  margin: 0;
+}
+
+/* Right icons section */
+.header--text-only .header__icons {
+  justify-self: end;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+/* === ALL TEXT STYLING === */
+.header--text-only .header__menu-item,
+.header--text-only .list-menu__item,
+.header--text-only .header__icon {
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.8px !important;
+  font-size: 11px !important;
+  text-decoration: none !important;
+  color: #000000 !important;
+  transition: opacity 0.2s ease;
+}
+
+.header--text-only .header__menu-item:hover,
+.header--text-only .header__icon:hover {
+  opacity: 0.6;
+}
+
+/* Remove ALL icons */
+.header--text-only .header__icon svg,
+.header--text-only .header__icon .icon,
+.header--text-only .icon-account,
+.header--text-only .icon-cart,
+.header--text-only .icon-cart-empty {
+  display: none !important;
+}
+
+/* Account link - text only */
+.header--text-only .header__icon--account {
+  display: inline-flex !important;
+  align-items: center;
+  width: auto !important;
+  height: auto !important;
+}
+
+.header--text-only .header__icon--account::after {
+  content: 'ACCOUNT';
+}
+
+.header--text-only .header__icon--account .visually-hidden {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  clip: auto !important;
+  display: none !important;
+}
+
+/* Cart link - text only */
+.header--text-only .header__icon--cart {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+  width: auto !important;
+  height: auto !important;
+}
+
+.header--text-only .header__icon--cart::before {
+  content: 'CART (';
+}
+
+.header--text-only .header__icon--cart::after {
+  content: ')';
+}
+
+.header--text-only .cart-count-bubble {
+  position: static !important;
+  background: none !important;
+  color: #000000 !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline !important;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.header--text-only .cart-count-bubble span {
+  position: static !important;
+}
+
+/* Hide visually-hidden cart text */
+.header--text-only .header__icon--cart .visually-hidden {
+  display: none !important;
+}
+
+/* Hide search (optional - you can keep if needed) */
+.header--text-only .header__search {
+  display: none;
+}
+
+/* Remove caret icons from dropdowns */
+.header--text-only .icon-caret {
+  display: none !important;
+}
+
+/* Dropdown indicator */
+.header--text-only summary.header__menu-item::after {
+  content: ' ▾';
+  font-size: 9px;
+  margin-left: 3px;
+}
+
+/* Submenu styling */
+.header--text-only .header__submenu {
+  margin-top: 15px;
+  padding: 15px 0;
+  min-width: 180px;
+}
+
+.header--text-only .header__submenu .header__menu-item,
+.header--text-only .header__submenu .list-menu__item {
+  font-size: 10px !important;
+  padding: 8px 20px;
+}
+
+/* Mobile drawer */
+.header--text-only header-drawer {
+  justify-self: start;
+  margin-left: 0;
+}
+
+.header--text-only .header__icon--menu {
+  display: flex;
+  align-items: center;
+  width: auto !important;
+  height: auto !important;
+}
+
+.header--text-only .header__icon--menu::after {
+  content: 'MENU';
+}
+
+.header--text-only .header__icon--menu svg {
+  display: none !important;
+}
+
+/* Mobile menu styling */
+.header--text-only .menu-drawer__menu-item {
+  font-size: 16px !important;
+  padding: 15px 0;
+}
+
+/* Hide mobile drawer on desktop */
+@media screen and (min-width: 990px) {
+  .header--text-only header-drawer {
+    display: none;
+  }
+}
+
+/* Mobile responsive */
+@media screen and (max-width: 989px) {
+  .header--text-only .header {
+    grid-template-columns: auto 1fr auto;
+    gap: 20px;
+    padding: 15px 0;
+  }
+
+  .header--text-only .header__inline-menu {
+    display: none;
+  }
+
+  .header--text-only .header__heading {
+    justify-self: center;
+  }
+
+  .header--text-only .header__heading-link span.h2 {
+    font-size: 18px !important;
+  }
+
+  .header--text-only .header__icon--account {
+    display: none !important;
+  }
+
+  .header--text-only header-drawer {
+    display: block;
+  }
+}
+
+/* Remove line separator (optional) */
+.header--text-only .header-wrapper--border-bottom {
+  border-bottom: none !important;
+}
+
+/* Sticky header adjustments */
+.header--text-only .shopify-section-header-sticky .header {
+  background: #ffffff;
+}
+
+/* Remove extra padding/margins */
+.header--text-only .list-menu__item {
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: 1;
+}
+
+.header--text-only .list-menu__item--link {
+  padding: 0 !important;
+}
+
+.header--text-only summary.list-menu__item {
+  padding-right: 0 !important;
+}

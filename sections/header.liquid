@@ -1,8 +1,41 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Logo: settings.logo, settings.logo_width
+- Social Media: All social links for schema.org markup
+
+✅ SECTION SETTINGS APPLIED - DEFAULT HEADER STYLE:
+- Layout: logo_position, menu_type_desktop, sticky_header_type
+- Typography: heading_menu_size_custom, default_menu_font_weight, default_menu_letter_spacing
+- Colors (Desktop): default_menu_drawer_icon_color, default_menu_text_color_desktop
+- Colors (Mobile): default_menu_text_color_mobile
+- Mobile: mobile_logo_position
+- Spacing: padding_top, padding_bottom, margin_bottom
+
+✅ SECTION SETTINGS APPLIED - TEXT-ONLY HEADER STYLE:
+- Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit
+- Header Styling: text_only_burger_color, text_only_menu_text_color, text_only_menu_font_size
+- Typography: text_only_menu_letter_spacing, text_only_menu_font_weight
+- Logo Text: text_only_logo_text_color, text_only_logo_font_size, text_only_logo_letter_spacing
+- Spacing: text_only_spacing_scale (unified spacing control)
+- XL Breakpoint (1200px+): text_only_xl_max_width
+- LG Breakpoint (990-1199px): text_only_lg_max_width, logo, menu font size, menu gap, horizontal padding
+- MD Breakpoint (768-989px): text_only_md_max_width, logo, menu font size, menu gap, horizontal padding
+- SM Breakpoint (640-767px): text_only_sm_max_width, logo, menu font size, menu gap, horizontal padding
+- XS Breakpoint (480-639px): text_only_xs_max_width, logo, menu font size, menu gap, horizontal padding
+- Mobile Menu: text_only_mobile_menu_style, scroll settings (fade, snap)
+- Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, typography
+
+NOTE: Header style is switchable via 'header_style' setting (default or text_only)
+{% endcomment %}
 <link rel="stylesheet" href="{{ 'component-list-menu.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-search.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-menu-drawer.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-cart-notification.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" onload="this.media='all'">
+
+{%- if section.settings.header_style == 'text_only' -%}
+  <link rel="stylesheet" href="{{ 'component-header-text-only.css' | asset_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
 {%- if settings.predictive_search_enabled -%}
   <link rel="stylesheet" href="{{ 'component-price.css' | asset_url }}" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="{{ 'component-loading-overlay.css' | asset_url }}" media="print" onload="this.media='all'">
@@ -27,6 +60,62 @@
 <noscript>{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}</noscript>
 
 <style>
+  {%- if section.settings.header_style == 'default' -%}
+    :root {
+      --default-menu-drawer-icon-color: {{ section.settings.default_menu_drawer_icon_color | default: '#000000' }};
+      --default-menu-text-color-desktop: {{ section.settings.default_menu_text_color_desktop | default: '#000000' }};
+      --default-menu-text-color-mobile: {{ section.settings.default_menu_text_color_mobile | default: '#000000' }};
+      --default-menu-letter-spacing: {{ section.settings.default_menu_letter_spacing | default: 0 }}px;
+      --default-menu-font-weight: {{ section.settings.default_menu_font_weight | default: 500 }};
+    }
+
+    /* Apply default header style settings - Desktop */
+    .header__icon--menu svg,
+    .header__icon--menu .icon {
+      color: var(--default-menu-drawer-icon-color) !important;
+      stroke: var(--default-menu-drawer-icon-color) !important;
+      fill: var(--default-menu-drawer-icon-color) !important;
+    }
+
+    .header__menu-item,
+    .header__menu-item span,
+    .list-menu__item,
+    .header__inline-menu .list-menu__item {
+      color: var(--default-menu-text-color-desktop) !important;
+      letter-spacing: var(--default-menu-letter-spacing) !important;
+      font-weight: var(--default-menu-font-weight) !important;
+    }
+
+    .header__menu-item.link,
+    .header__menu-item.link span,
+    .list-menu__item.link,
+    .header__active-menu-item {
+      color: var(--default-menu-text-color-desktop) !important;
+    }
+
+    /* Mobile menu drawer */
+    @media screen and (max-width: 989px) {
+      .menu-drawer__menu-item,
+      .menu-drawer__menu-item.link,
+      .menu-drawer__menu-item span {
+        color: var(--default-menu-text-color-mobile) !important;
+        letter-spacing: var(--default-menu-letter-spacing) !important;
+        font-weight: var(--default-menu-font-weight) !important;
+      }
+    }
+
+    /* Desktop menu drawer (if visible) */
+    @media screen and (min-width: 990px) {
+      .menu-drawer__menu-item,
+      .menu-drawer__menu-item.link,
+      .menu-drawer__menu-item span {
+        color: var(--default-menu-text-color-desktop) !important;
+        letter-spacing: var(--default-menu-letter-spacing) !important;
+        font-weight: var(--default-menu-font-weight) !important;
+      }
+    }
+  {%- endif -%}
+
   .list-menu__item{
     font-size: {{ section.settings.heading_menu_size_custom }}px !important;
   }
@@ -139,7 +228,10 @@
     <path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z" fill="currentColor">
   </symbol>
 </svg>
-<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
+<{% if section.settings.sticky_header_type != 'none' %}sticky-header data-sticky-type="{{ section.settings.sticky_header_type }}"{% else %}div{% endif %} class="header-wrapper{% if section.settings.header_style == 'text_only' %} header--text-only{% endif %}{% if section.settings.show_line_separator %} header-wrapper--border-bottom{% endif %}">
+  {%- if section.settings.header_style == 'text_only' -%}
+    {% render 'header-text-only' %}
+  {%- else -%}
   <header class="header header--{{ section.settings.logo_position }} header--mobile-{{ section.settings.mobile_logo_position }} page-width{% if section.settings.menu != blank %} header--has-menu{% endif %}">
     {%- if section.settings.menu != blank -%}
       <header-drawer data-breakpoint="tablet">
@@ -660,10 +752,11 @@
       </a>
     </div>
   </header>
+  {%- endif -%}
 </{% if section.settings.sticky_header_type != 'none' %}sticky-header{% else %}div{% endif %}>
 
 {%- if settings.cart_type == "notification" -%}
-  {%- render 'cart-notification', color_scheme: section.settings.color_scheme -%}
+  {%- render 'cart-notification' -%}
 {%- endif -%}
 
 {% javascript %}
@@ -853,13 +946,31 @@
         }
       ],
       "default": "middle-left",
-      "label": "t:sections.header.settings.logo_position.label"
+      "label": "t:sections.header.settings.logo_position.label",
+      "info": "⚙️ DEFAULT STYLE ONLY"
+    },
+    {
+      "type": "select",
+      "id": "header_style",
+      "label": "Header style",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default"
+        },
+        {
+          "value": "text_only",
+          "label": "Text-only"
+        }
+      ],
+      "default": "default"
     },
     {
       "type": "link_list",
       "id": "menu",
       "default": "main-menu",
-      "label": "t:sections.header.settings.menu.label"
+      "label": "t:sections.header.settings.menu.label",
+      "info": "✅ WORKS FOR BOTH STYLES"
     },
     {
       "type": "range",
@@ -869,7 +980,8 @@
       "step": 1,
       "unit": "px",
       "label": "Menu font size",
-      "default": 23
+      "default": 23,
+      "info": "⚙️ DEFAULT STYLE ONLY"
     },
     {
       "type": "select",
@@ -886,7 +998,7 @@
       ],
       "default": "dropdown",
       "label": "t:sections.header.settings.menu_type_desktop.label",
-      "info": "t:sections.header.settings.menu_type_desktop.info"
+      "info": "⚙️ DEFAULT STYLE ONLY"
     },
     {
       "type": "select",
@@ -910,13 +1022,15 @@
         }
       ],
       "default": "on-scroll-up",
-      "label": "t:sections.header.settings.sticky_header_type.label"
+      "label": "t:sections.header.settings.sticky_header_type.label",
+      "info": "✅ WORKS FOR BOTH STYLES"
     },
     {
       "type": "checkbox",
       "id": "show_line_separator",
       "default": true,
-      "label": "t:sections.header.settings.show_line_separator.label"
+      "label": "t:sections.header.settings.show_line_separator.label",
+      "info": "✅ WORKS FOR BOTH STYLES"
     },
     {
       "type": "header",
@@ -936,7 +1050,8 @@
         }
       ],
       "default": "center",
-      "label": "t:sections.header.settings.mobile_logo_position.label"
+      "label": "t:sections.header.settings.mobile_logo_position.label",
+      "info": "⚙️ DEFAULT STYLE ONLY"
     },
     {
       "type": "header",
@@ -950,7 +1065,8 @@
       "step": 4,
       "unit": "px",
       "label": "t:sections.header.settings.margin_bottom.label",
-      "default": 0
+      "default": 0,
+      "info": "✅ WORKS FOR BOTH STYLES"
     },
     {
       "type": "header",
@@ -964,7 +1080,8 @@
       "step": 4,
       "unit": "px",
       "label": "t:sections.all.padding.padding_top",
-      "default": 20
+      "default": 20,
+      "info": "✅ WORKS FOR BOTH STYLES"
     },
     {
       "type": "range",
@@ -974,7 +1091,627 @@
       "step": 4,
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
-      "default": 20
+      "default": 20,
+      "info": "✅ WORKS FOR BOTH STYLES"
+    },
+    {
+      "type": "header",
+      "content": "📐 DEFAULT HEADER STYLE - Parent Settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "🎨 These settings apply when 'Default' header style is selected. Configure desktop and mobile menu appearance separately below."
+    },
+    {
+      "type": "header",
+      "content": "Default Style - Desktop Menu"
+    },
+    {
+      "type": "color",
+      "id": "default_menu_text_color_desktop",
+      "label": "Desktop menu text color",
+      "default": "#000000",
+      "info": "⚙️ DEFAULT STYLE - Desktop menu text color"
+    },
+    {
+      "type": "header",
+      "content": "Default Style - Mobile Menu"
+    },
+    {
+      "type": "color",
+      "id": "default_menu_drawer_icon_color",
+      "label": "Mobile menu drawer icon color",
+      "default": "#000000",
+      "info": "⚙️ DEFAULT STYLE - Mobile burger icon color"
+    },
+    {
+      "type": "color",
+      "id": "default_menu_text_color_mobile",
+      "label": "Mobile menu text color",
+      "default": "#000000",
+      "info": "⚙️ DEFAULT STYLE - Mobile drawer menu text color"
+    },
+    {
+      "type": "header",
+      "content": "Default Style - Typography (Desktop & Mobile)"
+    },
+    {
+      "type": "range",
+      "id": "default_menu_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Menu letter spacing",
+      "default": 0,
+      "info": "⚙️ DEFAULT STYLE - Applies to both desktop and mobile"
+    },
+    {
+      "type": "range",
+      "id": "default_menu_font_weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "label": "Menu font weight",
+      "default": 500,
+      "info": "⚙️ DEFAULT STYLE - Applies to both desktop and mobile"
+    },
+    {
+      "type": "header",
+      "content": "📝 TEXT-ONLY HEADER STYLE - Parent Settings"
+    },
+    {
+      "type": "paragraph",
+      "content": "🎨 These settings apply when 'Text-only' header style is selected. Configure desktop menu, mobile menu, and logo appearance separately below."
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Logo Settings"
+    },
+    {
+      "type": "text",
+      "id": "text_only_custom_logo_text",
+      "label": "Custom logo text (optional)",
+      "info": "📝 TEXT-ONLY STYLE - Enter custom text for logo. If empty, will show logo image or shop name."
+    },
+    {
+      "type": "image_picker",
+      "id": "text_only_logo",
+      "label": "Text-only header logo (optional)",
+      "info": "📝 TEXT-ONLY STYLE - Upload a custom logo for text-only header. If not set, uses global theme logo or custom text above."
+    },
+    {
+      "type": "range",
+      "id": "text_only_logo_width",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "unit": "px",
+      "label": "Logo width",
+      "default": 100,
+      "info": "📝 TEXT-ONLY STYLE - Logo image width"
+    },
+    {
+      "type": "select",
+      "id": "text_only_logo_object_fit",
+      "label": "Logo object fit",
+      "options": [
+        {
+          "value": "contain",
+          "label": "Contain"
+        },
+        {
+          "value": "cover",
+          "label": "Cover"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        },
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "scale-down",
+          "label": "Scale Down"
+        }
+      ],
+      "default": "contain",
+      "info": "📝 TEXT-ONLY STYLE - How logo image fits container"
+    },
+    {
+      "type": "color",
+      "id": "text_only_logo_text_color",
+      "label": "Logo text color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Logo text color (for text logos)"
+    },
+    {
+      "type": "range",
+      "id": "text_only_logo_font_size",
+      "min": 16,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Logo font size",
+      "default": 24,
+      "info": "📝 TEXT-ONLY STYLE - Logo text size (for text logos)"
+    },
+    {
+      "type": "range",
+      "id": "text_only_logo_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Logo letter spacing",
+      "default": 1.5,
+      "info": "📝 TEXT-ONLY STYLE - Logo text spacing (for text logos)"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Desktop Menu"
+    },
+    {
+      "type": "color",
+      "id": "text_only_menu_text_color",
+      "label": "Desktop menu text color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Desktop menu text color"
+    },
+    {
+      "type": "color",
+      "id": "text_only_cart_text_color",
+      "label": "Cart/Account text color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Right side cart and account link color"
+    },
+    {
+      "type": "range",
+      "id": "text_only_menu_font_size",
+      "min": 8,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Desktop menu font size",
+      "default": 11,
+      "info": "📝 TEXT-ONLY STYLE - Desktop menu text size"
+    },
+    {
+      "type": "range",
+      "id": "text_only_menu_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Desktop menu letter spacing",
+      "default": 0.8,
+      "info": "📝 TEXT-ONLY STYLE - Desktop menu text spacing"
+    },
+    {
+      "type": "range",
+      "id": "text_only_menu_font_weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "label": "Desktop menu font weight",
+      "default": 700,
+      "info": "📝 TEXT-ONLY STYLE - Desktop menu text weight"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Spacing"
+    },
+    {
+      "type": "range",
+      "id": "text_only_spacing_scale",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "unit": "%",
+      "label": "Overall spacing scale",
+      "default": 100,
+      "info": "📝 TEXT-ONLY STYLE - Scales all spacing uniformly (edge padding, menu gaps, section gaps)"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Responsive Behavior"
+    },
+    {
+      "type": "range",
+      "id": "text_only_mobile_breakpoint",
+      "min": 640,
+      "max": 1200,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile breakpoint",
+      "default": 990,
+      "info": "📝 TEXT-ONLY STYLE - Screen width below which mobile menu appears"
+    },
+    {
+      "type": "select",
+      "id": "text_only_mobile_menu_style",
+      "label": "Mobile menu style",
+      "options": [
+        { "value": "fullscreen", "label": "Fullscreen Overlay" },
+        { "value": "horizontal_scroll", "label": "Horizontal Scroll Slider" }
+      ],
+      "default": "fullscreen",
+      "info": "📝 TEXT-ONLY STYLE - Choose how menu displays on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_only_show_scroll_fade",
+      "label": "Show scroll fade edges",
+      "default": true,
+      "info": "📝 TEXT-ONLY STYLE - Show gradient fade on scroll edges (horizontal scroll only)"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_only_scroll_snap",
+      "label": "Enable scroll snap",
+      "default": true,
+      "info": "📝 TEXT-ONLY STYLE - Menu items snap into place when scrolling (horizontal scroll only)"
+    },
+    {
+      "type": "header",
+      "content": "🖥️ Extra Large (XL) - 1200px+"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xl_max_width",
+      "label": "XL Max Width",
+      "min": 600,
+      "max": 2000,
+      "step": 20,
+      "default": 1600,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Content max width at XL (desktop) breakpoint"
+    },
+    {
+      "type": "header",
+      "content": "🖥️ Large (LG) - 990-1199px"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_max_width",
+      "label": "LG Max Width",
+      "min": 600,
+      "max": 2000,
+      "step": 20,
+      "default": 1400,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Content max width at LG breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_logo_width",
+      "label": "LG Logo Width",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "default": 300,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Logo width at LG breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_logo_font_size",
+      "label": "LG Logo Font Size",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "default": 22,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Text logo font size at LG"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_menu_font_size",
+      "label": "LG Menu Font Size",
+      "min": 6,
+      "max": 20,
+      "step": 1,
+      "default": 10,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Menu font size at LG"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_menu_gap",
+      "label": "LG Menu Gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Space between menu items at LG"
+    },
+    {
+      "type": "range",
+      "id": "text_only_lg_horizontal_padding",
+      "label": "LG Horizontal Padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 30,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Edge padding at LG"
+    },
+    {
+      "type": "header",
+      "content": "📱 Medium (MD) - 768-989px"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_max_width",
+      "label": "MD Max Width",
+      "min": 600,
+      "max": 2000,
+      "step": 20,
+      "default": 1200,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Content max width at MD breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_logo_width",
+      "label": "MD Logo Width",
+      "min": 50,
+      "max": 300,
+      "step": 5,
+      "default": 300,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Logo width at MD breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_logo_font_size",
+      "label": "MD Logo Font Size",
+      "min": 12,
+      "max": 60,
+      "step": 1,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Text logo font size at MD"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_menu_font_size",
+      "label": "MD Menu Font Size",
+      "min": 6,
+      "max": 20,
+      "step": 1,
+      "default": 9,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Menu font size at MD"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_menu_gap",
+      "label": "MD Menu Gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Space between menu items at MD"
+    },
+    {
+      "type": "range",
+      "id": "text_only_md_horizontal_padding",
+      "label": "MD Horizontal Padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "default": 25,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Edge padding at MD"
+    },
+    {
+      "type": "header",
+      "content": "📲 Small (SM) - 640-767px"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_max_width",
+      "label": "SM Max Width",
+      "min": 600,
+      "max": 2000,
+      "step": 20,
+      "default": 1000,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Content max width at SM breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_logo_width",
+      "label": "SM Logo Width",
+      "min": 40,
+      "max": 300,
+      "step": 5,
+      "default": 200,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Logo width at SM breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_logo_font_size",
+      "label": "SM Logo Font Size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "default": 18,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Text logo font size at SM"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_menu_font_size",
+      "label": "SM Menu Font Size",
+      "min": 5,
+      "max": 16,
+      "step": 1,
+      "default": 8,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Menu font size at SM"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_menu_gap",
+      "label": "SM Menu Gap",
+      "min": 6,
+      "max": 30,
+      "step": 2,
+      "default": 12,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Space between menu items at SM"
+    },
+    {
+      "type": "range",
+      "id": "text_only_sm_horizontal_padding",
+      "label": "SM Horizontal Padding",
+      "min": 8,
+      "max": 60,
+      "step": 4,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Edge padding at SM"
+    },
+    {
+      "type": "header",
+      "content": "📱 Extra Small (XS) - 480-639px"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_max_width",
+      "label": "XS Max Width",
+      "min": 600,
+      "max": 2000,
+      "step": 20,
+      "default": 800,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Content max width at XS breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_logo_width",
+      "label": "XS Logo Width",
+      "min": 30,
+      "max": 300,
+      "step": 5,
+      "default": 150,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Logo width at XS breakpoint"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_logo_font_size",
+      "label": "XS Logo Font Size",
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "default": 16,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Text logo font size at XS"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_menu_font_size",
+      "label": "XS Menu Font Size",
+      "min": 4,
+      "max": 14,
+      "step": 1,
+      "default": 7,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Menu font size at XS"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_menu_gap",
+      "label": "XS Menu Gap",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "default": 10,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Space between menu items at XS"
+    },
+    {
+      "type": "range",
+      "id": "text_only_xs_horizontal_padding",
+      "label": "XS Horizontal Padding",
+      "min": 6,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Edge padding at XS"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Mobile Menu (Fullscreen Style)"
+    },
+    {
+      "type": "color",
+      "id": "text_only_burger_color",
+      "label": "Burger menu icon color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Mobile burger icon color (hamburger)"
+    },
+    {
+      "type": "color",
+      "id": "text_only_cross_color",
+      "label": "Close button icon color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Mobile close/cross icon color (X button)"
+    },
+    {
+      "type": "color",
+      "id": "text_only_mobile_menu_bg",
+      "label": "Mobile menu background color",
+      "default": "#000000",
+      "info": "📝 TEXT-ONLY STYLE - Mobile fullscreen menu background"
+    },
+    {
+      "type": "color",
+      "id": "text_only_mobile_menu_text_color",
+      "label": "Mobile menu text color",
+      "default": "#ffffff",
+      "info": "📝 TEXT-ONLY STYLE - Mobile menu text color"
+    },
+    {
+      "type": "range",
+      "id": "text_only_mobile_menu_font_size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile menu font size",
+      "default": 18,
+      "info": "📝 TEXT-ONLY STYLE - Mobile menu text size"
+    },
+    {
+      "type": "range",
+      "id": "text_only_mobile_menu_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Mobile menu letter spacing",
+      "default": 0.8,
+      "info": "📝 TEXT-ONLY STYLE - Mobile menu text spacing"
+    },
+    {
+      "type": "range",
+      "id": "text_only_mobile_menu_font_weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "label": "Mobile menu font weight",
+      "default": 700,
+      "info": "📝 TEXT-ONLY STYLE - Mobile menu text weight"
     }
   ]
 }

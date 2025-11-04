@@ -1,1 +1,62 @@
-{"sections":{"banner":{"type":"main-collection-banner","disabled":true,"settings":{"show_collection_description":false,"show_collection_image":false,"color_scheme":"background-2"}},"product-grid":{"type":"main-collection-product-grid","settings":{"products_per_page":16,"columns_desktop":3,"image_ratio":"adapt","show_secondary_image":false,"show_vendor":false,"show_rating":false,"enable_quick_add":false,"enable_filtering":false,"filter_type":"drawer","enable_sorting":false,"columns_mobile":"2","padding_top":60,"padding_bottom":36}}},"order":["banner","product-grid"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "main-collection-banner",
+      "disabled": true,
+      "settings": {
+        "show_collection_description": false,
+        "show_collection_image": false,
+        "color_scheme": "background-2"
+      }
+    },
+    "product-grid": {
+      "type": "main-collection-product-grid",
+      "settings": {
+        "products_per_page": 16,
+        "columns_desktop": 1,
+        "show_product_title": true,
+        "enable_title_styling": true,
+        "enable_title_color": false,
+        "product_title_color": "#ffffff",
+        "title_font_size": 16,
+        "title_font_weight": "600",
+        "title_font_family": "Arial, sans-serif",
+        "show_product_price": true,
+        "enable_price_styling": true,
+        "enable_price_color": false,
+        "product_price_color": "#ffffff",
+        "price_font_size": 10,
+        "price_font_weight": "400",
+        "price_font_family": "Helvetica, sans-serif",
+        "enable_vendor_styling": false,
+        "vendor_font_size": 12,
+        "vendor_font_weight": "400",
+        "vendor_font_family": "Helvetica, sans-serif",
+        "image_ratio": "square",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "enable_quick_add": false,
+        "enable_filtering": false,
+        "filter_type": "drawer",
+        "enable_sorting": false,
+        "columns_mobile": "2",
+        "padding_top": 60,
+        "padding_bottom": 36
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "product-grid"
+  ]
+}

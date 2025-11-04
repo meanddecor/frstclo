@@ -14,8 +14,24 @@
     "footer": {
       "type": "footer",
       "settings": {
+        "store_name": "COZY WW",
+        "show_policies": true,
+        "show_credit": true,
+        "credit_text": "NGAGE By FRST MADE.",
+        "credit_url": "",
+        "background_color": "",
+        "text_color": "#000000",
+        "link_color": "#000000",
+        "link_hover_color": "#000000",
+        "font_size_mobile": 16,
+        "font_size_desktop": 15,
         "padding_top": 36,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "nav_spacing": 10,
+        "link_spacing_mobile": 8,
+        "link_spacing_desktop": 12,
+        "copyright_spacing": 9,
+        "credit_spacing": 5
       }
     }
   },

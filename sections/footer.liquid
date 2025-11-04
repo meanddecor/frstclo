@@ -2,16 +2,40 @@
 
 {% comment %}
 ✅ GLOBAL SETTINGS APPLIED:
-- Colors: color_background, color_text
+- Colors: site_text_color, site_button_bg_color
 - Typography: type_body_font, font_size_base
 - Layout: page_width, spacing_sections
 {% endcomment %}
 
 {%- liquid
-  assign footer_bg_color = section.settings.background_color | default: settings.color_background
-  assign footer_text_color = section.settings.text_color | default: settings.color_text
-  assign link_color = section.settings.link_color | default: settings.color_text
-  assign link_hover_color = section.settings.link_hover_color | default: settings.color_primary
+  if section.settings.background_color and section.settings.background_color != blank and section.settings.background_color != ''
+    assign footer_bg_color = section.settings.background_color
+  else
+    assign footer_bg_color = '#ffffff'
+  endif
+
+  if section.settings.text_color and section.settings.text_color != blank and section.settings.text_color != ''
+    assign footer_text_color = section.settings.text_color
+  elsif settings.site_text_color and settings.site_text_color != blank
+    assign footer_text_color = settings.site_text_color
+  else
+    assign footer_text_color = '#000000'
+  endif
+
+  if section.settings.link_color and section.settings.link_color != blank and section.settings.link_color != ''
+    assign link_color = section.settings.link_color
+  else
+    assign link_color = footer_text_color
+  endif
+
+  if section.settings.link_hover_color and section.settings.link_hover_color != blank and section.settings.link_hover_color != ''
+    assign link_hover_color = section.settings.link_hover_color
+  elsif settings.site_button_bg_color and settings.site_button_bg_color != blank
+    assign link_hover_color = settings.site_button_bg_color
+  else
+    assign link_hover_color = '#000000'
+  endif
+
   assign font_family = settings.type_body_font.family | default: 'inherit'
   assign font_size_mobile = section.settings.font_size_mobile | default: 16
   assign font_size_desktop = section.settings.font_size_desktop | default: 15
@@ -23,8 +47,8 @@
 
 {%- style -%}
   .footer-{{ section.id }} {
-    background: {{ footer_bg_color }};
-    color: {{ footer_text_color }};
+    background: {{ footer_bg_color }} !important;
+    color: {{ footer_text_color }} !important;
     font-family: {{ font_family }}, sans-serif;
     font-size: {{ settings.font_size_base | default: 14 }}px;
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -71,13 +95,13 @@
   }
 
   .footer-{{ section.id }} .footer-nav a {
-    color: {{ link_color }};
+    color: {{ link_color }} !important;
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
   .footer-{{ section.id }} .footer-nav a:hover {
-    color: {{ link_hover_color }};
+    color: {{ link_hover_color }} !important;
   }
 
   .footer-{{ section.id }} .copyright {
@@ -86,15 +110,16 @@
 
   .footer-{{ section.id }} .copyright__content {
     display: block;
-    color: {{ footer_text_color }};
+    color: {{ footer_text_color }} !important;
   }
 
   .footer-{{ section.id }} .bymade {
     margin: {{ section.settings.credit_spacing }}px 0;
+    display: block;
   }
 
   .footer-{{ section.id }} .bymade a {
-    color: inherit;
+    color: {{ footer_text_color }} !important;
     text-decoration: none;
     transition: opacity 0.2s ease;
   }
@@ -122,7 +147,7 @@
       &copy; {{ 'now' | date: "%Y" }}, {{ section.settings.store_name | default: shop.name }}
     </small>
     {%- if show_credit -%}
-      <small class="copyright__content eyecey">
+      <small class="copyright__content bymade">
         <a href="{{ credit_url }}">{{ credit_text }}</a>
       </small>
     {%- endif -%}
@@ -161,7 +186,7 @@
       "type": "text",
       "id": "credit_text",
       "label": "Credit Text",
-      "default": "SITE BY MADE."
+      "default": "NGAGE By FRST MADE."
     },
     {
       "type": "url",
@@ -176,13 +201,13 @@
       "type": "color",
       "id": "background_color",
       "label": "Background Color",
-      "info": "Leave blank to use global theme background color"
+      "info": "Leave blank to use white (#ffffff)"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "info": "Leave blank to use global theme text color"
+      "info": "Leave blank to use global site text color"
     },
     {
       "type": "color",
@@ -194,7 +219,7 @@
       "type": "color",
       "id": "link_hover_color",
       "label": "Link Hover Color",
-      "info": "Leave blank to use primary color"
+      "info": "Leave blank to use global button color"
     },
     {
       "type": "header",
@@ -293,6 +318,11 @@
       "unit": "px",
       "label": "Credit Link Spacing",
       "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer"
     }
   ]
 }

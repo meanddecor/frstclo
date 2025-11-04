@@ -1,3 +1,10 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Typography: Custom font family options for product title, price, and vendor
+- Colors: Product title and price color customization
+- Layout: Grid columns, padding, and spacing settings
+{% endcomment %}
+
 {{ 'template-collection.css' | asset_url | stylesheet_tag }}
 {{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
@@ -30,14 +37,78 @@
     }
   }
 
-  #product-grid .card__heading a,
-  #product-grid .card__heading {
-    color: {{ section.settings.product_title_color }} !important;
-  }
+  {%- liquid
+    assign glow_enabled = section.settings.enable_product_card_glow
+    assign glow_color = section.settings.product_card_glow_color
+  -%}
 
-  #product-grid .price .price-item {
-    color: {{ section.settings.product_price_color }} !important;
-  }
+  {%- if glow_enabled and glow_color != blank -%}
+    #product-grid .card { box-shadow: none; }
+    #product-grid .card.gradient {
+      --product-card-shadow-visible: 1;
+      --product-card-shadow-opacity: {{ section.settings.product_card_glow_opacity | divided_by: 100.0 }};
+      --product-card-shadow-horizontal-offset: 0rem;
+      --product-card-shadow-vertical-offset: 0rem;
+      --product-card-shadow-blur-radius: {{ section.settings.product_card_glow_size | divided_by: 10.0 }}rem;
+      --color-shadow: {{ glow_color.red }}, {{ glow_color.green }}, {{ glow_color.blue }};
+    }
+    #product-grid .card.card--standard .card__inner:after,
+    #product-grid .card.card--card:after {
+      opacity: {{ section.settings.product_card_glow_opacity | divided_by: 100.0 }};
+    }
+  {%- else -%}
+    #product-grid .card.gradient,
+    #product-grid .card.card--standard .card__inner,
+    #product-grid .card.card--card {
+      --product-card-shadow-visible: 0;
+      --product-card-shadow-opacity: 0;
+      --color-shadow: 0, 0, 0;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.enable_title_color -%}
+    #product-grid .card__heading a,
+    #product-grid .card__heading {
+      color: {{ section.settings.product_title_color }} !important;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.enable_price_color -%}
+    #product-grid .price .price-item {
+      color: {{ section.settings.product_price_color }} !important;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.enable_title_styling -%}
+    #product-grid .card__heading a,
+    #product-grid .card__heading {
+      font-size: {{ section.settings.title_font_size }}px;
+      font-weight: {{ section.settings.title_font_weight }};
+      {%- if section.settings.title_font_family != 'default' -%}
+        font-family: {{ section.settings.title_font_family }};
+      {%- endif -%}
+    }
+  {%- endif -%}
+
+  {%- if section.settings.enable_price_styling -%}
+    #product-grid .price .price-item {
+      font-size: {{ section.settings.price_font_size }}px;
+      font-weight: {{ section.settings.price_font_weight }};
+      {%- if section.settings.price_font_family != 'default' -%}
+        font-family: {{ section.settings.price_font_family }};
+      {%- endif -%}
+    }
+  {%- endif -%}
+
+  {%- if section.settings.enable_vendor_styling -%}
+    #product-grid .card__information .caption-with-letter-spacing {
+      font-size: {{ section.settings.vendor_font_size }}px;
+      font-weight: {{ section.settings.vendor_font_weight }};
+      {%- if section.settings.vendor_font_family != 'default' -%}
+        font-family: {{ section.settings.vendor_font_family }};
+      {%- endif -%}
+    }
+  {%- endif -%}
 {%- endstyle -%}
 
 <div class="section-{{ section.id }}-padding">
@@ -172,6 +243,8 @@
                     show_secondary_image: section.settings.show_secondary_image,
                     show_vendor: section.settings.show_vendor,
                     show_rating: section.settings.show_rating,
+                    show_product_title: section.settings.show_product_title,
+                    show_product_price: section.settings.show_product_price,
                     lazy_load: lazy_load,
                     show_quick_add: section.settings.enable_quick_add,
                     section_id: section.id
@@ -208,14 +281,34 @@
       "type": "range",
       "id": "columns_desktop",
       "min": 1,
-      "max": 5,
+      "max": 10,
       "step": 1,
       "default": 4,
       "label": "t:sections.main-collection-product-grid.settings.columns_desktop.label"
     },
     {
       "type": "header",
-      "content": "Product text colors"
+      "content": "Product Title Styling"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_title",
+      "label": "Show product title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_title_styling",
+      "label": "Enable custom title styling",
+      "default": false,
+      "info": "Enable to customize title font size, weight, and family"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_title_color",
+      "label": "Enable custom title color",
+      "default": false,
+      "info": "Enable to override the default title color"
     },
     {
       "type": "color",
@@ -224,10 +317,198 @@
       "default": "#000000"
     },
     {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 10,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Title font size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "title_font_family",
+      "label": "Title font family",
+      "options": [
+        { "value": "default", "label": "Theme Default" },
+        { "value": "Arial, sans-serif", "label": "Arial" },
+        { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+        { "value": "'Helvetica Neue', Helvetica, sans-serif", "label": "Helvetica Neue" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+        { "value": "Georgia, serif", "label": "Georgia" },
+        { "value": "Garamond, serif", "label": "Garamond" },
+        { "value": "'Courier New', monospace", "label": "Courier New" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" },
+        { "value": "Tahoma, sans-serif", "label": "Tahoma" },
+        { "value": "'Trebuchet MS', sans-serif", "label": "Trebuchet MS" },
+        { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+        { "value": "'Lucida Sans', sans-serif", "label": "Lucida Sans" },
+        { "value": "'Century Gothic', sans-serif", "label": "Century Gothic" },
+        { "value": "'Gill Sans', sans-serif", "label": "Gill Sans" },
+        { "value": "'Segoe UI', Tahoma, sans-serif", "label": "Segoe UI" },
+        { "value": "Impact, sans-serif", "label": "Impact" },
+        { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" }
+      ],
+      "default": "default",
+      "info": "Select custom font family for product titles"
+    },
+    {
+      "type": "header",
+      "content": "Product Price Styling"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_price",
+      "label": "Show product price",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_price_styling",
+      "label": "Enable custom price styling",
+      "default": false,
+      "info": "Enable to customize price font size, weight, and family"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_price_color",
+      "label": "Enable custom price color",
+      "default": false,
+      "info": "Enable to override the default price color"
+    },
+    {
       "type": "color",
       "id": "product_price_color",
       "label": "Product price color",
       "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "min": 10,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Price font size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "price_font_weight",
+      "label": "Price font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "price_font_family",
+      "label": "Price font family",
+      "options": [
+        { "value": "default", "label": "Theme Default" },
+        { "value": "Arial, sans-serif", "label": "Arial" },
+        { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+        { "value": "'Helvetica Neue', Helvetica, sans-serif", "label": "Helvetica Neue" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+        { "value": "Georgia, serif", "label": "Georgia" },
+        { "value": "Garamond, serif", "label": "Garamond" },
+        { "value": "'Courier New', monospace", "label": "Courier New" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" },
+        { "value": "Tahoma, sans-serif", "label": "Tahoma" },
+        { "value": "'Trebuchet MS', sans-serif", "label": "Trebuchet MS" },
+        { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+        { "value": "'Lucida Sans', sans-serif", "label": "Lucida Sans" },
+        { "value": "'Century Gothic', sans-serif", "label": "Century Gothic" },
+        { "value": "'Gill Sans', sans-serif", "label": "Gill Sans" },
+        { "value": "'Segoe UI', Tahoma, sans-serif", "label": "Segoe UI" },
+        { "value": "Impact, sans-serif", "label": "Impact" },
+        { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" }
+      ],
+      "default": "default",
+      "info": "Select custom font family for product prices"
+    },
+    {
+      "type": "header",
+      "content": "Vendor Styling"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_vendor_styling",
+      "label": "Enable custom vendor styling",
+      "default": false,
+      "info": "Enable to customize vendor font size, weight, and family"
+    },
+    {
+      "type": "range",
+      "id": "vendor_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Vendor font size",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "vendor_font_weight",
+      "label": "Vendor font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "select",
+      "id": "vendor_font_family",
+      "label": "Vendor font family",
+      "options": [
+        { "value": "default", "label": "Theme Default" },
+        { "value": "Arial, sans-serif", "label": "Arial" },
+        { "value": "Helvetica, sans-serif", "label": "Helvetica" },
+        { "value": "'Helvetica Neue', Helvetica, sans-serif", "label": "Helvetica Neue" },
+        { "value": "'Times New Roman', serif", "label": "Times New Roman" },
+        { "value": "Georgia, serif", "label": "Georgia" },
+        { "value": "Garamond, serif", "label": "Garamond" },
+        { "value": "'Courier New', monospace", "label": "Courier New" },
+        { "value": "Verdana, sans-serif", "label": "Verdana" },
+        { "value": "Tahoma, sans-serif", "label": "Tahoma" },
+        { "value": "'Trebuchet MS', sans-serif", "label": "Trebuchet MS" },
+        { "value": "'Palatino Linotype', serif", "label": "Palatino" },
+        { "value": "'Lucida Sans', sans-serif", "label": "Lucida Sans" },
+        { "value": "'Century Gothic', sans-serif", "label": "Century Gothic" },
+        { "value": "'Gill Sans', sans-serif", "label": "Gill Sans" },
+        { "value": "'Segoe UI', Tahoma, sans-serif", "label": "Segoe UI" },
+        { "value": "Impact, sans-serif", "label": "Impact" },
+        { "value": "'Comic Sans MS', cursive", "label": "Comic Sans MS" }
+      ],
+      "default": "default",
+      "info": "Select custom font family for vendor names"
     },
     {
       "type": "header",
