@@ -1,0 +1,286 @@
+{%- liquid
+  assign section_id = section.id
+-%}
+
+<style>
+{{ section.settings.heading_font_family | font_face: font_display: 'swap' }}
+</style>
+
+<div id="shopify-section-{{ section_id }}" class="shopify-section">
+<style>
+#shopify-section-{{ section_id }} .carousel-wrapper {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  padding-left: 25px;
+}
+
+#shopify-section-{{ section_id }} .carousel {
+  display: flex;
+  gap: {{ section.settings.gap_size }}px; 
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; 
+  -ms-overflow-style: none;  
+}
+
+#shopify-section-{{ section_id }} .carousel::-webkit-scrollbar {
+  display: none;
+}
+
+#shopify-section-{{ section_id }} .carousel-item {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  width: 280px; 
+  height: auto; 
+  overflow: hidden;
+  border-radius: {{ section.settings.item_border_radius }}px;
+}
+
+#shopify-section-{{ section_id }} .carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: {{ section.settings.item_border_radius }}px;
+}
+
+#shopify-section-{{ section_id }} .slider-wrapper {
+  width: 70%;
+  margin: 0 auto;
+  background: #dadada;
+  margin-top: 25px;
+  position: relative;
+  height: 4px; 
+  border-radius: 2px;
+}
+
+#shopify-section-{{ section_id }} .slider {
+  height: 100%; 
+  background-color: #000000;
+  position: absolute;
+  border-radius: 2px;
+  left: 0; 
+}
+#shopify-section-{{ section_id }} .carousel-heading{
+  font-family: {{ section.settings.heading_font_family.family }}, {{ section.settings.heading_font_family.fallback_families }} !important;
+  font-weight: {{ section.settings.heading_font_family.weight }} !important;
+  font-style: {{ section.settings.heading_font_family.style }} !important;
+  font-size: {{ section.settings.heading_font_size }}px !important;
+  color: {{ section.settings.heading_color }} !important;
+  letter-spacing: {{ section.settings.heading_letter_spacing }}px !important;
+  margin-bottom: 1rem;
+}
+@media screen and (max-width: 749px){
+  #shopify-section-{{ section_id }} .carousel-wrapper {
+    padding-left: 15px;
+  }
+  #shopify-section-{{ section_id }} .carousel-item {
+    width: 180px;
+  }
+  #shopify-section-{{ section_id }} .slider-wrapper {
+    width: 70%;
+    margin-top: 19px;
+    height: 3px;
+    border-radius: 2px;
+  }
+  #shopify-section-{{ section_id }} .carousel-heading{
+    font-size: {{ section.settings.heading_font_size_mobile }}px !important;
+  }
+}
+</style>
+
+<div class="carousel-wrapper">
+  
+  {% if section.settings.heading_text != blank %}
+    <h1 class="carousel-heading">{{ section.settings.heading_text }}</h1>
+  {% endif %}
+  
+  <div class="carousel">
+    {% for block in section.blocks %}
+      <div class="carousel-item" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.image_alt }}" loading="lazy">
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  <div class="slider-wrapper">
+    <div class="slider" style="width: 1764px;"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const carousels = document.querySelectorAll('.carousel-wrapper');
+
+  carousels.forEach(wrapper => {
+    const carousel = wrapper.querySelector('.carousel');
+    const slider = wrapper.querySelector('.slider');
+    const sliderWrapper = wrapper.querySelector('.slider-wrapper');
+    const images = wrapper.querySelectorAll('.carousel-item img');
+
+    function updateSlider() {
+      const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+      const scrollPosition = carousel.scrollLeft;
+      const maxSliderLeft = sliderWrapper.clientWidth - slider.clientWidth;
+
+      const sliderWidth = (carousel.clientWidth / carousel.scrollWidth) * sliderWrapper.clientWidth;
+      const sliderLeft = (scrollPosition / maxScrollLeft) * maxSliderLeft;
+
+      slider.style.width = `${sliderWidth}px`;
+      slider.style.left = `${sliderLeft}px`;
+    }
+
+    function initializeSlider() {
+      updateSlider();
+      carousel.addEventListener('scroll', updateSlider);
+    }
+
+    initializeSlider();
+
+    images.forEach((img) => {
+      img.addEventListener('load', () => {
+        updateSlider();
+      });
+      img.addEventListener('error', () => {
+        updateSlider();
+      });
+    });
+  });
+});
+
+</script>
+
+{% schema %}
+{
+  "name": "Lookbook Carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "FALL 25 LOOKBOOK"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "default": "assistant_n4",
+      "info": "Choose font for the carousel heading"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading Font Size (Desktop)",
+      "min": 16,
+      "max": 72,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size_mobile",
+      "label": "Heading Font Size (Mobile)",
+      "min": 14,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Heading Letter Spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Carousel Settings"
+    },
+    {
+      "type": "range",
+      "id": "gap_size",
+      "label": "Gap Between Images",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "label": "Image Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "carousel_image",
+      "name": "Carousel Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image Alt Text",
+          "default": "Lookbook Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook Carousel",
+      "blocks": [
+        {
+          "type": "carousel_image"
+        },
+        {
+          "type": "carousel_image"
+        },
+        {
+          "type": "carousel_image"
+        },
+        {
+          "type": "carousel_image"
+        },
+        {
+          "type": "carousel_image"
+        },
+        {
+          "type": "carousel_image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+</div>

@@ -1,0 +1,459 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Buttons: button_style, button_radius, button_padding_horizontal, button_padding_vertical
+- Colors: color_button, color_button_text
+- Media: image_lazy_loading, media_border_radius
+- Typography: type_header_font (fallback)
+{% endcomment %}
+
+{% liquid
+  assign heading_font = section.settings.heading_font_family
+  assign heading_custom_font = section.settings.heading_custom_font_family
+  assign heading_size_desktop = section.settings.heading_size_desktop
+  assign heading_size_mobile = section.settings.heading_size_mobile
+  assign heading_weight = section.settings.heading_weight
+  assign heading_color = section.settings.heading_color
+  assign heading_letter_spacing = section.settings.heading_letter_spacing
+  assign heading_bottom_spacing = section.settings.heading_bottom_spacing
+  
+  assign desktop_image = section.settings.desktop_image
+  assign mobile_image = section.settings.mobile_image
+  assign image_height = section.settings.image_height
+  assign overlay_opacity = section.settings.overlay_opacity
+  
+  assign button_text = section.settings.button_text
+  assign button_url = section.settings.button_url
+  assign button_style = section.settings.button_style
+  assign button_size = section.settings.button_size
+  assign button_padding_v = section.settings.button_padding_vertical
+  assign button_padding_h = section.settings.button_padding_horizontal
+  assign button_radius = section.settings.button_radius
+%}
+
+<style>
+  #shopify-section-{{ section.id }} .banner-button {
+    padding: {{ button_padding_v }}px {{ button_padding_h }}px;
+    font-size: {{ button_size }}px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    border-radius: {{ button_radius }}px;
+    transition: all 0.3s ease;
+    opacity: 1;
+    {% if button_style == 'primary' %}
+      color: {{ section.settings.button_text_color }};
+      background: {{ section.settings.button_bg_color }};
+      border: 2px solid transparent;
+    {% elsif button_style == 'secondary' %}
+      color: {{ section.settings.button_outline_text_color }};
+      background: {{ section.settings.button_outline_bg_color }};
+      border: 2px solid {{ section.settings.button_outline_color }};
+    {% else %}
+      color: {{ heading_color }};
+      background: transparent;
+      border: 2px solid {{ heading_color }};
+    {% endif %}
+  }
+  
+  #shopify-section-{{ section.id }} .banner-button:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+  
+  #shopify-section-{{ section.id }} .image-banner-container {
+    height: {{ image_height }}vh;
+    display: flex;
+    align-items: flex-end;
+    {% if desktop_image %}
+      background: url('{{ desktop_image | image_url: width: 1920 }}');
+    {% else %}
+      background: {{ settings.color_background }};
+    {% endif %}
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin-top: 0px;
+    margin-bottom: {{ section.settings.margin_bottom }}px;
+    border-radius: {{ settings.media_border_radius }}px;
+  }
+  
+  #shopify-section-{{ section.id }} .image-banner-container::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / {{ overlay_opacity }}%);
+  }
+  
+  #shopify-section-{{ section.id }} .banner-content {
+    margin: 50px 25px;
+    position: relative;
+    z-index: 3;
+  }
+  
+  #shopify-section-{{ section.id }} .banner-content_h2 {
+    margin-bottom: {{ heading_bottom_spacing }}px;
+    color: {{ heading_color }};
+    font-size: {{ heading_size_desktop }}px;
+    font-weight: {{ heading_weight }};
+    letter-spacing: {{ heading_letter_spacing }}px;
+    line-height: 1.2;
+    {% if heading_custom_font != blank %}
+      font-family: {{ heading_custom_font }};
+    {% elsif heading_font %}
+      font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+      font-weight: {{ heading_font.weight }};
+      font-style: {{ heading_font.style }};
+    {% else %}
+      font-family: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+    {% endif %}
+  }
+  
+  #shopify-section-{{ section.id }} .header-wrapper {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    padding: 0px 25px;
+    z-index: 10;
+  }
+  
+  #shopify-section-{{ section.id }} .right-nav,
+  #shopify-section-{{ section.id }} .right-nav > *,
+  #shopify-section-{{ section.id }} .header-logo-text {
+    color: #FFFFFF;
+  }
+  
+  @media screen and (min-width: 749px) {
+    #shopify-section-{{ section.id }} .menu-item a {
+      color: #FFFFFF;
+    }
+  }
+  
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .image-banner-container {
+      {% if mobile_image %}
+        background: url('{{ mobile_image | image_url: width: 750 }}');
+      {% elsif desktop_image %}
+        background: url('{{ desktop_image | image_url: width: 750 }}');
+      {% endif %}
+      background-size: cover;
+      background-position: center;
+    }
+    
+    #shopify-section-{{ section.id }} .banner-content_h2 {
+      font-size: {{ heading_size_mobile }}px;
+    }
+    
+    #shopify-section-{{ section.id }} .banner-content {
+      margin: 50px 15px;
+    }
+  }
+</style>
+
+{% if heading_font %}
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+{% endif %}
+
+<div class="image-banner-container">
+  <div class="banner-content">
+    {% if section.settings.heading_text != blank %}
+      <h2 class="banner-content_h2">{{ section.settings.heading_text }}</h2>
+    {% endif %}
+    
+    {% if button_text != blank %}
+      <div class="banner-content_button">
+        <a class="button banner-button" 
+           href="{{ button_url | default: '#' }}"
+           {% if button_url == blank %}aria-disabled="true"{% endif %}>
+          {{ button_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "📝 Heading Settings"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "FALL 24 COLLECTION"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "default": "assistant_n4",
+      "info": "Select a font from Shopify's font library. Leave blank to use theme's heading font."
+    },
+    {
+      "type": "text",
+      "id": "heading_custom_font_family",
+      "label": "Custom Font Family (Optional)",
+      "info": "Enter custom font (e.g., 'Arial, sans-serif'). Overrides font picker.",
+      "placeholder": "e.g., 'Helvetica Neue, Arial, sans-serif'"
+    },
+    {
+      "type": "range",
+      "id": "heading_size_desktop",
+      "label": "Heading Font Size (Desktop)",
+      "min": 16,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "heading_size_mobile",
+      "label": "Heading Font Size (Mobile)",
+      "min": 14,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Heading Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold (600)"
+        },
+        {
+          "value": "700",
+          "label": "Bold (700)"
+        },
+        {
+          "value": "800",
+          "label": "Extra Bold (800)"
+        },
+        {
+          "value": "900",
+          "label": "Black (900)"
+        }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Heading Letter Spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "heading_bottom_spacing",
+      "label": "Space Between Heading & Button",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 25,
+      "info": "Vertical spacing between heading and button"
+    },
+    {
+      "type": "header",
+      "content": "🖼️ Image Settings"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Background Image",
+      "info": "Recommended: 1920x1080px or larger"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Background Image",
+      "info": "Recommended: 750x1334px. Leave blank to use desktop image."
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Banner Height",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 90,
+      "info": "Height as percentage of viewport"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image Overlay Opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 40,
+      "info": "Dark overlay on background image"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom Margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 45
+    },
+    {
+      "type": "header",
+      "content": "🔘 Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button Link",
+      "info": "Link to collection or page"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button Style",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primary (Filled)"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary (Outline)"
+        },
+        {
+          "value": "custom",
+          "label": "Custom (Uses heading color)"
+        }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Button Font Size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "label": "Button Vertical Padding",
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "label": "Button Horizontal Padding",
+      "min": 15,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button Border Radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color (Primary)",
+      "default": "#ffffff",
+      "info": "Used for Primary filled button style"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color (Primary)",
+      "default": "#000000",
+      "info": "Used for Primary filled button style"
+    },
+    {
+      "type": "color",
+      "id": "button_outline_color",
+      "label": "Button Outline/Border Color (Secondary)",
+      "default": "#ffffff",
+      "info": "Border color for Secondary outline button style"
+    },
+    {
+      "type": "color",
+      "id": "button_outline_bg_color",
+      "label": "Button Background Color (Secondary)",
+      "default": "rgba(0,0,0,0)",
+      "info": "Background color for Secondary button. Use transparent or semi-transparent colors."
+    },
+    {
+      "type": "color",
+      "id": "button_outline_text_color",
+      "label": "Button Text Color (Secondary)",
+      "default": "#ffffff",
+      "info": "Text color for Secondary outline button style"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

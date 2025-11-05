@@ -1,3 +1,11 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Inputs: input_style, input_radius, input_height
+- Buttons: button_style, button_radius, button_uppercase
+- Colors: color_button, color_button_text
+- Typography: type_body_font
+{% endcomment %}
+
 {{ 'section-contact-form.css' | asset_url | stylesheet_tag }}
 
 {%- style -%}
@@ -11,6 +19,64 @@
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
+  }
+
+  .section-{{ section.id }}-padding .field__input,
+  .section-{{ section.id }}-padding .text-area {
+    --input-border-color: {{ section.settings.input_border_color }};
+    --input-bg-color: {{ section.settings.input_bg_color }};
+    --input-text-color: {{ section.settings.input_text_color }};
+    --input-font-size: {{ section.settings.input_font_size }}px;
+    --input-font-weight: {{ section.settings.input_font_weight }};
+    border: 1px solid var(--input-border-color) !important;
+    background: var(--input-bg-color) !important;
+    background-color: var(--input-bg-color) !important;
+    color: var(--input-text-color) !important;
+    font-size: var(--input-font-size) !important;
+    font-weight: var(--input-font-weight) !important;
+    text-align: {{ section.settings.input_text_align }} !important;
+    {% if section.settings.input_text_transform != 'none' %}text-transform: {{ section.settings.input_text_transform }} !important;{% endif %}
+    {% if section.settings.input_italic %}font-style: italic !important;{% endif %}
+    {% if section.settings.input_underline %}text-decoration: underline !important;{% endif %}
+  }
+
+  .section-{{ section.id }}-padding .field__input::placeholder,
+  .section-{{ section.id }}-padding .text-area::placeholder {
+    color: var(--input-text-color) !important;
+    opacity: 0.6 !important;
+  }
+
+  .section-{{ section.id }}-padding .field__input:focus,
+  .section-{{ section.id }}-padding .text-area:focus {
+    border-color: var(--input-border-color) !important;
+    outline-color: var(--input-border-color) !important;
+  }
+
+  .section-{{ section.id }}-padding .field__label,
+  .section-{{ section.id }}-padding .form__label {
+    display: none !important;
+  }
+
+  .section-{{ section.id }}-padding .field input,
+  .section-{{ section.id }}-padding .field textarea {
+    color: var(--input-text-color) !important;
+  }
+
+  .section-{{ section.id }}-padding .button {
+    --button-border-color: {{ section.settings.button_border_color }};
+    --button-bg-color: {{ section.settings.button_bg_color }};
+    --button-text-color: {{ section.settings.button_text_color }};
+    --button-font-size: {{ section.settings.button_font_size }}px;
+    --button-font-weight: {{ section.settings.button_font_weight }};
+    border-color: var(--button-border-color) !important;
+    background-color: var(--button-bg-color) !important;
+    color: var(--button-text-color) !important;
+    font-size: var(--button-font-size) !important;
+    font-weight: var(--button-font-weight) !important;
+    text-align: {{ section.settings.button_text_align }} !important;
+    {% if section.settings.button_text_transform != 'none' %}text-transform: {{ section.settings.button_text_transform }} !important;{% endif %}
+    {% if section.settings.button_italic %}font-style: italic !important;{% endif %}
+    {% if section.settings.button_underline %}text-decoration: underline !important;{% endif %}
   }
 {%- endstyle -%}
 
@@ -204,6 +270,246 @@
       ],
       "default": "background-1",
       "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "header",
+      "content": "Input Field Styling"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "input_bg_color",
+      "label": "Input Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_text_color",
+      "label": "Input Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "select",
+      "id": "input_text_align",
+      "label": "Input Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "input_text_transform",
+      "label": "Input Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "All Caps (UPPERCASE)"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize Each Word"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "checkbox",
+      "id": "input_italic",
+      "label": "Input Italic",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "input_underline",
+      "label": "Input Underline",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "input_font_size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Input Font Size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "input_font_weight",
+      "label": "Input Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold (600)"
+        },
+        {
+          "value": "700",
+          "label": "Bold (700)"
+        },
+        {
+          "value": "900",
+          "label": "Black (900)"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Button Styling"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "button_text_align",
+      "label": "Button Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Button Text Transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "All Caps (UPPERCASE)"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize Each Word"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_italic",
+      "label": "Button Italic",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "button_underline",
+      "label": "Button Underline",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Font Weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light (300)"
+        },
+        {
+          "value": "400",
+          "label": "Normal (400)"
+        },
+        {
+          "value": "500",
+          "label": "Medium (500)"
+        },
+        {
+          "value": "600",
+          "label": "Semi Bold (600)"
+        },
+        {
+          "value": "700",
+          "label": "Bold (700)"
+        },
+        {
+          "value": "900",
+          "label": "Black (900)"
+        }
+      ],
+      "default": "500"
     },
     {
       "type": "header",

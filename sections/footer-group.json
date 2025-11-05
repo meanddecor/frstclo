@@ -15,7 +15,7 @@
       "type": "footer",
       "settings": {
         "store_name": "COZY WW",
-        "show_policies": true,
+        "show_policies": false,
         "show_credit": true,
         "credit_text": "NGAGE By FRST MADE.",
         "credit_url": "",

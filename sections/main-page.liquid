@@ -1,3 +1,28 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Typography: type_header_font, type_body_font, font_size_base, line_height, letter_spacing
+- Colors: color_text, color_background
+- Layout: spacing_sections
+- Media: image_lazy_loading
+{% endcomment %}
+
+{%- liquid
+  assign heading_font = section.settings.heading_font_family
+  assign content_font = section.settings.font_family
+-%}
+
+<link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+<style>
+  {%- if heading_font -%}
+    {{ heading_font | font_face: font_display: 'swap' }}
+  {%- endif -%}
+  
+  {%- if content_font -%}
+    {{ content_font | font_face: font_display: 'swap' }}
+  {%- endif -%}
+</style>
+
 <link rel="stylesheet" href="{{ 'section-main-page.css' | asset_url }}" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="{{ 'component-rte.css' | asset_url }}" media="print" onload="this.media='all'">
 
@@ -16,9 +41,46 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .section-{{ section.id }}-typography {
+    text-align: {{ section.settings.text_alignment }} !important;
+  }
+
+  .section-{{ section.id }}-typography .rte,
+  .section-{{ section.id }}-typography .rte * {
+    {%- if content_font -%}
+      font-family: {{ content_font.family }}, {{ content_font.fallback_families }} !important;
+      font-weight: {{ content_font.weight }} !important;
+      font-style: {{ content_font.style }} !important;
+    {%- endif -%}
+    
+    {%- if section.settings.custom_font_size > 0 -%}
+      font-size: {{ section.settings.custom_font_size }}px !important;
+    {%- endif -%}
+    
+    {%- if section.settings.line_height > 0 -%}
+      line-height: {{ section.settings.line_height }} !important;
+    {%- endif -%}
+    
+    {%- if section.settings.letter_spacing != 0 -%}
+      letter-spacing: {{ section.settings.letter_spacing }}px !important;
+    {%- endif -%}
+  }
+
+  .section-{{ section.id }}-typography .main-page-title {
+    {%- if heading_font -%}
+      font-family: {{ heading_font.family }}, {{ heading_font.fallback_families }} !important;
+      font-weight: {{ heading_font.weight }} !important;
+      font-style: {{ heading_font.style }} !important;
+    {%- endif -%}
+    
+    {%- if section.settings.heading_color != blank -%}
+      color: {{ section.settings.heading_color }} !important;
+    {%- endif -%}
+  }
 {%- endstyle -%}
 
-<div class="page-width page-width--narrow section-{{ section.id }}-padding">
+<div class="page-width page-width--narrow section-{{ section.id }}-padding section-{{ section.id }}-typography">
   <h1 class="main-page-title page-title h0">
     {{ page.title | escape }}
   </h1>
@@ -33,6 +95,86 @@
   "tag": "section",
   "class": "section",
   "settings": [
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font_family",
+      "label": "Heading Font Family",
+      "info": "Choose font for the page title. Leave blank to use theme's heading font.",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "info": "Leave blank to use global text color"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Content Font Family",
+      "info": "Choose font for page content. Leave blank to use theme's body font.",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "custom_font_size",
+      "min": 0,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "label": "Content Font Size",
+      "info": "Set to 0 to use global base font size",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "min": 0,
+      "max": 3,
+      "step": 0.1,
+      "label": "Line Height",
+      "info": "Set to 0 to use global line height",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Letter Spacing",
+      "info": "Adjust spacing between letters",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
     {
       "type": "header",
       "content": "t:sections.all.padding.section_padding_heading"

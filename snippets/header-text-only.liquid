@@ -7,8 +7,8 @@
 ✅ SECTION SETTINGS APPLIED - ALL RESPONSIVE BREAKPOINTS WORKING:
 - Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit
 - Text-Only Header: text_only_burger_color, text_only_cross_color, text_only_menu_text_color, text_only_menu_font_size
-- Text-Only Header: text_only_menu_letter_spacing, text_only_menu_font_weight
-- Text-Only Header: text_only_logo_text_color, text_only_logo_font_size, text_only_logo_letter_spacing
+- Text-Only Header: text_only_menu_letter_spacing, text_only_menu_font_weight, text_only_menu_font
+- Text-Only Header: text_only_logo_text_color, text_only_logo_font_size, text_only_logo_letter_spacing, text_only_logo_font
 - Spacing: text_only_spacing_scale (unified spacing control)
 - XL Breakpoint (1200px+): text_only_xl_max_width
 - LG Breakpoint (990-1199px): text_only_lg_max_width, text_only_lg_logo_width, text_only_lg_logo_font_size, text_only_lg_menu_font_size, text_only_lg_menu_gap, text_only_lg_horizontal_padding
@@ -17,10 +17,27 @@
 - XS Breakpoint (480-639px & below): text_only_xs_max_width, text_only_xs_logo_width, text_only_xs_logo_font_size, text_only_xs_menu_font_size, text_only_xs_menu_gap, text_only_xs_horizontal_padding
 - Mobile Menu: text_only_mobile_menu_style, text_only_show_scroll_fade, text_only_scroll_snap
 - Cart/Account: text_only_cart_text_color
-- Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, text_only_mobile_menu_font_size, text_only_mobile_menu_letter_spacing, text_only_mobile_menu_font_weight
+- Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, text_only_mobile_menu_font_size, text_only_mobile_menu_letter_spacing, text_only_mobile_menu_font_weight, text_only_mobile_menu_font
 
 🔧 FIXED: Removed hardcoded clamp() values and conflicting mobile menu overrides that were preventing responsive settings from applying
 {% endcomment %}
+
+{%- liquid
+  assign menu_font = section.settings.text_only_menu_font
+  assign logo_font = section.settings.text_only_logo_font
+  assign mobile_menu_font = section.settings.text_only_mobile_menu_font
+-%}
+
+{%- if menu_font -%}
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{ menu_font | font_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
+{%- if logo_font -%}
+  <link rel="stylesheet" href="{{ logo_font | font_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
+{%- if mobile_menu_font -%}
+  <link rel="stylesheet" href="{{ mobile_menu_font | font_url }}" media="print" onload="this.media='all'">
+{%- endif -%}
 <style>
   :root {
     --text-only-logo-width: {{ section.settings.text_only_logo_width | default: 100 }}px;
@@ -100,6 +117,10 @@
     letter-spacing: var(--text-only-logo-letter-spacing) !important;
     color: var(--text-only-logo-text-color) !important;
     margin: 0;
+    {%- if logo_font -%}
+    font-family: {{ logo_font.family }}, {{ logo_font.fallback_families }};
+    font-weight: {{ logo_font.weight }};
+    {%- endif -%}
   }
 
   .text-only-logo-wrapper img {
@@ -120,6 +141,21 @@
     position: relative;
   }
 
+  /* Desktop: minimal dropdown */
+  @media screen and (min-width: 640px) {
+    .text-only-has-children {
+      position: relative;
+    }
+  }
+
+  /* Mobile: accordion style */
+  @media screen and (max-width: 639px) {
+    .text-only-has-children {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
   .text-only-header-menu .text-only-menu-link {
     text-transform: uppercase;
     font-weight: var(--text-only-menu-font-weight) !important;
@@ -127,6 +163,14 @@
     color: var(--text-only-menu-text-color) !important;
     text-decoration: none;
     transition: opacity 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    {%- if menu_font -%}
+    font-family: {{ menu_font.family }}, {{ menu_font.fallback_families }};
+    font-weight: {{ menu_font.weight }};
+    {%- endif -%}
   }
 
   .text-only-header-menu .text-only-menu-link:hover {
@@ -151,6 +195,10 @@
     text-decoration: none;
     transition: opacity 0.2s ease;
     white-space: nowrap;
+    {%- if menu_font -%}
+    font-family: {{ menu_font.family }}, {{ menu_font.fallback_families }};
+    font-weight: {{ menu_font.weight }};
+    {%- endif -%}
   }
 
   .text-only-right-nav a:hover {
@@ -159,40 +207,91 @@
 
   .text-only-submenu {
     display: none;
-    position: absolute;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    background: rgb(var(--color-background));
-    z-index: 100;
-    left: 0;
-    margin-top: 15px;
     flex-direction: column;
-    padding: 15px 0;
-    min-width: 180px;
+  }
+
+  /* Desktop dropdown styling */
+  @media screen and (min-width: 640px) {
+    .text-only-submenu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: rgb(var(--color-background));
+      padding: 8px 0;
+      margin-top: 8px;
+      min-width: 160px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      border: 1px solid rgba(var(--color-foreground), 0.1);
+      z-index: 100;
+    }
+
+    .text-only-has-children:hover .text-only-submenu {
+      display: flex;
+    }
+
+    .text-only-submenu a {
+      padding: 8px 16px;
+    }
+  }
+
+  /* Mobile accordion styling */
+  @media screen and (max-width: 639px) {
+    .text-only-submenu {
+      padding: 10px 0 0 0;
+      gap: 8px;
+    }
+
+    .text-only-has-children.active .text-only-submenu {
+      display: flex;
+    }
   }
 
   .text-only-submenu a {
-    padding: 8px 20px;
     display: block;
     text-decoration: none;
-    text-align: left;
     font-size: calc(var(--text-only-menu-font-size) - 1px) !important;
     color: var(--text-only-menu-text-color) !important;
     text-transform: uppercase;
     font-weight: var(--text-only-menu-font-weight) !important;
     letter-spacing: var(--text-only-menu-letter-spacing) !important;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
   }
 
   .text-only-submenu a:hover {
-    background: rgba(var(--color-foreground), 0.05);
+    opacity: 0.6;
   }
 
-  .text-only-has-children > a::after {
-    content: ' ▾';
-    font-size: 9px;
+  /* Desktop: plus icon */
+  @media screen and (min-width: 640px) {
+    .text-only-has-children > .text-only-menu-link::after {
+      content: '+';
+      font-size: 12px;
+      font-weight: 300;
+      margin-left: 3px;
+      line-height: 1;
+    }
+
+    .text-only-has-children:hover > .text-only-menu-link::after {
+      content: '−';
+    }
   }
 
-  .text-only-has-children.active > a::after {
-    content: ' ▴';
+  /* Mobile: plus/minus */
+  @media screen and (max-width: 639px) {
+    .text-only-has-children > .text-only-menu-link::after {
+      content: '+';
+      font-size: 14px;
+      font-weight: 300;
+      margin-left: auto;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+    .text-only-has-children.active > .text-only-menu-link::after {
+      content: '−';
+    }
   }
 
   .text-only-burger-menu {
@@ -469,6 +568,10 @@
       color: var(--text-only-mobile-menu-text-color) !important;
       font-weight: var(--text-only-mobile-menu-font-weight) !important;
       letter-spacing: var(--text-only-mobile-menu-letter-spacing) !important;
+      {%- if mobile_menu_font -%}
+      font-family: {{ mobile_menu_font.family }}, {{ mobile_menu_font.fallback_families }};
+      font-weight: {{ mobile_menu_font.weight }};
+      {%- endif -%}
     }
 
     .text-only-logo-wrapper {
@@ -488,21 +591,28 @@
       display: block;
     }
 
+    /* Mobile submenu styling */
     .text-only-submenu {
-      position: static;
-      background: none;
-      box-shadow: none;
-      margin-top: 10px;
-      padding: 10px 0;
+      padding: 15px 0 0 0;
+      gap: 12px;
     }
 
     .text-only-submenu a {
-      font-size: calc(var(--text-only-mobile-menu-font-size) - 4px) !important;
+      font-size: calc(var(--text-only-mobile-menu-font-size) - 6px) !important;
       text-align: center;
       padding: 8px 0;
       color: var(--text-only-mobile-menu-text-color) !important;
       font-weight: var(--text-only-mobile-menu-font-weight) !important;
       letter-spacing: var(--text-only-mobile-menu-letter-spacing) !important;
+      opacity: 0.7;
+      {%- if mobile_menu_font -%}
+      font-family: {{ mobile_menu_font.family }}, {{ mobile_menu_font.fallback_families }};
+      font-weight: {{ mobile_menu_font.weight }};
+      {%- endif -%}
+    }
+
+    .text-only-submenu a:hover {
+      opacity: 1;
     }
   }
 
@@ -581,14 +691,6 @@
             {%- endif -%}
           </div>
         {%- endfor -%}
-      {%- endif -%}
-      
-      {%- if shop.customer_accounts_enabled -%}
-        <div class="text-only-menu-item">
-          <a class="text-only-account-mobile text-only-menu-link" href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}">
-            {%- if customer -%}ACCOUNT{%- else -%}ACCOUNT{%- endif -%}
-          </a>
-        </div>
       {%- endif -%}
     </div>
     
@@ -669,44 +771,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Submenu dropdown handling
+  // Submenu handling: mobile accordion, desktop hover
   var menuItems = document.querySelectorAll('.text-only-header-menu > .text-only-menu-item.text-only-has-children');
   menuItems.forEach(function(item) {
     var link = item.querySelector('.text-only-menu-link');
     if (link) {
       link.addEventListener('click', function(event) {
-        // Only prevent default on desktop
-        if (window.innerWidth >= 990) {
+        // Mobile: accordion behavior
+        if (window.innerWidth < 640) {
           event.preventDefault();
-        }
-        
-        var active = document.querySelector('.text-only-menu-item.active');
-        if (active && active !== item) {
-          active.classList.remove('active');
-          var activeSubmenu = active.querySelector('.text-only-submenu');
-          if (activeSubmenu) activeSubmenu.style.display = 'none';
-        }
-        
-        var submenu = item.querySelector('.text-only-submenu');
-        if (submenu) {
-          submenu.style.display = submenu.style.display === 'flex' ? 'none' : 'flex';
+          
+          // Close other open submenus
+          var active = document.querySelector('.text-only-menu-item.active');
+          if (active && active !== item) {
+            active.classList.remove('active');
+          }
+          
+          // Toggle current submenu
           item.classList.toggle('active');
+        }
+        // Desktop: prevent parent link navigation, let hover handle dropdown
+        else {
+          event.preventDefault();
         }
       });
     }
   });
 
-  // Close submenus when clicking outside
+  // Close mobile submenus when clicking outside
   document.addEventListener('click', function(event) {
-    if (!event.target.closest('.text-only-menu-item')) {
-      var submenus = document.querySelectorAll('.text-only-submenu');
-      submenus.forEach(function(submenu) {
-        submenu.style.display = 'none';
-      });
-      var activeItems = document.querySelectorAll('.text-only-menu-item.active');
-      activeItems.forEach(function(item) {
-        item.classList.remove('active');
-      });
+    if (window.innerWidth < 640) {
+      if (!event.target.closest('.text-only-menu-item')) {
+        var activeItems = document.querySelectorAll('.text-only-menu-item.active');
+        activeItems.forEach(function(item) {
+          item.classList.remove('active');
+        });
+      }
     }
   });
 
