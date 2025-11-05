@@ -1,0 +1,415 @@
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED:
+- Typography: font_picker for font selection, custom font family support
+- Colors: Custom text and background colors
+- Spacing: Padding, margin controls
+- Layout: Position, width, alignment controls
+- Effects: Box shadow, border radius
+{% endcomment %}
+
+{% if section.settings.show_announcement %}
+<div class="announcement-floater-wrapper" id="announcement-floater-{{ section.id }}">
+  <div class="announcement-floater-bar {% if section.settings.enable_floater %}announcement-floater-enabled{% endif %}" 
+       style="
+         padding: 0 {{ section.settings.padding_horizontal }}px;
+         min-height: {{ section.settings.container_height }}px;
+         box-sizing: border-box;
+         display: flex;
+         align-items: {{ section.settings.vertical_alignment }};
+         justify-content: {{ section.settings.text_alignment }};
+         position: relative;
+         z-index: {{ section.settings.z_index }};
+         {% if section.settings.enable_shadow %}
+         box-shadow: {{ section.settings.shadow_offset_x }}px {{ section.settings.shadow_offset_y }}px {{ section.settings.shadow_blur }}px rgba(0, 0, 0, {{ section.settings.shadow_opacity }});
+         {% endif %}
+         {% if section.settings.enable_floater %}
+         position: absolute !important;
+         left: 50%;
+         transform: translateX(-50%);
+         width: {{ section.settings.floater_width }}%;
+         margin-left: auto;
+         margin-right: auto;
+         margin-top: {{ section.settings.floater_margin_top }}px;
+         margin-bottom: {{ section.settings.floater_margin_bottom }}px;
+         {% endif %}
+         {% if section.settings.border_radius > 0 %}
+         border-radius: {{ section.settings.border_radius }}px;
+         {% endif %}
+         font-size: {{ section.settings.font_size }}px;
+         {% if section.settings.custom_font_family != blank %}
+         font-family: {{ section.settings.custom_font_family }};
+         {% else %}
+         font-family: {{ section.settings.font_family.family }}, {{ section.settings.font_family.fallback_families }};
+         font-weight: {{ section.settings.font_family.weight }};
+         {% endif %}
+         letter-spacing: {{ section.settings.letter_spacing }}px;
+         background-color: {{ section.settings.background_color }};
+         color: {{ section.settings.text_color }};
+       ">
+    
+    {% if section.settings.enable_marquee %}
+      <p class="announcement-marquee" style="margin: 0; overflow: hidden; white-space: nowrap; align-self: auto;">
+        <span class="announcement-marquee-content">{{ section.settings.announcement_text }}</span>
+      </p>
+    {% else %}
+      <p class="announcement-static" style="margin: 0; align-self: auto;">
+        {{ section.settings.announcement_text }}
+      </p>
+    {% endif %}
+
+  </div>
+</div>
+
+<style>
+  #announcement-floater-{{ section.id }} {
+    {% if section.settings.enable_floater %}
+    position: relative;
+    {% endif %}
+  }
+
+  #announcement-floater-{{ section.id }} .announcement-floater-bar {
+    width: 100%;
+  }
+
+  {% if section.settings.enable_marquee %}
+  #announcement-floater-{{ section.id }} .announcement-marquee {
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  #announcement-floater-{{ section.id }} .announcement-marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: announcement-marquee-{{ section.id }} {{ section.settings.marquee_speed }}s linear infinite;
+  }
+
+  @keyframes announcement-marquee-{{ section.id }} {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  {% endif %}
+
+  #announcement-floater-{{ section.id }} .announcement-static {
+    text-align: {{ section.settings.text_alignment }};
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    {% if section.settings.enable_floater and section.settings.adjust_for_collection %}
+    var announcementBar = document.querySelector('#announcement-floater-{{ section.id }} .announcement-floater-bar');
+    var collectionDisplay = document.getElementById('{{ section.settings.collection_target_id }}');
+
+    if (collectionDisplay && announcementBar) {
+      announcementBar.style.width = '{{ section.settings.floater_width }}%';
+      announcementBar.style.marginLeft = 'auto';
+      announcementBar.style.marginRight = 'auto';
+      announcementBar.style.marginTop = '{{ section.settings.floater_margin_top }}px';
+      announcementBar.style.marginBottom = '{{ section.settings.floater_margin_bottom }}px';
+    }
+    {% endif %}
+  });
+</script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Announcement Floater",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show Announcement Bar",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "announcement_text",
+      "label": "Announcement Text",
+      "default": "Welcome to our store! Free shipping on orders over $50"
+    },
+    {
+      "type": "header",
+      "content": "Position & Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_floater",
+      "label": "Enable Floating Position",
+      "default": true,
+      "info": "Makes the announcement bar float above content"
+    },
+    {
+      "type": "range",
+      "id": "floater_width",
+      "label": "Floater Width",
+      "default": 92,
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "info": "Only applies when floating is enabled"
+    },
+    {
+      "type": "range",
+      "id": "floater_margin_top",
+      "label": "Top Margin",
+      "default": 20,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "floater_margin_bottom",
+      "label": "Bottom Margin",
+      "default": 20,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "z_index",
+      "label": "Z-Index",
+      "default": 100,
+      "min": 0,
+      "max": 1000,
+      "step": 10,
+      "info": "Controls stacking order"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Horizontal Alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertical Alignment",
+      "default": "center",
+      "info": "Requires container height to be visible",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "container_height",
+      "label": "Container Height",
+      "default": 50,
+      "min": 30,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "info": "Minimum height for vertical alignment to work"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "label": "Horizontal Padding",
+      "default": 15,
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#413107"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#e7c845"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "font_family",
+      "label": "Font Family",
+      "default": "assistant_n4",
+      "info": "Select a font from Shopify's font library"
+    },
+    {
+      "type": "text",
+      "id": "custom_font_family",
+      "label": "Custom Font Family (Optional)",
+      "info": "Enter custom font (e.g., 'Arial, sans-serif'). Overrides font picker.",
+      "placeholder": "e.g., 'Helvetica Neue, Arial, sans-serif'"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font Size",
+      "default": 12,
+      "min": 8,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter Spacing",
+      "default": 0,
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Effects"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_shadow",
+      "label": "Enable Box Shadow",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "shadow_offset_x",
+      "label": "Shadow Horizontal Offset",
+      "default": 2,
+      "min": -20,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "shadow_offset_y",
+      "label": "Shadow Vertical Offset",
+      "default": 2,
+      "min": -20,
+      "max": 20,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "shadow_blur",
+      "label": "Shadow Blur",
+      "default": 4,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "shadow_opacity",
+      "label": "Shadow Opacity",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.1
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border Radius",
+      "default": 0,
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_marquee",
+      "label": "Enable Marquee Animation",
+      "default": true,
+      "info": "Scrolling text effect"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee Speed",
+      "default": 20,
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "info": "Lower = faster"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "checkbox",
+      "id": "adjust_for_collection",
+      "label": "Adjust for Collection Display",
+      "default": false,
+      "info": "Adjust positioning when specific element is present"
+    },
+    {
+      "type": "text",
+      "id": "collection_target_id",
+      "label": "Target Element ID",
+      "default": "collection-products-display-1",
+      "info": "ID of element to check for (without #)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Floater"
+    }
+  ]
+}
+{% endschema %}

@@ -76,7 +76,11 @@
   {%- endif -%}
 
   {%- if section.settings.enable_price_color -%}
-    #Slider-{{ section.id }} .price .price-item {
+    #Slider-{{ section.id }} .price .price-item,
+    #Slider-{{ section.id }} .price__regular .price-item,
+    #Slider-{{ section.id }} .price__sale .price-item--regular,
+    #Slider-{{ section.id }} .price__sale .price-item--sale,
+    #Slider-{{ section.id }} .card__information .price .price-item {
       color: {{ section.settings.product_price_color }} !important;
     }
   {%- endif -%}
@@ -115,6 +119,61 @@
   {%- if section.settings.content_padding_top -%}
   #Slider-{{ section.id }} .card__content {
     padding-top: {{ section.settings.content_padding_top }}px !important;
+  }
+  {%- endif -%}
+
+  {%- if section.settings.full_width -%}
+  .section-{{ section.id }}-padding {
+    max-width: 100vw;
+    width: 100%;
+  }
+  .section-{{ section.id }}-padding .collection {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .section-{{ section.id }}-padding .page-width,
+  .section-{{ section.id }}-padding .page-width-desktop {
+    max-width: 100vw;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .section-{{ section.id }}-padding .slider-component-full-width {
+    max-width: 100vw;
+  }
+  {%- endif -%}
+
+  /* Horizontal Padding */
+  .section-{{ section.id }}-padding .collection,
+  .section-{{ section.id }}-padding .slider-mobile-gutter {
+    padding-left: {{ section.settings.horizontal_padding }}px;
+    padding-right: {{ section.settings.horizontal_padding }}px;
+  }
+
+  /* Product Grid Gap */
+  #Slider-{{ section.id }}.product-grid {
+    column-gap: {{ section.settings.product_gap }}px;
+    row-gap: {{ section.settings.vertical_gap }}px;
+    justify-content: center;
+  }
+
+  /* Custom Card Size - Scale cards within their columns */
+  {%- if section.settings.enable_custom_card_size -%}
+  #Slider-{{ section.id }} .grid__item {
+    display: flex;
+    justify-content: center;
+  }
+  
+  #Slider-{{ section.id }} .grid__item .card,
+  #Slider-{{ section.id }} .grid__item > * {
+    max-width: {{ section.settings.card_max_width }}px;
+    width: 100%;
+  }
+  
+  @media screen and (max-width: 749px) {
+    #Slider-{{ section.id }} .grid__item .card,
+    #Slider-{{ section.id }} .grid__item > * {
+      max-width: {{ section.settings.card_max_width_mobile }}px;
+    }
   }
   {%- endif -%}
 {%- endstyle -%}
@@ -578,6 +637,76 @@
       "id": "full_width",
       "label": "t:sections.featured-collection.settings.full_width.label",
       "default": false
+    },
+    {
+      "type": "header",
+      "content": "Layout Spacing"
+    },
+    {
+      "type": "range",
+      "id": "horizontal_padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Horizontal padding (sides)",
+      "default": 0,
+      "info": "Add padding to left and right sides of the section"
+    },
+    {
+      "type": "range",
+      "id": "product_gap",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal gap between cards",
+      "default": 20,
+      "info": "Horizontal space between product cards"
+    },
+    {
+      "type": "range",
+      "id": "vertical_gap",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical gap between cards",
+      "default": 20,
+      "info": "Vertical space between product card rows"
+    },
+    {
+      "type": "header",
+      "content": "Product Card Size"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_card_size",
+      "label": "Enable custom card size",
+      "default": false,
+      "info": "Control the maximum width of product cards"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Card max width (desktop)",
+      "default": 400,
+      "info": "Maximum width for each product card on desktop"
+    },
+    {
+      "type": "range",
+      "id": "card_max_width_mobile",
+      "min": 150,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Card max width (mobile)",
+      "default": 300,
+      "info": "Maximum width for each product card on mobile"
     },
     {
       "type": "checkbox",

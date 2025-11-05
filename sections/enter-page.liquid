@@ -2,6 +2,25 @@
 ✅ BLOCK-BASED ENTER PAGE SECTION
 - Flexible block system: add/remove/reorder components
 - Blocks: Logo, Date/Time, Menu, Enter Button, Social Icons, Copyright
+
+🎯 POSITIONING SYSTEM (Optimized for Smooth Movement):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PRESET POSITIONS: Uses transform-based viewport units (vw, vh)
+- Moves along clean X/Y axes (no weird padding behavior)
+- Blue outline box wraps content tightly
+- Maintains same relative position across ALL screen sizes
+- 9 presets: top-left, top-center, top-right, center-left, center, 
+  center-right, bottom-left, bottom-center, bottom-right
+
+CUSTOM POSITIONS: Uses transform: translate(Xvw, Yvh)
+- X axis: 0vw (left edge) → 100vw (right edge)
+- Y axis: 0vh (top edge) → 100vh (bottom edge)
+- Example: 25vw, 75vh = 25% from left, 75% from top
+- Elements auto-center on their position point
+
+RESPONSIVE: No separate mobile positions needed!
+- Viewport units scale proportionally on all screen sizes
+- Same position values work for mobile, tablet, desktop, XL screens
 {% endcomment %}
 
 {% if section.settings.show_enter_page %}
@@ -87,6 +106,13 @@
     /* Individual block styles */
     .enter-block {
       position: absolute;
+      /* Default: position from top-left corner */
+      top: 0;
+      left: 0;
+      /* Content should wrap tightly */
+      display: inline-flex;
+      width: fit-content;
+      height: fit-content;
     }
     
     .enter-block--static {
@@ -94,75 +120,64 @@
       margin: 10px 0;
     }
     
-    /* Positioning presets */
+    /* Positioning presets using viewport units for true responsiveness */
+    /* All positions calculated from center (50vw, 50vh) using transforms */
     .enter-block--top-left {
-      top: 5%;
-      left: 5%;
+      transform: translate(5vw, 5vh);
     }
     
     .enter-block--top-center {
-      top: 5%;
-      left: 50%;
-      transform: translateX(-50%);
+      transform: translate(50vw, 5vh) translateX(-50%);
     }
     
     .enter-block--top-right {
-      top: 5%;
-      right: 5%;
+      transform: translate(95vw, 5vh) translateX(-100%);
     }
     
     .enter-block--center-left {
-      top: 50%;
-      left: 5%;
-      transform: translateY(-50%);
+      transform: translate(5vw, 50vh) translateY(-50%);
     }
     
     .enter-block--center {
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-    
-    .enter-block--menu.enter-block--center {
-      left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(50vw, 50vh) translate(-50%, -50%);
     }
     
     .enter-block--center-right {
-      top: 50%;
-      right: 5%;
-      transform: translateY(-50%);
+      transform: translate(95vw, 50vh) translate(-100%, -50%);
     }
     
     .enter-block--bottom-left {
-      bottom: 5%;
-      left: 5%;
+      transform: translate(5vw, 95vh) translateY(-100%);
     }
     
     .enter-block--bottom-center {
-      bottom: 5%;
-      left: 50%;
-      transform: translateX(-50%);
+      transform: translate(50vw, 95vh) translate(-50%, -100%);
     }
     
     .enter-block--bottom-right {
-      bottom: 5%;
-      right: 5%;
+      transform: translate(95vw, 95vh) translate(-100%, -100%);
+    }
+    
+    /* Custom positioning overrides presets with viewport-based transforms */
+    .enter-block[data-custom-position="true"] {
+      /* Custom positions are set inline via style attribute */
+      /* They use transform: translate(Xvw, Yvh) for predictable movement */
     }
     
     .enter-block--menu ul,
     .enter-block--datetime {
       list-style: none !important;
       padding: 0;
-      margin: 0 auto;
+      margin: 0;
       text-align: center;
-      width: auto;
-      display: inline-block;
+      width: fit-content;
+      display: flex;
+      flex-direction: column;
     }
     
     .enter-block--menu {
       text-align: center;
-      width: auto;
+      width: fit-content;
       display: inline-flex;
       flex-direction: column;
       align-items: center;
@@ -236,10 +251,12 @@
       }
     }
     
-    /* Mobile positioning overrides */
+    /* Responsive scaling - positions maintain relative placement across screen sizes */
+    /* No separate mobile overrides needed - viewport units scale automatically */
     @media screen and (max-width: 768px) {
-      .enter-block[data-mobile-custom="true"] {
-        /* Mobile custom positions will override preset */
+      /* Optional: Adjust spacing on mobile if needed */
+      .enter-block--menu li {
+        margin: 8px 0;
       }
     }
     
@@ -327,26 +344,22 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }} {% if block.settings.animation != 'none' %}{{ block.settings.animation }}{% endif %}" 
+            <div id="block-{{ block.id }}" 
+                 class="enter-block {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %} {% if block.settings.animation != 'none' %}{{ block.settings.animation }}{% endif %}" 
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="{% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
               {% if block.settings.logo_image %}
                 <img src="{{ block.settings.logo_image | img_url: 'master' }}" 
                      alt="Logo"
-                     style="width: {{ block.settings.logo_size }}px;">
+                     style="width: {{ block.settings.logo_size }}px; display: block;">
               {% endif %}
             </div>
           
@@ -355,24 +368,20 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" 
+                 class="enter-block enter-block--datetime {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="{% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
               <p id="datetime-{{ block.id }}" 
-                 style="color: {{ block.settings.text_color }}; font-size: {{ block.settings.font_size }}px; margin: 0;"></p>
+                 style="color: {{ block.settings.text_color }}; font-size: {{ block.settings.font_size }}px; margin: 0; white-space: nowrap;"></p>
             </div>
           
           {% when 'menu' %}
@@ -380,24 +389,17 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--menu enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" 
+                 class="enter-block enter-block--menu {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="{% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
-                        {% endif %}
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;"
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
+                        {% endif %}"
                  {{ block.shopify_attributes }}>
               {% comment %}
               ✅ GLOBAL SETTINGS APPLIED:
@@ -480,20 +482,16 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" 
+                 class="enter-block {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="{% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
               <a href="{{ block.settings.button_url }}" 
@@ -504,6 +502,7 @@
                         color: {{ block.settings.text_color }};
                         text-decoration: none;
                         text-transform: {{ block.settings.text_transform }};
+                        white-space: nowrap;
                         {% if block.settings.enable_glow %}
                           -webkit-animation: pulse 1.5s ease-in-out infinite alternate;
                           -webkit-backface-visibility: hidden;
@@ -517,20 +516,16 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" 
+                 class="enter-block {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="{% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
               <ul class="footer__list-social list-unstyled" 
@@ -610,26 +605,23 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
+            <div id="block-{{ block.id }}" 
+                 class="enter-block {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
                  style="color: {{ block.settings.text_color }};
+                        text-align: center;
                         {% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
-              <small>&copy; {{ 'now' | date: "%Y" }}, {{ shop.name | link_to: routes.root_url }}</small>
+              <small style="white-space: nowrap;">&copy; {{ 'now' | date: "%Y" }}, {{ shop.name | link_to: routes.root_url }}</small>
               {% if block.settings.show_credit %}
-                <small>WEBSITE BY {{ block.settings.credit_text }}</small>
+                <small style="white-space: nowrap; display: block;">WEBSITE BY {{ block.settings.credit_text }}</small>
               {% endif %}
             </div>
           
@@ -638,27 +630,24 @@
               <style>
                 @media screen and (max-width: 768px) {
                   #block-{{ block.id }} {
-                    {% if block.settings.mobile_top != blank %}top: {{ block.settings.mobile_top }}% !important;{% endif %}
-                    {% if block.settings.mobile_left != blank %}left: {{ block.settings.mobile_left }}% !important;{% endif %}
-                    {% if block.settings.mobile_right != blank %}right: {{ block.settings.mobile_right }}% !important;{% endif %}
-                    {% if block.settings.mobile_bottom != blank %}bottom: {{ block.settings.mobile_bottom }}% !important;{% endif %}
+                    transform: translate({{ block.settings.mobile_left | default: 50 }}vw, {{ block.settings.mobile_top | default: 50 }}vh) translate(-50%, -50%) !important;
                   }
                 }
               </style>
             {% endif %}
-            <div id="block-{{ block.id }}" class="enter-block enter-block--{{ block.settings.position_preset }}"
-                 style="text-decoration: none;
-                        {% if block.settings.use_custom_position %}
-                          {% if block.settings.custom_top != blank %}top: {{ block.settings.custom_top }}%;{% endif %}
-                          {% if block.settings.custom_left != blank %}left: {{ block.settings.custom_left }}%;{% endif %}
-                          {% if block.settings.custom_right != blank %}right: {{ block.settings.custom_right }}%;{% endif %}
-                          {% if block.settings.custom_bottom != blank %}bottom: {{ block.settings.custom_bottom }}%;{% endif %}
+            <div id="block-{{ block.id }}" 
+                 class="enter-block {% unless block.settings.use_custom_position %}enter-block--{{ block.settings.position_preset }}{% endunless %}"
+                 {% if block.settings.use_custom_position %}data-custom-position="true"{% endif %}
+                 style="{% if block.settings.use_custom_position %}
+                          transform: translate({{ block.settings.custom_left | default: 50 }}vw, {{ block.settings.custom_top | default: 50 }}vh) translate(-50%, -50%);
                         {% endif %}"
                  {{ block.shopify_attributes }}>
               <a href="{{ block.settings.skip_url }}" 
                  style="text-decoration: none; 
                         color: {{ block.settings.text_color }}; 
-                        font-size: {{ block.settings.font_size }}px;">
+                        font-size: {{ block.settings.font_size }}px;
+                        white-space: nowrap;
+                        display: inline-block;">
                 {{ block.settings.button_text }}
               </a>
             </div>

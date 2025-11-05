@@ -1,0 +1,205 @@
+{% comment %}
+  Save this as: sections/sticky-get-theme.liquid
+{% endcomment %}
+
+{% if section.settings.enable_button %}
+  <div id="sticky-theme-btn" class="sticky-theme-button" style="
+    position: fixed;
+    {{ section.settings.position }}: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  ">
+    <a href="{{ section.settings.button_link }}" 
+       class="get-theme-link"
+       style="
+         display: inline-block;
+         background-color: {{ section.settings.button_bg_color }};
+         color: {{ section.settings.button_text_color }};
+         padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+         text-decoration: none;
+         border-radius: {{ section.settings.button_radius }}px;
+         font-weight: 600;
+         font-size: {{ section.settings.button_font_size }}px;
+         box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+         transition: transform 0.2s ease, box-shadow 0.2s ease;
+         {% if section.settings.show_icon %}
+           display: flex;
+           align-items: center;
+           gap: 8px;
+         {% endif %}
+       ">
+      {% if section.settings.show_icon %}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      {% endif %}
+      {{ section.settings.button_text }}
+    </a>
+  </div>
+
+  <style>
+    .get-theme-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width: 768px) {
+      .sticky-theme-button {
+        {{ section.settings.position }}: 10px !important;
+        bottom: 10px !important;
+      }
+      
+      .get-theme-link {
+        font-size: {{ section.settings.button_font_size | minus: 2 }}px !important;
+        padding: {{ section.settings.button_padding_vertical | minus: 2 }}px {{ section.settings.button_padding_horizontal | minus: 4 }}px !important;
+      }
+    }
+  </style>
+
+  <script>
+    (function() {
+      const stickyBtn = document.getElementById('sticky-theme-btn');
+      const scrollThreshold = {{ section.settings.scroll_trigger }};
+      let isVisible = false;
+
+      function toggleButton() {
+        const scrolled = window.scrollY > scrollThreshold;
+        
+        if (scrolled && !isVisible) {
+          stickyBtn.style.opacity = '1';
+          stickyBtn.style.transform = 'translateY(0)';
+          isVisible = true;
+        } else if (!scrolled && isVisible) {
+          stickyBtn.style.opacity = '0';
+          stickyBtn.style.transform = 'translateY(20px)';
+          isVisible = false;
+        }
+      }
+
+      window.addEventListener('scroll', toggleButton);
+      window.addEventListener('load', toggleButton);
+    })();
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Sticky Get Theme Button",
+  "tag": "section",
+  "class": "section-sticky-theme-button",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_button",
+      "label": "Enable Sticky Button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Get Theme"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Button Position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Bottom Left"
+        },
+        {
+          "value": "right",
+          "label": "Bottom Right"
+        }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "scroll_trigger",
+      "min": 0,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Show After Scroll (pixels)",
+      "default": 300,
+      "info": "Button appears after user scrolls this many pixels"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Show Download Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Padding (Vertical)",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 16,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "Button Padding (Horizontal)",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Button Border Radius",
+      "default": 25
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Get Theme Button"
+    }
+  ]
+}
+{% endschema %}

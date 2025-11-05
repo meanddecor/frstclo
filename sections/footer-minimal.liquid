@@ -1,267 +1,285 @@
-{% comment %}theme-check-disable UndefinedObject{% endcomment %}
-
 {% comment %}
 ✅ GLOBAL SETTINGS APPLIED:
-- Colors: color_background, color_text
-- Typography: type_body_font, font_size_base
-- Layout: page_width
-- Social Media: social_instagram_link, social_youtube_link, social_tiktok_link
+- Social Media: social_instagram_link, social_youtube_link, social_tiktok_link, social_facebook_link, social_twitter_link, social_pinterest_link
+- Media: image_lazy_loading, media_fit (object-fit for images)
+- Layout: page_width (via page-width class)
+- Typography: Custom font picker for section text styling
+- Colors: Section-level color controls
 {% endcomment %}
 
-{%- liquid
-  assign footer_bg_color = section.settings.background_color | default: settings.color_background
-  assign footer_text_color = section.settings.text_color | default: settings.color_text
-  assign link_color = section.settings.link_color | default: settings.color_text
-  assign link_hover_color = section.settings.link_hover_color | default: settings.color_primary
-  assign icon_color = section.settings.icon_color | default: settings.color_text
-  assign icon_hover_color = section.settings.icon_hover_color | default: settings.color_primary
-  assign copyright_color = section.settings.copyright_color | default: footer_text_color
-  assign font_family = settings.type_body_font.family | default: 'inherit'
--%}
-
 <style>
-  .footer-minimal-{{ section.id }} {
-    background: {{ footer_bg_color }};
-    color: {{ footer_text_color }};
-    font-family: {{ font_family }}, sans-serif;
-    margin-top: {{ section.settings.section_margin_top }}px;
-    margin-bottom: {{ section.settings.section_margin_bottom }}px;
-  }
+  {{ section.settings.text_font | font_face: font_display: 'swap' }}
+</style>
 
-  .footer-minimal-{{ section.id }} .footer-nav {
+<div id="shopify-section-footer" class="shopify-section"><style>
+  .footer-nav {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: {{ section.settings.nav_margin_bottom }}px;
-    margin-top: {{ section.settings.nav_margin_top }}px;
+    margin-bottom: 0.5rem;
+    margin-top: 0.6rem;
+  }
+  .footer-nav a{
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }} !important;
+    font-family: {{ section.settings.text_font.family }}, {{ section.settings.text_font.fallback_families }};
+    font-weight: {{ section.settings.text_font.weight }};
+    line-height: {{ section.settings.text_line_spacing }};
+    letter-spacing: {{ section.settings.text_letter_spacing }}px;
+    text-transform: {{ section.settings.text_transform }};
+    text-decoration: {% if section.settings.text_underline %}underline{% else %}none{% endif %};
+    font-style: {% if section.settings.text_italic %}italic{% else %}normal{% endif %};
+  }
+  
+  .footer-nav a:hover {
+    opacity: 0.7;
   }
 
-  .footer-minimal-{{ section.id }} .footer-nav a {
-    font-size: {{ section.settings.nav_font_size_desktop }}px;
-    color: {{ link_color }};
-    text-decoration: none;
-    transition: color 0.2s ease;
+  .eyecey{
+    margin: 5px 0 16px;
   }
-
-  .footer-minimal-{{ section.id }} .footer-nav a:hover {
-    color: {{ link_hover_color }};
-  }
-
-  .footer-minimal-{{ section.id }} .list-payment {
+  .list-payment {
+    
     filter: inherit;
+    
     list-style: none;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    padding-top: {{ section.settings.payment_padding_top }}px;
-    margin: 0;
-    padding-left: 0;
+    padding-top: 20px;
   }
-
-  .footer-minimal-{{ section.id }} li.list-payment__item {
+  li.list-payment__item {
     align-items: center;
     display: flex;
     padding: 0.5rem;
   }
-
-  .footer-minimal-{{ section.id }} ul.list-unstyled.list-social {
+  ul.list-unstyled.list-social {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
   }
-
-  .footer-minimal-{{ section.id }} a.link.list-social__link {
+  a.link.list-social__link {
     align-items: center;
     display: flex;
-    padding: {{ section.settings.social_icon_padding }}px;
-    transition: all 0.2s ease;
+    padding: {{ section.settings.icon_spacing }}px;
   }
-
-  .footer-minimal-{{ section.id }} .list-social__link .icon {
-    height: {{ section.settings.social_icon_size }}px;
-    width: {{ section.settings.social_icon_size }}px;
+  .list-social__link .icon {
+    height: {{ section.settings.icon_size }}px;
+    width: {{ section.settings.icon_size }}px;
+    color: {{ section.settings.icon_color }};
   }
-
-  .footer-minimal-{{ section.id }} .list-social__link .icon path {
-    fill: {{ icon_color }};
-    transition: fill 0.2s ease;
-  }
-
-  .footer-minimal-{{ section.id }} a.link.list-social__link:hover .icon path {
-    fill: {{ icon_hover_color }};
-  }
-
-  .footer-minimal-{{ section.id }} .footer-info {
+  .footer-info{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: {{ section.settings.nav_social_width }}%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: {{ section.settings.nav_social_padding_horizontal }}px;
+    padding-right: {{ section.settings.nav_social_padding_horizontal }}px;
   }
-
-  .footer-minimal-{{ section.id }} .footer__big-logo {
-    margin-top: {{ section.settings.logo_margin_top }}px;
-  }
-
-  .footer-minimal-{{ section.id }} .footer__big-logo img {
-    width: 100%;
-    vertical-align: top;
-  }
-
-  .footer-minimal-{{ section.id }} .site-copy {
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    padding: 0;
-    margin: 0 !important;
-    overflow: hidden;
-  }
-
-  .footer-minimal-{{ section.id }} .copyright {
+  .footer__big-logo{
+    margin-top: {{ section.settings.big_logo_margin_top }}px;
     text-align: center;
-    padding-top: 0 !important;
+    width: {{ section.settings.logo_width }}%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: {{ section.settings.logo_padding_horizontal }}px;
+    padding-right: {{ section.settings.logo_padding_horizontal }}px;
   }
-
-  .footer-minimal-{{ section.id }} .copyright small {
-    margin: {{ section.settings.copyright_margin }}px 0;
+  
+  .footer__big-logo img {
+    width: {{ section.settings.image_width }}%;
+    max-width: 100%;
+    vertical-align: top;
+    object-fit: {{ section.settings.image_object_fit }};
+    height: {% if section.settings.image_height_auto %}auto{% else %}{{ section.settings.image_height }}px{% endif %};
     display: block;
-    color: {{ copyright_color }};
+    margin: 0 auto;
   }
-
-  .footer-minimal-{{ section.id }} .copyright a {
-    color: {{ copyright_color }};
-    text-decoration: none;
-    transition: opacity 0.2s ease;
+  
+  .copyright{
+    padding-top: 20px;
+    padding-bottom: 10px;
+    text-align: center;
+    display: block;
+    width: {{ section.settings.copyright_width }}%;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: {{ section.settings.copyright_padding_horizontal }}px;
+    padding-right: {{ section.settings.copyright_padding_horizontal }}px;
   }
-
-  .footer-minimal-{{ section.id }} .copyright a:hover {
-    opacity: 0.7;
+  
+  .copyright__content {
+    display: block;
+    font-size: {{ section.settings.copyright_text_size }}px;
+    color: {{ section.settings.copyright_text_color }} !important;
+    margin: 9px auto;
+    line-height: 1.6;
   }
-
-  .footer-minimal-{{ section.id }} .eyecey {
-    {% if section.settings.show_credit %}
-    margin: {{ section.settings.credit_margin }}px 0 {{ section.settings.credit_margin_bottom }}px;
-    {% else %}
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    padding: 0;
-    margin: 0;
-    overflow: hidden;
+  
+  .copyright__content * {
+    color: {{ section.settings.copyright_text_color }} !important;
+    font-size: inherit !important;
+  }
+  
+  .copyright__content a {
+    text-decoration: underline;
+  }
+  
+  .copyright__content a:hover {
+    opacity: 0.8;
+  }
+  
+  #shopify-section-footer{
+    margin-top: {{ section.settings.section_margin_top }}px;
+    margin-bottom: 0px;
+    background-color: {{ section.settings.background_color }};
+    {% if section.settings.enable_border_top %}
+      border-top: {{ section.settings.border_width }}px {{ section.settings.border_style }} {{ section.settings.border_color }};
     {% endif %}
+    {% if section.settings.enable_border_bottom %}
+      border-bottom: {{ section.settings.border_width }}px {{ section.settings.border_style }} {{ section.settings.border_color }};
+    {% endif %}
+    padding-top: {{ section.settings.section_padding_top }}px;
+    padding-bottom: {{ section.settings.section_padding_bottom }}px;
   }
-
-  @media screen and (max-width: 749px) {
-    .footer-minimal-{{ section.id }} .footer-nav {
-      display: flex;
+  @media screen and (max-width: 749px){
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-top: 0.6rem;
+  }
+  .footer-nav a{
+    font-size: {{ section.settings.text_size | times: 1.4 }}px;
+  }
+  .footer-nav a:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+    .footer-info {
       flex-direction: column;
-      align-items: center;
-      margin-bottom: 1rem;
-      margin-top: 0.6rem;
-    }
-
-    .footer-minimal-{{ section.id }} .footer-nav a {
-      font-size: {{ section.settings.nav_font_size_mobile }}px;
-    }
-
-    .footer-minimal-{{ section.id }} .footer-nav a:not(:last-child) {
-      margin-bottom: {{ section.settings.nav_link_spacing_mobile }}px;
-    }
-
-    .footer-minimal-{{ section.id }} .footer-info {
-      flex-direction: column;
-    }
-
-    .footer-minimal-{{ section.id }} .footer__big-logo {
-      margin-top: {{ section.settings.logo_margin_top_mobile }}px;
+  }
+    .footer__big-logo{
+      margin-top: 30px;
     }
   }
-
-  @media screen and (min-width: 750px) {
-    .footer-minimal-{{ section.id }} .footer-nav a:not(:last-child) {
-      margin-right: {{ section.settings.nav_link_spacing_desktop }}px;
-    }
+  @media screen and (min-width: 750px){
+  .footer-nav a:not(:last-child) {
+    margin-right: 0.7rem;
+  }
   }
 </style>
-
-<div id="shopify-section-footer-minimal" class="shopify-section footer-minimal-{{ section.id }}">
-  <div class="page-width footer-info" style="max-width: {{ settings.page_width | default: 1200 }}px; margin: 0 auto;">
+<div class="footer-info">
+  {% if section.settings.show_footer_nav and section.settings.footer_menu != blank %}
     <div class="footer-nav">
-      {% if section.settings.show_terms %}
-        <a href="/policies/terms-of-service">{{ section.settings.terms_text }}</a>
-      {% endif %}
-      {% if section.settings.show_shipping %}
-        <a href="/policies/shipping-policy">{{ section.settings.shipping_text }}</a>
-      {% endif %}
-      {% if section.settings.show_refund %}
-        <a href="/policies/refund-policy">{{ section.settings.refund_text }}</a>
-      {% endif %}
-      {% if section.settings.show_privacy %}
-        <a href="/policies/privacy-policy">{{ section.settings.privacy_text }}</a>
-      {% endif %}
-    </div>
-
-    {% if section.settings.show_social_media %}
-      <ul class="list-unstyled list-social" role="list">
-        {% if section.settings.social_instagram_link != blank %}
-          <li class="list-social__item">
-            <a href="{{ section.settings.social_instagram_link }}" class="link list-social__link" target="_blank" rel="noopener">
-              <svg aria-hidden="true" focusable="false" class="icon icon-instagram" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M13.23 3.492c-.84-.037-1.096-.046-3.23-.046-2.144 0-2.39.01-3.238.055-.776.027-1.195.164-1.487.273a2.43 2.43 0 0 0-.912.593 2.486 2.486 0 0 0-.602.922c-.11.282-.238.702-.274 1.486-.046.84-.046 1.095-.046 3.23 0 2.134.01 2.39.046 3.229.004.51.097 1.016.274 1.495.145.365.319.639.602.913.282.282.538.456.92.602.474.176.974.268 1.479.273.848.046 1.103.046 3.238.046 2.134 0 2.39-.01 3.23-.046.784-.036 1.203-.164 1.486-.273.374-.146.648-.329.921-.602.283-.283.447-.548.602-.922.177-.476.27-.979.274-1.486.037-.84.046-1.095.046-3.23 0-2.134-.01-2.39-.055-3.229-.027-.784-.164-1.204-.274-1.495a2.43 2.43 0 0 0-.593-.913 2.604 2.604 0 0 0-.92-.602c-.284-.11-.703-.237-1.488-.273ZM6.697 2.05c.857-.036 1.131-.045 3.302-.045 1.1-.014 2.202.001 3.302.045.664.014 1.321.14 1.943.374a3.968 3.968 0 0 1 1.414.922c.41.397.728.88.93 1.414.23.622.354 1.279.365 1.942C18 7.56 18 7.824 18 10.005c0 2.17-.01 2.444-.046 3.292-.036.858-.173 1.442-.374 1.943-.2.53-.474.976-.92 1.423a3.896 3.896 0 0 1-1.415.922c-.51.191-1.095.337-1.943.374-.857.036-1.122.045-3.302.045-2.171 0-2.445-.009-3.302-.055-.849-.027-1.432-.164-1.943-.364a4.152 4.152 0 0 1-1.414-.922 4.128 4.128 0 0 1-.93-1.423c-.183-.51-.329-1.085-.365-1.943C2.009 12.45 2 12.167 2 10.004c0-2.161 0-2.435.055-3.302.027-.848.164-1.432.365-1.942a4.44 4.44 0 0 1 .92-1.414 4.18 4.18 0 0 1 1.415-.93c.51-.183 1.094-.33 1.943-.366Zm.427 4.806a4.105 4.105 0 1 1 5.805 5.805 4.105 4.105 0 0 1-5.805-5.805Zm1.882 5.371a2.668 2.668 0 1 0 2.042-4.93 2.668 2.668 0 0 0-2.042 4.93Zm5.922-5.942a.958.958 0 1 1-1.355-1.355.958.958 0 0 1 1.355 1.355Z" clip-rule="evenodd"></path>
-              </svg>
-            </a>
-          </li>
-        {% endif %}
-
-        {% if section.settings.social_youtube_link != blank %}
-          <li class="list-social__item">
-            <a href="{{ section.settings.social_youtube_link }}" class="link list-social__link" target="_blank" rel="noopener">
-              <svg aria-hidden="true" focusable="false" class="icon icon-youtube" viewBox="0 0 20 20">
-                <path d="M18.16 5.87c.34 1.309.34 4.08.34 4.08s0 2.771-.34 4.08a2.125 2.125 0 0 1-1.53 1.53c-1.309.34-6.63.34-6.63.34s-5.321 0-6.63-.34a2.125 2.125 0 0 1-1.53-1.53c-.34-1.309-.34-4.08-.34-4.08s0-2.771.34-4.08a2.173 2.173 0 0 1 1.53-1.53C4.679 4 10 4 10 4s5.321 0 6.63.34a2.173 2.173 0 0 1 1.53 1.53ZM8.3 12.5l4.42-2.55L8.3 7.4v5.1Z"></path>
-              </svg>
-            </a>
-          </li>
-        {% endif %}
-
-        {% if section.settings.social_tiktok_link != blank %}
-          <li class="list-social__item">
-            <a href="{{ section.settings.social_tiktok_link }}" class="link list-social__link" target="_blank" rel="noopener">
-              <svg aria-hidden="true" focusable="false" class="icon icon-tiktok" viewBox="0 0 20 20">
-                <path d="M10.511 1.705h2.74s-.157 3.51 3.795 3.768v2.711s-2.114.129-3.796-1.158l.028 5.606A5.073 5.073 0 1 1 8.213 7.56h.708v2.785a2.298 2.298 0 1 0 1.618 2.205L10.51 1.705Z"></path>
-              </svg>
-            </a>
-          </li>
-        {% endif %}
-      </ul>
-    {% endif %}
-  </div>
-
-  <div class="copyright">
-    <small class="copyright__content site-copy">
-      &copy; {{ 'now' | date: "%Y" }}, 
-      <a href="{{ routes.root_url }}">{{ section.settings.store_name | default: shop.name }}</a>
-    </small>
-    {% if section.settings.show_credit %}
-      <small class="copyright__content eyecey">
-        {% if section.settings.credit_url != blank %}
-          <a href="{{ section.settings.credit_url }}">{{ section.settings.credit_text }}</a>
-        {% else %}
-          {{ section.settings.credit_text }}
-        {% endif %}
-      </small>
-    {% endif %}
-  </div>
-
-  {% if section.settings.show_big_logo and section.settings.big_logo != blank %}
-    <div class="page-width footer__big-logo" style="max-width: {{ settings.page_width | default: 1200 }}px; margin: 0 auto;">
-      <img src="{{ section.settings.big_logo | image_url: width: 2000 }}" 
-           alt="{{ section.settings.big_logo.alt | default: shop.name }}"
-           width="{{ section.settings.big_logo.width }}"
-           height="{{ section.settings.big_logo.height }}"
-           loading="lazy">
+      {% for link in linklists[section.settings.footer_menu].links %}
+        <a href="{{ link.url }}">{{ link.title }}</a>
+      {% endfor %}
     </div>
   {% endif %}
+
+
+  {% if section.settings.show_social_media %}
+    {%- liquid
+      assign instagram = section.settings.instagram_link | default: settings.social_instagram_link
+      assign youtube = section.settings.youtube_link | default: settings.social_youtube_link
+      assign tiktok = section.settings.tiktok_link | default: settings.social_tiktok_link
+      assign facebook = section.settings.facebook_link | default: settings.social_facebook_link
+      assign twitter = section.settings.twitter_link | default: settings.social_twitter_link
+      assign pinterest = section.settings.pinterest_link | default: settings.social_pinterest_link
+    -%}
+    <ul class="list-unstyled list-social" role="list">
+      {% if instagram != blank %}
+        <li class="list-social__item">
+          <a href="{{ instagram }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg aria-hidden="true" focusable="false" class="icon icon-instagram" viewBox="0 0 20 20">
+              <path fill="currentColor" fill-rule="evenodd" d="M13.23 3.492c-.84-.037-1.096-.046-3.23-.046-2.144 0-2.39.01-3.238.055-.776.027-1.195.164-1.487.273a2.43 2.43 0 0 0-.912.593 2.486 2.486 0 0 0-.602.922c-.11.282-.238.702-.274 1.486-.046.84-.046 1.095-.046 3.23 0 2.134.01 2.39.046 3.229.004.51.097 1.016.274 1.495.145.365.319.639.602.913.282.282.538.456.92.602.474.176.974.268 1.479.273.848.046 1.103.046 3.238.046 2.134 0 2.39-.01 3.23-.046.784-.036 1.203-.164 1.486-.273.374-.146.648-.329.921-.602.283-.283.447-.548.602-.922.177-.476.27-.979.274-1.486.037-.84.046-1.095.046-3.23 0-2.134-.01-2.39-.055-3.229-.027-.784-.164-1.204-.274-1.495a2.43 2.43 0 0 0-.593-.913 2.604 2.604 0 0 0-.92-.602c-.284-.11-.703-.237-1.488-.273ZM6.697 2.05c.857-.036 1.131-.045 3.302-.045 1.1-.014 2.202.001 3.302.045.664.014 1.321.14 1.943.374a3.968 3.968 0 0 1 1.414.922c.41.397.728.88.93 1.414.23.622.354 1.279.365 1.942C18 7.56 18 7.824 18 10.005c0 2.17-.01 2.444-.046 3.292-.036.858-.173 1.442-.374 1.943-.2.53-.474.976-.92 1.423a3.896 3.896 0 0 1-1.415.922c-.51.191-1.095.337-1.943.374-.857.036-1.122.045-3.302.045-2.171 0-2.445-.009-3.302-.055-.849-.027-1.432-.164-1.943-.364a4.152 4.152 0 0 1-1.414-.922 4.128 4.128 0 0 1-.93-1.423c-.183-.51-.329-1.085-.365-1.943C2.009 12.45 2 12.167 2 10.004c0-2.161 0-2.435.055-3.302.027-.848.164-1.432.365-1.942a4.44 4.44 0 0 1 .92-1.414 4.18 4.18 0 0 1 1.415-.93c.51-.183 1.094-.33 1.943-.366Zm.427 4.806a4.105 4.105 0 1 1 5.805 5.805 4.105 4.105 0 0 1-5.805-5.805Zm1.882 5.371a2.668 2.668 0 1 0 2.042-4.93 2.668 2.668 0 0 0-2.042 4.93Zm5.922-5.942a.958.958 0 1 1-1.355-1.355.958.958 0 0 1 1.355 1.355Z" clip-rule="evenodd"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+      {% if youtube != blank %}
+        <li class="list-social__item">
+          <a href="{{ youtube }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg aria-hidden="true" focusable="false" class="icon icon-youtube" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M18.16 5.87c.34 1.309.34 4.08.34 4.08s0 2.771-.34 4.08a2.125 2.125 0 0 1-1.53 1.53c-1.309.34-6.63.34-6.63.34s-5.321 0-6.63-.34a2.125 2.125 0 0 1-1.53-1.53c-.34-1.309-.34-4.08-.34-4.08s0-2.771.34-4.08a2.173 2.173 0 0 1 1.53-1.53C4.679 4 10 4 10 4s5.321 0 6.63.34a2.173 2.173 0 0 1 1.53 1.53ZM8.3 12.5l4.42-2.55L8.3 7.4v5.1Z"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+      {% if tiktok != blank %}
+        <li class="list-social__item">
+          <a href="{{ tiktok }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg aria-hidden="true" focusable="false" class="icon icon-tiktok" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M10.511 1.705h2.74s-.157 3.51 3.795 3.768v2.711s-2.114.129-3.796-1.158l.028 5.606A5.073 5.073 0 1 1 8.213 7.56h.708v2.785a2.298 2.298 0 1 0 1.618 2.205L10.51 1.705Z"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+      {% if facebook != blank %}
+        <li class="list-social__item">
+          <a href="{{ facebook }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg aria-hidden="true" focusable="false" class="icon icon-facebook" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M18 10.049C18 5.603 14.419 2 10 2s-8 3.604-8 8.049c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V10.05H8.75V8.275c0-2.017 1.195-3.132 3.022-3.132.875 0 1.79.157 1.79.157v1.98h-1.009c-.994 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H11.25V18c3.824-.604 6.75-3.934 6.75-7.951z"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+      {% if twitter != blank %}
+        <li class="list-social__item">
+          <a href="{{ twitter }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="Twitter">
+            <svg aria-hidden="true" focusable="false" class="icon icon-twitter" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M17.316 6.246c.008.162.011.326.011.488 0 4.99-3.797 10.742-10.74 10.742-2.133 0-4.116-.625-5.787-1.697a7.577 7.577 0 0 0 5.588-1.562 3.779 3.779 0 0 1-3.526-2.621 3.858 3.858 0 0 0 1.705-.065 3.779 3.779 0 0 1-3.028-3.703v-.047a3.766 3.766 0 0 0 1.71.473 3.775 3.775 0 0 1-1.168-5.041 10.716 10.716 0 0 0 7.781 3.945 3.813 3.813 0 0 1-.097-.861 3.773 3.773 0 0 1 3.774-3.773 3.77 3.77 0 0 1 2.756 1.191 7.602 7.602 0 0 0 2.397-.916 3.789 3.789 0 0 1-1.66 2.088 7.55 7.55 0 0 0 2.168-.594 7.623 7.623 0 0 1-1.884 1.953z"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+      {% if pinterest != blank %}
+        <li class="list-social__item">
+          <a href="{{ pinterest }}" class="link list-social__link" target="_blank" rel="noopener" aria-label="Pinterest">
+            <svg aria-hidden="true" focusable="false" class="icon icon-pinterest" viewBox="0 0 20 20">
+              <path fill="currentColor" d="M10.002 2c-4.419 0-8 3.582-8 8a7.98 7.98 0 0 0 4.581 7.225c-.052-.464-.1-1.176.021-1.682l.812-3.44s-.208-.416-.208-1.03c0-.963.56-1.683 1.257-1.683.593 0 .88.445.88 978 0 .64-.408 1.6-.618 2.49-.177.745.373 1.35 1.106 1.35 1.328 0 2.35-1.4 2.35-3.42 0-1.788-1.285-3.039-3.119-3.039-2.125 0-3.373 1.594-3.373 3.242 0 .642.247 1.33.556 1.703a.288.288 0 0 1 .066.277c-.073.301-.235.957-.267 1.091-.042.173-.136.21-.315.126-1.04-.484-1.69-2.005-1.69-3.228 0-2.355 1.711-4.518 4.935-4.518 2.591 0 4.605 1.846 4.605 4.314 0 2.575-1.624 4.648-3.88 4.648-.757 0-1.47-.394-1.713-.858l-.466 1.776c-.169.649-.623 1.462-.928 1.958.7.216 1.446.333 2.22.333 4.418 0 8-3.582 8-8s-3.582-8-8-8z"></path>
+            </svg>
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+
+
+</div>
+
+
+
+{% if section.settings.show_copyright %}
+  <div class="copyright">
+    {% if section.settings.copyright_text != blank %}
+      <div class="copyright__content copyright__primary">
+        {{ section.settings.copyright_text }}
+      </div>
+    {% endif %}
+    {% if section.settings.secondary_text != blank %}
+      <div class="copyright__content copyright__secondary">
+        {{ section.settings.secondary_text }}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<div class="footer__big-logo">
+  {% if section.settings.show_big_logo and section.settings.big_logo %}
+    <img src="{{ section.settings.big_logo | image_url: width: 2000 }}" 
+         alt="{{ section.settings.big_logo.alt | default: shop.name }}"
+         loading="{% if settings.image_lazy_loading %}lazy{% else %}eager{% endif %}">
+  {% endif %}
+</div>
+
+
 </div>
 
 {% schema %}
@@ -270,345 +288,446 @@
   "settings": [
     {
       "type": "header",
-      "content": "Store Information"
+      "content": "Footer Navigation Links"
     },
     {
-      "type": "text",
-      "id": "store_name",
-      "label": "Store Name",
-      "info": "Leave blank to use your shop name",
-      "default": "EYEZY ULTIMATE"
+      "type": "checkbox",
+      "id": "show_footer_nav",
+      "label": "Show footer navigation",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Footer menu",
+      "default": "footer",
+      "info": "Select a menu for footer links (e.g., Terms, Shipping, Refund, Privacy)"
     },
     {
       "type": "header",
-      "content": "Navigation Links"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_terms",
-      "label": "Show Terms Link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "terms_text",
-      "label": "Terms Link Text",
-      "default": "Terms"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_shipping",
-      "label": "Show Shipping Link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "shipping_text",
-      "label": "Shipping Link Text",
-      "default": "Shipping"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_refund",
-      "label": "Show Refund Link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "refund_text",
-      "label": "Refund Link Text",
-      "default": "Refund"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_privacy",
-      "label": "Show Privacy Link",
-      "default": true
-    },
-    {
-      "type": "text",
-      "id": "privacy_text",
-      "label": "Privacy Link Text",
-      "default": "Privacy"
-    },
-    {
-      "type": "header",
-      "content": "Social Media"
+      "content": "Social Media Links"
     },
     {
       "type": "checkbox",
       "id": "show_social_media",
-      "label": "Show Social Media Icons",
-      "default": true
-    },
-    {
-      "type": "url",
-      "id": "social_instagram_link",
-      "label": "Instagram URL",
-      "info": "https://www.instagram.com/yourhandle"
-    },
-    {
-      "type": "url",
-      "id": "social_youtube_link",
-      "label": "YouTube URL",
-      "info": "https://www.youtube.com/yourchannel"
-    },
-    {
-      "type": "url",
-      "id": "social_tiktok_link",
-      "label": "TikTok URL",
-      "info": "https://www.tiktok.com/@yourhandle"
-    },
-    {
-      "type": "range",
-      "id": "social_icon_size",
-      "min": 16,
-      "max": 48,
-      "step": 2,
-      "unit": "px",
-      "label": "Social Icon Size",
-      "default": 26
-    },
-    {
-      "type": "range",
-      "id": "social_icon_padding",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Social Icon Padding",
-      "default": 10
-    },
-    {
-      "type": "header",
-      "content": "Credit Link"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_credit",
-      "label": "Show Credit Link",
-      "default": true
+      "label": "Show social media links",
+      "default": true,
+      "info": "Social links are pulled from global settings (Social Media section)"
     },
     {
       "type": "text",
-      "id": "credit_text",
-      "label": "Credit Text",
-      "default": "NGAGE By FRST MADE."
+      "id": "instagram_link",
+      "label": "Instagram URL",
+      "default": "https://www.instagram.com/",
+      "info": "Or leave empty to use global social media settings"
     },
     {
-      "type": "url",
-      "id": "credit_url",
-      "label": "Credit URL"
+      "type": "text",
+      "id": "youtube_link",
+      "label": "YouTube URL",
+      "info": "Or leave empty to use global social media settings"
+    },
+    {
+      "type": "text",
+      "id": "tiktok_link",
+      "label": "TikTok URL",
+      "info": "Or leave empty to use global social media settings"
+    },
+    {
+      "type": "text",
+      "id": "facebook_link",
+      "label": "Facebook URL",
+      "info": "Or leave empty to use global social media settings"
+    },
+    {
+      "type": "text",
+      "id": "twitter_link",
+      "label": "Twitter URL",
+      "info": "Or leave empty to use global social media settings"
+    },
+    {
+      "type": "text",
+      "id": "pinterest_link",
+      "label": "Pinterest URL",
+      "info": "Or leave empty to use global social media settings"
     },
     {
       "type": "header",
-      "content": "Big Logo"
+      "content": "Copyright Text"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_copyright",
+      "label": "Show copyright text",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "copyright_text",
+      "label": "Copyright text",
+      "default": "<p>© 2025, <a href=\"/\" title=\"\">EYEZY ULTIMATE</a></p>",
+      "info": "Custom copyright text. Use {{ 'now' | date: '%Y' }} for current year"
+    },
+    {
+      "type": "richtext",
+      "id": "secondary_text",
+      "label": "Secondary text",
+      "default": "<p><a href=\"https://eyecey.com\">SITE BY EYECEY</a></p>",
+      "info": "Additional text below copyright (e.g., designer credit)"
+    },
+    {
+      "type": "header",
+      "content": "Big Logo/Image"
     },
     {
       "type": "checkbox",
       "id": "show_big_logo",
-      "label": "Show Big Logo",
+      "label": "Show big logo/image",
       "default": true
     },
     {
       "type": "image_picker",
       "id": "big_logo",
-      "label": "Big Logo Image",
-      "info": "Large logo displayed at the bottom of the footer"
+      "label": "Big logo/image",
+      "info": "Large image or logo displayed at bottom of footer"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "label": "Image width",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100,
+      "info": "Width as percentage of container"
+    },
+    {
+      "type": "checkbox",
+      "id": "image_height_auto",
+      "label": "Auto height",
+      "default": true,
+      "info": "Keep image aspect ratio"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "label": "Image height (if not auto)",
+      "min": 50,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 200
+    },
+    {
+      "type": "select",
+      "id": "image_object_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "contain", "label": "Contain (show full image)" },
+        { "value": "cover", "label": "Cover (fill space)" },
+        { "value": "fill", "label": "Fill (stretch)" },
+        { "value": "scale-down", "label": "Scale down" },
+        { "value": "none", "label": "None (original size)" }
+      ],
+      "default": "contain",
+      "info": "How image fits in its container"
     },
     {
       "type": "header",
-      "content": "Colors"
+      "content": "Background & Borders"
     },
     {
       "type": "color",
       "id": "background_color",
-      "label": "Background Color",
-      "info": "Leave blank to use global theme background color"
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_border_top",
+      "label": "Enable top border",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_border_bottom",
+      "label": "Enable bottom border",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border width",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Border style",
+      "options": [
+        { "value": "solid", "label": "Solid" },
+        { "value": "dashed", "label": "Dashed" },
+        { "value": "dotted", "label": "Dotted" },
+        { "value": "double", "label": "Double" }
+      ],
+      "default": "solid"
     },
     {
       "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "info": "Leave blank to use global theme text color"
-    },
-    {
-      "type": "color",
-      "id": "link_color",
-      "label": "Link Color",
-      "info": "Leave blank to use text color"
-    },
-    {
-      "type": "color",
-      "id": "link_hover_color",
-      "label": "Link Hover Color",
-      "info": "Leave blank to use primary color"
-    },
-    {
-      "type": "color",
-      "id": "icon_color",
-      "label": "Social Icon Color",
-      "info": "Leave blank to use text color"
-    },
-    {
-      "type": "color",
-      "id": "icon_hover_color",
-      "label": "Social Icon Hover Color",
-      "info": "Leave blank to use primary color"
-    },
-    {
-      "type": "color",
-      "id": "copyright_color",
-      "label": "Copyright Text Color",
-      "info": "Leave blank to use text color"
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e0e0e0"
     },
     {
       "type": "header",
-      "content": "Typography"
+      "content": "Container Width & Padding"
+    },
+    {
+      "type": "paragraph",
+      "content": "Control the width and horizontal padding for each footer section using percentage sliders."
     },
     {
       "type": "range",
-      "id": "nav_font_size_mobile",
-      "min": 16,
-      "max": 36,
-      "step": 2,
-      "unit": "px",
-      "label": "Navigation Font Size (Mobile)",
-      "default": 28
+      "id": "nav_social_width",
+      "label": "Navigation & Social - Width",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "info": "Container width as percentage of viewport"
     },
     {
       "type": "range",
-      "id": "nav_font_size_desktop",
-      "min": 14,
-      "max": 32,
-      "step": 2,
+      "id": "nav_social_padding_horizontal",
+      "label": "Navigation & Social - Horizontal padding",
+      "min": 0,
+      "max": 200,
+      "step": 5,
       "unit": "px",
-      "label": "Navigation Font Size (Desktop)",
+      "default": 20,
+      "info": "Left and right padding"
+    },
+    {
+      "type": "range",
+      "id": "copyright_width",
+      "label": "Copyright - Width",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "info": "Container width as percentage of viewport"
+    },
+    {
+      "type": "range",
+      "id": "copyright_padding_horizontal",
+      "label": "Copyright - Horizontal padding",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 20,
+      "info": "Left and right padding"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Big logo - Width",
+      "min": 30,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "info": "Container width as percentage of viewport"
+    },
+    {
+      "type": "range",
+      "id": "logo_padding_horizontal",
+      "label": "Big logo - Horizontal padding",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "default": 20,
+      "info": "Left and right padding"
+    },
+    {
+      "type": "header",
+      "content": "Spacing & Layout"
+    },
+    {
+      "type": "range",
+      "id": "section_padding_top",
+      "label": "Section top padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
       "default": 20
     },
     {
-      "type": "header",
-      "content": "Spacing"
+      "type": "range",
+      "id": "section_padding_bottom",
+      "label": "Section bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
     },
     {
       "type": "range",
       "id": "section_margin_top",
+      "label": "Section top margin",
       "min": 0,
-      "max": 150,
-      "step": 5,
+      "max": 200,
+      "step": 10,
       "unit": "px",
-      "label": "Section Margin Top",
       "default": 70
     },
     {
       "type": "range",
-      "id": "section_margin_bottom",
+      "id": "big_logo_margin_top",
+      "label": "Big logo top margin",
       "min": 0,
-      "max": 150,
-      "step": 5,
+      "max": 200,
+      "step": 10,
       "unit": "px",
-      "label": "Section Margin Bottom",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "nav_margin_top",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "label": "Navigation Margin Top",
-      "default": 10
-    },
-    {
-      "type": "range",
-      "id": "nav_margin_bottom",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "label": "Navigation Margin Bottom",
-      "default": 8
-    },
-    {
-      "type": "range",
-      "id": "nav_link_spacing_mobile",
-      "min": 0,
-      "max": 30,
-      "step": 2,
-      "unit": "px",
-      "label": "Link Spacing (Mobile)",
-      "default": 8
-    },
-    {
-      "type": "range",
-      "id": "nav_link_spacing_desktop",
-      "min": 0,
-      "max": 30,
-      "step": 2,
-      "unit": "px",
-      "label": "Link Spacing (Desktop)",
-      "default": 12
-    },
-    {
-      "type": "range",
-      "id": "copyright_margin",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "px",
-      "label": "Copyright Margin",
-      "default": 9
-    },
-    {
-      "type": "range",
-      "id": "credit_margin",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "px",
-      "label": "Credit Link Top Margin",
-      "default": 5
-    },
-    {
-      "type": "range",
-      "id": "credit_margin_bottom",
-      "min": 0,
-      "max": 30,
-      "step": 1,
-      "unit": "px",
-      "label": "Credit Link Bottom Margin",
-      "default": 16
-    },
-    {
-      "type": "range",
-      "id": "logo_margin_top",
-      "min": 0,
-      "max": 150,
-      "step": 5,
-      "unit": "px",
-      "label": "Big Logo Margin Top (Desktop)",
       "default": 60
     },
     {
-      "type": "range",
-      "id": "logo_margin_top_mobile",
-      "min": 0,
-      "max": 150,
-      "step": 5,
-      "unit": "px",
-      "label": "Big Logo Margin Top (Mobile)",
-      "default": 30
+      "type": "header",
+      "content": "Text Styling"
     },
     {
       "type": "range",
-      "id": "payment_padding_top",
-      "min": 0,
-      "max": 50,
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 20,
+      "info": "Font size for footer navigation links"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "font_picker",
+      "id": "text_font",
+      "label": "Text font",
+      "default": "assistant_n4",
+      "info": "Font family for footer text"
+    },
+    {
+      "type": "range",
+      "id": "text_line_spacing",
+      "label": "Line spacing",
+      "min": 1,
+      "max": 3,
+      "step": 0.1,
+      "default": 1.5,
+      "info": "Line height for text"
+    },
+    {
+      "type": "range",
+      "id": "text_letter_spacing",
+      "label": "Letter spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0,
+      "info": "Space between letters"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text transform",
+      "options": [
+        { "value": "none", "label": "Normal" },
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize Each Word" }
+      ],
+      "default": "none",
+      "info": "Transform text appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_underline",
+      "label": "Underline text",
+      "default": false,
+      "info": "Add underline to navigation links"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_italic",
+      "label": "Italic text",
+      "default": false,
+      "info": "Make navigation links italic"
+    },
+    {
+      "type": "header",
+      "content": "Icon Styling"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Icon size",
+      "min": 12,
+      "max": 60,
       "step": 2,
       "unit": "px",
-      "label": "Payment Icons Padding Top",
-      "default": 20
+      "default": 26,
+      "info": "Width and height of social icons"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Icon spacing",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 10,
+      "info": "Padding around each icon"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Copyright Text Styling"
+    },
+    {
+      "type": "range",
+      "id": "copyright_text_size",
+      "label": "Copyright text size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "copyright_text_color",
+      "label": "Copyright text color",
+      "default": "#000000"
     }
   ],
   "presets": [
