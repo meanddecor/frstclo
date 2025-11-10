@@ -6,6 +6,17 @@
 - Layout: page_width
 - Variant Pills: variant_pill_size
 - Media: image_lazy_loading
+
+✅ CUSTOMIZABLE IMAGE SETTINGS:
+- Image width (desktop only): 50-200% (values over 100% create overflow effect)
+- Image padding: top, right, bottom, left (0-200px each)
+- Image margin: top, right, bottom, left (0-200px each)
+
+✅ LIGHTBOX FEATURES:
+- Click any image to view enlarged in fullscreen lightbox
+- Navigate with arrow buttons or keyboard (← →)
+- Close with X button, ESC key, or click outside
+- Image counter shows position (e.g., "2 / 5")
 {% endcomment %}
 
 <section
@@ -35,13 +46,33 @@
       color: rgb(var(--color-foreground));
     }
 
-    .product-info {
-      grid-template-columns: {{ section.settings.left_column_width }}px 1fr {{ section.settings.right_column_width }}px;
-      gap: {{ section.settings.column_gap }}rem;
+    @media screen and (min-width: 1025px) {
+      .product-info {
+        grid-template-columns: {{ section.settings.left_column_width }}px 1fr {{ section.settings.right_column_width }}px;
+        gap: {{ section.settings.column_gap }}rem;
+      }
     }
 
     .figureImg {
       gap: {{ section.settings.image_gap }}rem;
+    }
+
+    .product__item-img {
+      padding-top: {{ section.settings.image_padding_top }}px;
+      padding-right: {{ section.settings.image_padding_right }}px;
+      padding-bottom: {{ section.settings.image_padding_bottom }}px;
+      padding-left: {{ section.settings.image_padding_left }}px;
+      margin-top: {{ section.settings.image_margin_top }}px;
+      margin-right: {{ section.settings.image_margin_right }}px;
+      margin-bottom: {{ section.settings.image_margin_bottom }}px;
+      margin-left: {{ section.settings.image_margin_left }}px;
+    }
+
+    @media screen and (min-width: 1025px) {
+      .product__item-img {
+        width: {{ section.settings.image_width }}%;
+        max-width: none;
+      }
     }
 
     .product-info__title {
@@ -164,9 +195,105 @@
       display: none;
     }
 
-    @media screen and (max-width: 749px) {
+    @media screen and (max-width: 1024px) {
+      .product-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-info__pc {
+        padding: 1.5rem 1.5rem 0;
+        text-align: center;
+      }
+
+      .product-info__title {
+        font-size: 20px;
+        margin-bottom: 1rem;
+        text-align: center !important;
+      }
+
+      .item-type {
+        margin-bottom: 1.5rem;
+        text-align: center !important;
+        display: flex;
+        justify-content: center;
+      }
+
+      .item-type h2 {
+        font-size: 12px;
+        padding: 6px 12px;
+        display: inline-block;
+      }
+
+      .figureImg {
+        padding: 0;
+        margin: 0;
+      }
+
+      .product__item-img {
+        padding: 0;
+        margin: 0;
+      }
+
+      .product-info__main {
+        padding: 0 1.5rem 1.5rem;
+      }
+
+      .image-navigation {
+        padding: 1rem 1.5rem;
+      }
+
+      .variant-option-group {
+        margin-bottom: 1rem;
+      }
+
+      .variant-option-label {
+        font-size: 12px;
+        margin-bottom: 0.5rem;
+      }
+
+      .option-value {
+        padding: {{ section.settings.variant_button_padding_v | divided_by: 1.2 | round: 0 }}px {{ section.settings.variant_button_padding_h | divided_by: 1.2 | round: 0 }}px;
+        font-size: {{ section.settings.variant_button_font_size | minus: 1 }}px;
+        min-width: {{ section.settings.variant_button_min_width | minus: 5 }}px;
+      }
+
+      .product-price {
+        font-size: 16px;
+        margin-bottom: 16px;
+      }
+
+      .product-info__cart-btn {
+        padding: 14px;
+        font-size: 13px;
+      }
+
       .product-info__description-mobile {
         display: block;
+      }
+    }
+
+    @media screen and (max-width: 749px) {
+      .product-info__pc {
+        padding: 1rem 1rem 0;
+        text-align: center;
+      }
+
+      .product-info__main {
+        padding: 0 1rem 1rem;
+      }
+
+      .image-navigation {
+        padding: 0.75rem 1rem;
+      }
+
+      .product-info__title {
+        font-size: 18px;
+        text-align: center !important;
+      }
+
+      .item-type {
+        text-align: center !important;
       }
     }
   {%- endstyle -%}
@@ -191,7 +318,7 @@
                       letter-spacing: {{ block.settings.letter_spacing }}px;
                       margin-bottom: {{ block.settings.margin_bottom }}px;
                       text-align: {{ block.settings.text_align | default: 'left' }};
-                      {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                      color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                       {% if block.settings.uppercase %}text-transform: uppercase;{% endif %}
                     "
                     {{ block.shopify_attributes }}>
@@ -211,8 +338,8 @@
                           font-size: {{ block.settings.font_size }}px;
                           padding: {{ block.settings.padding_v }}px {{ block.settings.padding_h }}px;
                           border-width: {{ block.settings.border_width }}px;
-                          {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
-                          {% if block.settings.border_color != blank %}border-color: {{ block.settings.border_color }};{% endif %}
+                          color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
+                          {% if block.settings.border_color != blank %}border-color: {{ block.settings.border_color }};{% else %}border-color: rgb(var(--color-foreground));{% endif %}
                           {% if block.settings.background_color != blank %}background-color: {{ block.settings.background_color }};{% endif %}
                         ">
                       {{ product.type | upcase }}
@@ -228,7 +355,7 @@
                          line-height: {{ block.settings.line_height }};
                          margin-bottom: {{ block.settings.margin_bottom }}px;
                          text-align: {{ block.settings.text_align | default: 'left' }};
-                         {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                         color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                        "
                        {{ block.shopify_attributes }}>
                     {{ product.description }}
@@ -242,7 +369,7 @@
                          font-size: {{ block.settings.font_size }}px;
                          line-height: {{ block.settings.line_height }};
                          margin-bottom: {{ block.settings.margin_bottom }}px;
-                         {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                         color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                        "
                        {{ block.shopify_attributes }}>
                     <p>{{ block.settings.text }}</p>
@@ -255,7 +382,7 @@
                        font-size: {{ block.settings.font_size }}px;
                        margin-top: {{ block.settings.margin_top }}px;
                        text-align: {{ block.settings.text_align | default: 'left' }};
-                       {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                       color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                      "
                      {{ block.shopify_attributes }}>
                   <p{% if product.selected_or_first_available_variant.sku.size == 0 %} class="hidden"{% endif %}>
@@ -278,6 +405,8 @@
                 <img
                   class="product__item-img"
                   src="{{ media | image_url: width: 1600 }}"
+                  data-lightbox-src="{{ media | image_url: width: 2400 }}"
+                  data-media-index="{{ forloop.index0 }}"
                   alt="{{ media.alt | escape }}"
                   loading="lazy"
                   width="{{ media.width }}"
@@ -309,7 +438,7 @@
             <polyline points="15 18 9 12 15 6"></polyline>
           </svg>
         </button>
-        <div class="nav-dots" id="nav-dots-{{ section.id }}"></div>
+        <div class="nav-counter" id="nav-counter-{{ section.id }}">1/{{ product.media.size }}</div>
         <button type="button" class="nav-arrow" id="next-arrow-{{ section.id }}" aria-label="Next image">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"></polyline>
@@ -389,7 +518,7 @@
                            line-height: {{ block.settings.line_height }};
                            margin-bottom: {{ block.settings.margin_bottom }}px;
                            text-align: {{ block.settings.text_align | default: 'left' }};
-                           {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                           color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                          ">
                       {{ product.description }}
                     </div>
@@ -400,7 +529,7 @@
                          font-size: {{ block.settings.font_size }}px;
                          line-height: {{ block.settings.line_height }};
                          margin-bottom: {{ block.settings.margin_bottom }}px;
-                         {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                         color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                        ">
                       {{ block.settings.text }}
                     </p>
@@ -410,7 +539,7 @@
                        font-size: {{ block.settings.font_size }}px;
                        margin-top: {{ block.settings.margin_top }}px;
                        text-align: {{ block.settings.text_align | default: 'left' }};
-                       {% if block.settings.text_color != blank %}color: {{ block.settings.text_color }};{% endif %}
+                       color: {% if block.settings.text_color != blank %}{{ block.settings.text_color }}{% else %}rgb(var(--color-foreground)){% endif %} !important;
                      "
                      {% if product.selected_or_first_available_variant.sku.size == 0 %} class="hidden"{% endif %}>
                     {{ block.settings.prefix_text }} {{ product.selected_or_first_available_variant.sku }}
@@ -475,6 +604,30 @@
       ]
     }
   </script>
+
+  {%- comment -%} Lightbox Modal {%- endcomment -%}
+  <div class="luxury-lightbox" id="lightbox-{{ section.id }}" style="display: none;">
+    <button type="button" class="lightbox-close" aria-label="Close lightbox">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <button type="button" class="lightbox-arrow lightbox-prev" aria-label="Previous image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button type="button" class="lightbox-arrow lightbox-next" aria-label="Next image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+    <div class="lightbox-content">
+      <img class="lightbox-image" src="" alt="">
+      <div class="lightbox-counter"></div>
+    </div>
+  </div>
 </section>
 
 {% schema %}
@@ -636,6 +789,101 @@
       "unit": "rem",
       "label": "Image gap",
       "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Image Settings"
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "label": "Image width",
+      "default": 100,
+      "info": "Desktop only - values over 100% will overflow"
+    },
+    {
+      "type": "range",
+      "id": "image_padding_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_padding_right",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image padding right",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_padding_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image padding bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_padding_left",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image padding left",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_margin_top",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image margin top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_margin_right",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image margin right",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_margin_bottom",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image margin bottom",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "image_margin_left",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "label": "Image margin left",
+      "default": 0
     },
     {
       "type": "header",

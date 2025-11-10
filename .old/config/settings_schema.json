@@ -1,7 +1,7 @@
 [
   {
     "name": "theme_info",
-    "theme_name": "FKXPREMIUM",
+    "theme_name": "NGAGEBYMADE",
     "theme_version": "1.0",
     "theme_author": "NGAGE By FRST MADE.",
     "theme_documentation_url": "https://made.frstsubject.com/pages/contact",
@@ -380,7 +380,7 @@
       },
       {
         "type": "color",
-        "id": "fkxcopy_color",
+        "id": "made_color",
         "label": "Color",
         "default": "#000000"
       }

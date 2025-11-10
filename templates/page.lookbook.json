@@ -1,1 +1,131 @@
-{"sections":{"main":{"type":"main-page","disabled":true,"settings":{"padding_top":28,"padding_bottom":28}},"4ccd8321-2055-4ff9-b0bf-22dd44968c64":{"type":"slideshow","blocks":{"template--18902817014048__4ccd8321-2055-4ff9-b0bf-22dd44968c64-16833953448c84de10-0":{"type":"slide","settings":{"image":"shopify:\/\/shop_images\/mys.webp","heading":"FKX SLIDE","heading_size":"h1","subheading":"Tell your brand's story through images","button_label":"Shop now","link":"shopify:\/\/collections\/all","button_style_secondary":true,"box_align":"bottom-center","show_text_box":true,"text_alignment":"center","image_overlay_opacity":0,"color_scheme":"background-1","text_alignment_mobile":"center"}},"template--18902817014048__4ccd8321-2055-4ff9-b0bf-22dd44968c64-16833953448c84de10-1":{"type":"slide","disabled":true,"settings":{"heading":"Image slide","heading_size":"h1","subheading":"Tell your brand's story through images","button_label":"Button label","link":"","button_style_secondary":false,"box_align":"middle-center","show_text_box":true,"text_alignment":"center","image_overlay_opacity":0,"color_scheme":"background-1","text_alignment_mobile":"center"}}},"block_order":["template--18902817014048__4ccd8321-2055-4ff9-b0bf-22dd44968c64-16833953448c84de10-0","template--18902817014048__4ccd8321-2055-4ff9-b0bf-22dd44968c64-16833953448c84de10-1"],"settings":{"layout":"grid","slide_height":"adapt_image","slider_visual":"numbers","auto_rotate":false,"change_slides_speed":5,"show_text_below":true,"accessibility_info":"Slideshow about our brand"}}},"order":["main","4ccd8321-2055-4ff9-b0bf-22dd44968c64"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "heading_font_family": "assistant_n4",
+        "heading_color": "",
+        "font_family": "assistant_n4",
+        "custom_font_size": 0,
+        "line_height": 0,
+        "letter_spacing": 0,
+        "text_alignment": "left",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "lookbook_section": {
+      "type": "lookbook-grid",
+      "blocks": {
+        "image_1": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_41_EDITO_DK_MB_LB_SU25_CAMPAIGN_06_LOOKS_2000x3000_2x3_be3437ad-9339-4ed0-a9dd-7a3b7d607560.jpg",
+            "alt_text": ""
+          }
+        },
+        "image_2": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_47_EDITO_DK_MB_LB_SU25_CAMPAIGN_04_LOOKS_2000x3000_2x3_15981a41-234e-441a-85e5-e9d98880c0a0.jpg",
+            "alt_text": ""
+          }
+        },
+        "image_3": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_42_EDITO_DK_MB_LB_SU25_CAMPAIGN_11_LOOKS_2000x3000_2x3_0e35ffa5-39f9-419d-a773-6c81b610a25d.jpg",
+            "alt_text": ""
+          }
+        },
+        "image_4": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_40_EDITO_DK_MB_LB_SU25_CAMPAIGN_02_LOOKS_2000x3000_2x3_5195bb85-2ba7-4118-b157-dc2fac45529f.jpg",
+            "alt_text": ""
+          }
+        },
+        "image_5": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_43_EDITO_DK_MB_LB_SU25_CAMPAIGN_10_LOOKS_2000x3000_2x3_4fa46fd3-a635-4810-9969-c9e8757d3372.jpg",
+            "alt_text": ""
+          }
+        },
+        "image_6": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/imgi_50_EDITO_DK_MB_LB_SU25_CAMPAIGN_03_LOOKS_2000x3000_2x3_50e1bdc4-c76d-4e9b-85f4-1e635585e9df.jpg",
+            "alt_text": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_1",
+        "image_2",
+        "image_3",
+        "image_4",
+        "image_5",
+        "image_6"
+      ],
+      "settings": {
+        "title_font_family": "var(--font_header), sans-serif",
+        "description_font_family": "var(--font_body), sans-serif",
+        "cta_font_family": "var(--font_body), sans-serif",
+        "cta_underline": false,
+        "cta_italic": false,
+        "cta_letter_spacing": 0,
+        "title": "AW23 CAMPAIGN",
+        "description": "<p>Explore our Lookbook. Curate multiple collections, showcase unlimited images, and immerse visitors in a six-column gallery that opens into a full cinematic viewing experience.</p>",
+        "cta_text": "SHOP COLLECTION",
+        "cta_link": "",
+        "header_alignment": "center",
+        "grid_columns_desktop": 5,
+        "grid_columns_tablet": 2,
+        "grid_columns_mobile": 1,
+        "grid_gap": 20,
+        "image_border_radius": 16,
+        "title_letter_spacing": 0,
+        "title_underline": false,
+        "title_italic": false,
+        "title_color": "#000000",
+        "description_letter_spacing": 0,
+        "description_underline": false,
+        "description_italic": false,
+        "description_color": "#000000",
+        "cta_color": "#000000",
+        "slider_close_color": "#ffffff",
+        "slider_caption_text_color": "#ffffff",
+        "slider_caption_bg_color": "rgba(0,0,0,0)",
+        "show_scroll_animation": true,
+        "scroll_animation_color": "#ffffff",
+        "swipe_hand_color": "#808080",
+        "scrollbar_height": 8,
+        "scrollbar_height_mobile": 10,
+        "scrollbar_border_radius": 4,
+        "scrollbar_track_color": "#000000",
+        "scrollbar_track_opacity": 0.2,
+        "scrollbar_thumb_color": "#ffffff",
+        "scrollbar_thumb_opacity": 0.5,
+        "scrollbar_thumb_hover_opacity": 0.7,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "max_width": 800
+      }
+    }
+  },
+  "order": [
+    "main",
+    "lookbook_section"
+  ]
+}

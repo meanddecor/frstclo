@@ -1,9 +1,24 @@
-{{ 'component-cart.css' | asset_url | stylesheet_tag }}
-{{ 'component-cart-items.css' | asset_url | stylesheet_tag }}
-{{ 'component-totals.css' | asset_url | stylesheet_tag }}
-{{ 'component-price.css' | asset_url | stylesheet_tag }}
-{{ 'component-discounts.css' | asset_url | stylesheet_tag }}
-{{ 'component-loading-overlay.css' | asset_url | stylesheet_tag }}
+{% comment %}
+✅ GLOBAL SETTINGS APPLIED - INDIVIDUAL TEXT ELEMENT CONTROLS:
+- Product Title: title_font, title_font_size, title_font_weight, title_text_transform, title_italic, title_underline, title_color, title_letter_spacing
+- Price: price_font, price_font_size, price_font_weight, price_italic, price_color, price_letter_spacing
+- Quantity: quantity_font, quantity_font_size, quantity_font_weight, quantity_italic, quantity_color, quantity_letter_spacing, quantity_button_color, quantity_button_border_color
+- Remove Link: remove_link_font, remove_link_font_size, remove_link_font_weight, remove_link_italic, remove_link_color, remove_link_hover_color, remove_link_underline, remove_link_letter_spacing
+- Cart Total: total_font, total_font_size, total_font_weight, total_italic, total_color, total_letter_spacing
+- Checkout Button: button_font, button_font_size, button_font_weight, button_text_transform, button_italic, button_text_color, button_bg_color, button_letter_spacing
+- Spacing: item_spacing, padding_top, padding_bottom
+- Every text element has independent font picker, size, weight, color, italic, and spacing controls
+- Quantity +/- button icons and borders are fully customizable
+{% endcomment %}
+
+<style>
+  {{ section.settings.title_font | font_face: font_display: 'swap' }}
+  {{ section.settings.price_font | font_face: font_display: 'swap' }}
+  {{ section.settings.quantity_font | font_face: font_display: 'swap' }}
+  {{ section.settings.remove_link_font | font_face: font_display: 'swap' }}
+  {{ section.settings.total_font | font_face: font_display: 'swap' }}
+  {{ section.settings.button_font | font_face: font_display: 'swap' }}
+</style>
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -17,11 +32,510 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  .cart {
+    flex: 1;
+    padding: 0;
+  }
+
+  .cart__form {
+    margin-bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart__items {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 16px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart__items {
+      padding: 0 20px;
+    }
+  }
+
+  .cart__item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: {{ section.settings.item_spacing }}px;
+  }
+
+  @media screen and (max-width: 748px) {
+    .cart__item {
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 16px 0;
+    }
+
+    .cart__item-img {
+      width: 80px;
+      height: 80px;
+    }
+
+    .cart__item-heading {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart__item-title {
+      font-size: 14px !important;
+      line-height: 1.3 !important;
+    }
+
+    .cart__item-final-price {
+      width: 100%;
+      margin: 8px 0 0 0;
+      text-align: left;
+      font-size: 16px !important;
+    }
+
+    .cart__item-quantity {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .checkout-elements {
+      align-items: center;
+      padding: 20px 16px;
+      max-width: 100%;
+      margin: 40px auto 20px;
+      gap: 20px;
+    }
+
+    .cart__submit-btn {
+      width: 100%;
+      padding: 16px 30px !important;
+      font-size: 14px !important;
+    }
+
+    .cart__total {
+      font-size: 18px !important;
+    }
+  }
+
+  @media screen and (min-width: 749px) {
+    .cart__item {
+      width: 100%;
+      gap: 30px;
+    }
+  }
+
+  .cart__item-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .cart__item-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .cart__item-title {
+    margin: 0;
+    font-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
+    font-weight: {{ section.settings.title_font.weight }};
+    font-style: {{ section.settings.title_font.style }};
+    font-size: {{ section.settings.title_font_size }}px;
+    line-height: 1.4;
+    color: {{ section.settings.title_color }} !important;
+    letter-spacing: {{ section.settings.title_letter_spacing }}px;
+    text-transform: {{ section.settings.title_text_transform }};
+    {% if section.settings.title_italic %}font-style: italic;{% endif %}
+    {% if section.settings.title_underline %}text-decoration: underline;{% endif %}
+  }
+
+  .cart__item-remove-link {
+    font-family: {{ section.settings.remove_link_font.family }}, {{ section.settings.remove_link_font.fallback_families }};
+    font-weight: {{ section.settings.remove_link_font_weight }};
+    font-style: {{ section.settings.remove_link_font.style }};
+    font-size: {{ section.settings.remove_link_font_size }}px;
+    color: {{ section.settings.remove_link_color }} !important;
+    {% if section.settings.remove_link_underline %}text-decoration: underline !important;{% else %}text-decoration: none !important;{% endif %}
+    text-transform: uppercase;
+    letter-spacing: {{ section.settings.remove_link_letter_spacing }}px;
+    {% if section.settings.remove_link_italic %}font-style: italic;{% endif %}
+    cursor: pointer;
+  }
+
+  .cart__item-remove-link:hover {
+    color: {{ section.settings.remove_link_hover_color }} !important;
+  }
+
+  .cart__item-final-price {
+    font-family: {{ section.settings.price_font.family }}, {{ section.settings.price_font.fallback_families }};
+    font-weight: {{ section.settings.price_font_weight }};
+    font-style: {{ section.settings.price_font.style }};
+    font-size: {{ section.settings.price_font_size }}px;
+    line-height: 1.2;
+    color: {{ section.settings.price_color }} !important;
+    letter-spacing: {{ section.settings.price_letter_spacing }}px;
+    {% if section.settings.price_italic %}font-style: italic;{% endif %}
+    white-space: nowrap;
+    margin: 0 20px 0 auto;
+  }
+
+  .cart__item-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart__item-title-span {
+    display: none;
+  }
+
+  .cart__item-main-span {
+    display: inline;
+    color: {{ section.settings.price_color }} !important;
+  }
+  
+  .cart__item-final-price .cart__item-main-span {
+    color: inherit !important;
+  }
+
+  .quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid {{ section.settings.quantity_button_border_color }};
+    background-color: {{ section.settings.quantity_wrapper_bg_color }};
+    padding: 10px 16px;
+    border-radius: 2px;
+  }
+
+  @media screen and (max-width: 748px) {
+    .quantity-wrapper {
+      padding: 12px 18px;
+      gap: 18px;
+    }
+  }
+
+  .cart__quantity-btn {
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    transition: opacity 0.2s;
+    font-size: 20px;
+    line-height: 1;
+    color: {{ section.settings.quantity_button_color }};
+    font-weight: 300;
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (max-width: 748px) {
+    .cart__quantity-btn {
+      font-size: 22px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .cart__quantity-btn:hover:not(:disabled) {
+    opacity: 0.7;
+  }
+
+  .cart__quantity-btn-minus.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .cart__quantity-btn:active {
+    transform: scale(0.95);
+  }
+
+  .cart__quantity-value {
+    min-width: 30px;
+    text-align: center;
+    font-family: {{ section.settings.quantity_font.family }}, {{ section.settings.quantity_font.fallback_families }};
+    font-weight: {{ section.settings.quantity_font_weight }};
+    font-style: {{ section.settings.quantity_font.style }};
+    font-size: {{ section.settings.quantity_font_size }}px;
+    color: {{ section.settings.quantity_color }} !important;
+    letter-spacing: {{ section.settings.quantity_letter_spacing }}px;
+    {% if section.settings.quantity_italic %}font-style: italic;{% endif %}
+  }
+
+  @media screen and (max-width: 748px) {
+    .cart__quantity-value {
+      min-width: 32px;
+    }
+  }
+
+  .checkout-elements {
+    max-width: 400px;
+    margin: 60px auto 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 0;
+  }
+
+  .cart__total {
+    font-family: {{ section.settings.total_font.family }}, {{ section.settings.total_font.fallback_families }} !important;
+    font-weight: {{ section.settings.total_font_weight }} !important;
+    font-style: {{ section.settings.total_font.style }} !important;
+    font-size: {{ section.settings.total_font_size }}px !important;
+    color: {{ section.settings.total_color }} !important;
+    margin: 0;
+    letter-spacing: {{ section.settings.total_letter_spacing }}px !important;
+    text-align: center;
+    {% if section.settings.total_italic %}font-style: italic;{% endif %}
+  }
+
+  .cart__submit-btn {
+    padding: 18px 60px !important;
+    font-family: {{ section.settings.button_font.family }}, {{ section.settings.button_font.fallback_families }};
+    font-weight: {{ section.settings.button_font_weight }};
+    font-style: {{ section.settings.button_font.style }};
+    font-size: {{ section.settings.button_font_size }}px;
+    color: {{ section.settings.button_text_color }};
+    background: {{ section.settings.button_bg_color }};
+    text-transform: {{ section.settings.button_text_transform }};
+    {% if section.settings.button_italic %}font-style: italic;{% endif %}
+    border: none;
+    cursor: pointer;
+    letter-spacing: {{ section.settings.button_letter_spacing }}px;
+    transition: background 0.3s;
+  }
+
+  .cart__submit-btn:hover {
+    background: #333;
+  }
+
+  .title-wrapper-with-link {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 16px;
+    border-bottom: 1px solid #e5e5e5;
+    gap: 12px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .title-wrapper-with-link {
+      padding: 20px 20px;
+    }
+  }
+
+  @media screen and (max-width: 748px) {
+    .title-wrapper-with-link {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+    }
+  }
+
+  .title--primary {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  @media screen and (max-width: 748px) {
+    .title--primary {
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .underlined-link {
+    font-size: 14px;
+    text-decoration: underline;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 748px) {
+    .underlined-link {
+      font-size: 12px;
+    }
+  }
+
+  .underlined-link:hover {
+    opacity: 0.7;
+  }
+
+  .cart__warnings {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 16px;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .cart__warnings {
+      padding: 0 20px;
+    }
+  }
+
+  .cart__empty-text {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+
+  @media screen and (max-width: 748px) {
+    .cart__empty-text {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+  }
 {%- endstyle -%}
 
 {%- unless settings.cart_type == 'drawer' -%}
   <script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
 {%- endunless -%}
+
+<script>
+  if (typeof window !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function() {
+      const quantityWrappers = document.querySelectorAll('.quantity-wrapper');
+      
+      if (!quantityWrappers || quantityWrappers.length === 0) return;
+      
+      quantityWrappers.forEach(wrapper => {
+        if (!wrapper) return;
+        
+        const minusBtn = wrapper.querySelector('.cart__quantity-btn-minus');
+        const plusBtn = wrapper.querySelector('.cart__quantity-btn-plus');
+        const quantityValue = wrapper.querySelector('.cart__quantity-value');
+        const quantityInput = wrapper.querySelector('input[data-quantity-input]');
+        
+        if (!minusBtn || !plusBtn || !quantityValue || !quantityInput) return;
+        
+        minusBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          let currentQty = parseInt(quantityValue.textContent);
+          if (currentQty > 1) {
+            currentQty--;
+            quantityValue.textContent = currentQty;
+            quantityInput.value = currentQty;
+            
+            if (currentQty === 1) {
+              minusBtn.classList.add('disabled');
+              minusBtn.disabled = true;
+            }
+            
+            updateLinePrice(wrapper, currentQty);
+            updateCart();
+          }
+        });
+        
+        plusBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          let currentQty = parseInt(quantityValue.textContent);
+          currentQty++;
+          quantityValue.textContent = currentQty;
+          quantityInput.value = currentQty;
+          
+          if (currentQty > 1) {
+            minusBtn.classList.remove('disabled');
+            minusBtn.disabled = false;
+          }
+          
+          updateLinePrice(wrapper, currentQty);
+          updateCart();
+        });
+      });
+      
+      function updateLinePrice(wrapper, quantity) {
+        const unitPrice = parseFloat(wrapper.dataset.unitPrice);
+        const linePrice = quantity * unitPrice;
+        const linePriceElement = wrapper.closest('.cart__item').querySelector('.cart__item-main-span');
+        
+        // Format as currency
+        const formattedPrice = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        }).format(linePrice / 100);
+        
+        linePriceElement.textContent = formattedPrice;
+        
+        // Update cart total
+        updateCartTotal();
+      }
+      
+      function updateCartTotal() {
+        const form = document.querySelector('.cart__form');
+        if (!form) return;
+        
+        let total = 0;
+        const wrappers = form.querySelectorAll('.quantity-wrapper');
+        wrappers.forEach(wrapper => {
+          const unitPrice = parseFloat(wrapper.dataset.unitPrice);
+          const quantity = parseInt(wrapper.querySelector('.cart__quantity-value').textContent);
+          total += unitPrice * quantity;
+        });
+        
+        const totalElement = document.querySelector('.cart__total');
+        if (totalElement) {
+          const formattedTotal = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+          }).format(total / 100);
+          totalElement.textContent = 'TOTAL: ' + formattedTotal + ' USD';
+        }
+      }
+      
+      function updateCart() {
+        const form = document.querySelector('.cart__form');
+        if (!form) return;
+        
+        const inputs = form.querySelectorAll('input[data-quantity-input]');
+        if (!inputs || inputs.length === 0) return;
+        
+        const updates = {};
+        inputs.forEach(input => {
+          const wrapper = input.closest('.quantity-wrapper');
+          if (wrapper && wrapper.dataset.key) {
+            updates[wrapper.dataset.key] = parseInt(input.value) || 0;
+          }
+        });
+        
+        fetch('/cart/update', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ updates: updates })
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          location.reload();
+        })
+        .catch(error => {
+          console.error('Cart update error:', error);
+        });
+      }
+    });
+  }
+</script>
 
 <cart-items class="page-width{% if cart == empty %} is-empty{% else %} section-{{ section.id }}-padding{% endif %}">
   <div class="title-wrapper-with-link">
@@ -43,308 +557,63 @@
     {%- endif -%}
   </div>
 
-  <form action="{{ routes.cart_url }}" class="cart__contents critical-hidden" method="post" id="cart">
+  <form action="{{ routes.cart_url }}" class="cart__form" method="post" id="cart">
     <div class="cart__items" id="main-cart-items" data-id="{{ section.id }}">
       <div class="js-contents">
         {%- if cart != empty -%}
-          <table class="cart-items">
-            <caption class="visually-hidden">
-              {{ 'sections.cart.title' | t }}
-            </caption>
-            <thead>
-              <tr>
-                <th class="caption-with-letter-spacing" colspan="2" scope="col">
-                  {{ 'sections.cart.headings.product' | t }}
-                </th>
-                <th class="medium-hide large-up-hide right caption-with-letter-spacing" colspan="1" scope="col">
-                  {{ 'sections.cart.headings.total' | t }}
-                </th>
-                <th class="cart-items__heading--wide small-hide caption-with-letter-spacing" colspan="1" scope="col">
-                  {{ 'sections.cart.headings.quantity' | t }}
-                </th>
-                <th class="small-hide right caption-with-letter-spacing" colspan="1" scope="col">
-                  {{ 'sections.cart.headings.total' | t }}
-                </th>
-              </tr>
-            </thead>
+          {%- for item in cart.items -%}
+            <div class="cart__item" id="CartItem-{{ item.index | plus: 1 }}">
+              {% if item.image %}
+                <img
+                  class="cart__item-img"
+                  src="{{ item.image | image_url: width: 300 }}"
+                  alt="{{ item.image.alt | escape }}"
+                  loading="lazy"
+                >
+              {% endif %}
 
-            <tbody>
-              {%- for item in cart.items -%}
-                <tr class="cart-item" id="CartItem-{{ item.index | plus: 1 }}">
-                  <td class="cart-item__media">
-                    {% if item.image %}
-                      {% comment %} Leave empty space due to a:empty CSS display: none rule {% endcomment %}
-                      <a href="{{ item.url }}" class="cart-item__link" aria-hidden="true" tabindex="-1"> </a>
-                      <div class="cart-item__image-container gradient global-media-settings">
-                        <img
-                          src="{{ item.image | image_url: width: 300 }}"
-                          class="cart-item__image"
-                          alt="{{ item.image.alt | escape }}"
-                          loading="lazy"
-                          width="150"
-                          height="{{ 150 | divided_by: item.image.aspect_ratio | ceil }}"
-                        >
-                      </div>
-                    {% endif %}
-                  </td>
+              <div class="cart__item-heading">
+                <h2 class="cart__item-title">{{ item.product.title | escape }}</h2>
+                <a class="cart__item-remove-link" href="{{ item.url_to_remove }}">Remove</a>
+              </div>
 
-                  <td class="cart-item__details">
-                    {%- if settings.show_vendor -%}
-                      <p class="caption-with-letter-spacing">{{ item.product.vendor }}</p>
-                    {%- endif -%}
+              <p class="cart__item-final-price" data-unit-price="{{ item.final_price }}">
+                <span class="cart__item-title-span">Price</span>
+                <span class="cart__item-main-span" data-line-price="{{ item.key }}">{{ item.final_line_price | money }}</span>
+              </p>
 
-                    <a href="{{ item.url }}" class="cart-item__name h4 break">{{ item.product.title | escape }}</a>
-
-                    {%- if item.original_price != item.final_price -%}
-                      <div class="cart-item__discounted-prices">
-                        <span class="visually-hidden">
-                          {{ 'products.product.price.regular_price' | t }}
-                        </span>
-                        <s class="cart-item__old-price product-option">
-                          {{- item.original_price | money -}}
-                        </s>
-                        <span class="visually-hidden">
-                          {{ 'products.product.price.sale_price' | t }}
-                        </span>
-                        <strong class="cart-item__final-price product-option">
-                          {{ item.final_price | money }}
-                        </strong>
-                      </div>
-                    {%- else -%}
-                      <div class="product-option">
-                        {{ item.original_price | money }}
-                      </div>
-                    {%- endif -%}
-
-                    {%- if item.product.has_only_default_variant == false
-                      or item.properties.size != 0
-                      or item.selling_plan_allocation != null
-                    -%}
-                      <dl>
-                        {%- if item.product.has_only_default_variant == false -%}
-                          {%- for option in item.options_with_values -%}
-                            <div class="product-option">
-                              <dt>{{ option.name }}:</dt>
-                              <dd>{{ option.value }}</dd>
-                            </div>
-                          {%- endfor -%}
-                        {%- endif -%}
-
-                        {%- for property in item.properties -%}
-                          {%- assign property_first_char = property.first | slice: 0 -%}
-                          {%- if property.last != blank and property_first_char != '_' -%}
-                            <div class="product-option">
-                              <dt>{{ property.first }}:</dt>
-                              <dd>
-                                {%- if property.last contains '/uploads/' -%}
-                                  <a href="{{ property.last }}" class="link" target="_blank">
-                                    {{ property.last | split: '/' | last }}
-                                  </a>
-                                {%- else -%}
-                                  {{ property.last }}
-                                {%- endif -%}
-                              </dd>
-                            </div>
-                          {%- endif -%}
-                        {%- endfor -%}
-                      </dl>
-
-                      <p class="product-option">{{ item.selling_plan_allocation.selling_plan.name }}</p>
-                    {%- endif -%}
-
-                    <ul class="discounts list-unstyled" role="list" aria-label="{{ 'customer.order.discount' | t }}">
-                      {%- for discount in item.discounts -%}
-                        <li class="discounts__discount">
-                          {%- render 'icon-discount' -%}
-                          {{ discount.title }}
-                        </li>
-                      {%- endfor -%}
-                    </ul>
-                  </td>
-
-                  <td class="cart-item__totals right medium-hide large-up-hide">
-                    <div class="loading-overlay hidden">
-                      <div class="loading-overlay__spinner">
-                        <svg
-                          aria-hidden="true"
-                          focusable="false"
-                          class="spinner"
-                          viewBox="0 0 66 66"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-                        </svg>
-                      </div>
-                    </div>
-                    <div class="cart-item__price-wrapper">
-                      {%- if item.original_line_price != item.final_line_price -%}
-                        <dl class="cart-item__discounted-prices">
-                          <dt class="visually-hidden">
-                            {{ 'products.product.price.regular_price' | t }}
-                          </dt>
-                          <dd>
-                            <s class="cart-item__old-price price price--end">
-                              {{ item.original_line_price | money }}
-                            </s>
-                          </dd>
-                          <dt class="visually-hidden">
-                            {{ 'products.product.price.sale_price' | t }}
-                          </dt>
-                          <dd class="price price--end">
-                            {{ item.final_line_price | money }}
-                          </dd>
-                        </dl>
-                      {%- else -%}
-                        <span class="price price--end">
-                          {{ item.original_line_price | money }}
-                        </span>
-                      {%- endif -%}
-
-                      {%- if item.variant.available and item.unit_price_measurement -%}
-                        <div class="unit-price caption">
-                          <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
-                          {{ item.variant.unit_price | money }}
-                          <span aria-hidden="true">/</span>
-                          <span class="visually-hidden"
-                            >&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span
-                          >
-                          {%- if item.variant.unit_price_measurement.reference_value != 1 -%}
-                            {{- item.variant.unit_price_measurement.reference_value -}}
-                          {%- endif -%}
-                          {{ item.variant.unit_price_measurement.reference_unit }}
-                        </div>
-                      {%- endif -%}
-                    </div>
-                  </td>
-
-                  <td class="cart-item__quantity">
-                    <div class="cart-item__quantity-wrapper">
-                      <label class="visually-hidden" for="Quantity-{{ item.index | plus: 1 }}">
-                        {{ 'products.product.quantity.label' | t }}
-                      </label>
-                      <quantity-input class="quantity cart-quantity">
-                        <button class="quantity__button no-js-hidden" name="minus" type="button">
-                          <span class="visually-hidden">
-                            {{- 'products.product.quantity.decrease' | t: product: item.product.title | escape -}}
-                          </span>
-                          {% render 'icon-minus' %}
-                        </button>
-                        <input
-                          class="quantity__input"
-                          data-quantity-variant-id="{{ item.variant.id }}"
-                          type="number"
-                          name="updates[]"
-                          value="{{ item.quantity }}"
-                          {% # theme-check-disable %}
-                          data-cart-quantity="{{ cart | item_count_for_variant: item.variant.id }}"
-                          min="{{ item.variant.quantity_rule.min }}"
-                          {% if item.variant.quantity_rule.max != null %}
-                            max="{{ item.variant.quantity_rule.max }}"
-                          {% endif %}
-                          step="{{ item.variant.quantity_rule.increment }}"
-                          {% # theme-check-enable %}
-                          aria-label="{{ 'products.product.quantity.input_label' | t: product: item.product.title | escape }}"
-                          id="Quantity-{{ item.index | plus: 1 }}"
-                          data-index="{{ item.index | plus: 1 }}"
-                        >
-                        <button class="quantity__button no-js-hidden" name="plus" type="button">
-                          <span class="visually-hidden">
-                            {{- 'products.product.quantity.increase' | t: product: item.product.title | escape -}}
-                          </span>
-                          {% render 'icon-plus' %}
-                        </button>
-                      </quantity-input>
-
-                      <cart-remove-button
-                        id="Remove-{{ item.index | plus: 1 }}"
-                        data-index="{{ item.index | plus: 1 }}"
-                      >
-                        <a
-                          href="{{ item.url_to_remove }}"
-                          class="button button--tertiary"
-                          aria-label="{{ 'sections.cart.remove_title' | t: title: item.title }}"
-                        >
-                          {% render 'icon-remove' %}
-                        </a>
-                      </cart-remove-button>
-                    </div>
-                    <div class="cart-item__error" id="Line-item-error-{{ item.index | plus: 1 }}" role="alert">
-                      <small class="cart-item__error-text"></small>
-                      <svg
-                        aria-hidden="true"
-                        focusable="false"
-                        class="icon icon-error"
-                        viewBox="0 0 13 13"
-                      >
-                        <circle cx="6.5" cy="6.50049" r="5.5" stroke="white" stroke-width="2"/>
-                        <circle cx="6.5" cy="6.5" r="5.5" fill="#EB001B" stroke="#EB001B" stroke-width="0.7"/>
-                        <path d="M5.87413 3.52832L5.97439 7.57216H7.02713L7.12739 3.52832H5.87413ZM6.50076 9.66091C6.88091 9.66091 7.18169 9.37267 7.18169 9.00504C7.18169 8.63742 6.88091 8.34917 6.50076 8.34917C6.12061 8.34917 5.81982 8.63742 5.81982 9.00504C5.81982 9.37267 6.12061 9.66091 6.50076 9.66091Z" fill="white"/>
-                        <path d="M5.87413 3.17832H5.51535L5.52424 3.537L5.6245 7.58083L5.63296 7.92216H5.97439H7.02713H7.36856L7.37702 7.58083L7.47728 3.537L7.48617 3.17832H7.12739H5.87413ZM6.50076 10.0109C7.06121 10.0109 7.5317 9.57872 7.5317 9.00504C7.5317 8.43137 7.06121 7.99918 6.50076 7.99918C5.94031 7.99918 5.46982 8.43137 5.46982 9.00504C5.46982 9.57872 5.94031 10.0109 6.50076 10.0109Z" fill="white" stroke="#EB001B" stroke-width="0.7">
-                      </svg>
-                    </div>
-                  </td>
-
-                  <td class="cart-item__totals right small-hide">
-                    <div class="loading-overlay hidden">
-                      <div class="loading-overlay__spinner">
-                        <svg
-                          aria-hidden="true"
-                          focusable="false"
-                          class="spinner"
-                          viewBox="0 0 66 66"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-                        </svg>
-                      </div>
-                    </div>
-
-                    <div class="cart-item__price-wrapper">
-                      {%- if item.original_line_price != item.final_line_price -%}
-                        <dl class="cart-item__discounted-prices">
-                          <dt class="visually-hidden">
-                            {{ 'products.product.price.regular_price' | t }}
-                          </dt>
-                          <dd>
-                            <s class="cart-item__old-price price price--end">
-                              {{ item.original_line_price | money }}
-                            </s>
-                          </dd>
-                          <dt class="visually-hidden">
-                            {{ 'products.product.price.sale_price' | t }}
-                          </dt>
-                          <dd class="price price--end">
-                            {{ item.final_line_price | money }}
-                          </dd>
-                        </dl>
-                      {%- else -%}
-                        <span class="price price--end">
-                          {{ item.original_line_price | money }}
-                        </span>
-                      {%- endif -%}
-
-                      {%- if item.variant.available and item.unit_price_measurement -%}
-                        <div class="unit-price caption">
-                          <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
-                          {{ item.variant.unit_price | money }}
-                          <span aria-hidden="true">/</span>
-                          <span class="visually-hidden"
-                            >&nbsp;{{ 'accessibility.unit_price_separator' | t }}&nbsp;</span
-                          >
-                          {%- if item.variant.unit_price_measurement.reference_value != 1 -%}
-                            {{- item.variant.unit_price_measurement.reference_value -}}
-                          {%- endif -%}
-                          {{ item.variant.unit_price_measurement.reference_unit }}
-                        </div>
-                      {%- endif -%}
-                    </div>
-                  </td>
-                </tr>
-              {%- endfor -%}
-            </tbody>
-          </table>
+              <div class="cart__item-quantity">
+                <span class="cart__item-title-span">Quantity</span>
+                <div class="quantity-wrapper" 
+                     data-key="{{ item.key }}" 
+                     data-quantity="{{ item.quantity }}"
+                     data-unit-price="{{ item.final_price }}"
+                     data-inventory="0"
+                     data-track-quantity="false"
+                     data-allow-oversell="deny">
+                  <button class="cart__quantity-btn cart__quantity-btn-minus{% if item.quantity <= 1 %} disabled{% endif %}" 
+                          type="button"
+                          {% if item.quantity <= 1 %}disabled{% endif %}>
+                    —
+                  </button>
+                  <input type="hidden" name="updates[]" value="{{ item.quantity }}" data-quantity-input>
+                  <span class="cart__quantity-value" id="quantity-{{ item.key }}">{{ item.quantity }}</span>
+                  <button class="cart__quantity-btn cart__quantity-btn-plus" type="button">
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
         {%- endif -%}
       </div>
+    </div>
+
+    <div class="checkout-elements">
+      <p class="cart__total">TOTAL: {{ cart.total_price | money }} USD</p>
+      <button type="submit" name="checkout" class="cart__submit-btn button">
+        CHECKOUT
+      </button>
     </div>
 
     <p class="visually-hidden" id="cart-live-region-text" aria-live="polite" role="status"></p>
@@ -358,6 +627,416 @@
 {
   "name": "t:sections.main-cart-items.name",
   "settings": [
+    {
+      "type": "header",
+      "content": "Product Title Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Title Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "title_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Title Font Size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "title_font_weight",
+      "label": "Title Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "title_text_transform",
+      "label": "Title Text Transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_italic",
+      "label": "Title Italic",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "title_underline",
+      "label": "Title Underline",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Title Letter Spacing",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Price Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "price_font",
+      "label": "Price Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "price_font_size",
+      "min": 10,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Price Font Size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "price_font_weight",
+      "label": "Price Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "checkbox",
+      "id": "price_italic",
+      "label": "Price Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "price_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Price Letter Spacing",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Quantity Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "quantity_font",
+      "label": "Quantity Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "quantity_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Quantity Font Size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "quantity_font_weight",
+      "label": "Quantity Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "checkbox",
+      "id": "quantity_italic",
+      "label": "Quantity Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "quantity_color",
+      "label": "Quantity Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "quantity_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Quantity Letter Spacing",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "quantity_button_color",
+      "label": "Quantity Button Icon Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "quantity_button_border_color",
+      "label": "Quantity Button Border Color",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "quantity_wrapper_bg_color",
+      "label": "Quantity Wrapper Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Remove Link Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "remove_link_font",
+      "label": "Remove Link Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "remove_link_font_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Remove Link Font Size",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "remove_link_font_weight",
+      "label": "Remove Link Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_link_italic",
+      "label": "Remove Link Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "remove_link_color",
+      "label": "Remove Link Color",
+      "default": "#0066cc"
+    },
+    {
+      "type": "color",
+      "id": "remove_link_hover_color",
+      "label": "Remove Link Hover Color",
+      "default": "#0052a3"
+    },
+    {
+      "type": "checkbox",
+      "id": "remove_link_underline",
+      "label": "Remove Link Underline",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "remove_link_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Remove Link Letter Spacing",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Cart Total Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "total_font",
+      "label": "Total Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "total_font_size",
+      "min": 14,
+      "max": 36,
+      "step": 1,
+      "unit": "px",
+      "label": "Total Font Size",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "total_font_weight",
+      "label": "Total Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "checkbox",
+      "id": "total_italic",
+      "label": "Total Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "total_color",
+      "label": "Total Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "total_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Total Letter Spacing",
+      "default": 0.5
+    },
+    {
+      "type": "header",
+      "content": "Checkout Button Typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Button Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Button Font Size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Button Text Transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_italic",
+      "label": "Button Italic",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "min": -2,
+      "max": 5,
+      "step": 0.1,
+      "unit": "px",
+      "label": "Button Letter Spacing",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Space Between Items",
+      "default": 10
+    },
     {
       "type": "header",
       "content": "t:sections.all.padding.section_padding_heading"

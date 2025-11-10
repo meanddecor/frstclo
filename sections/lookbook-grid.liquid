@@ -1,22 +1,29 @@
 {% comment %}
 ✅ GLOBAL SETTINGS APPLIED:
-- Typography: font_header
+- Typography: font_header, font_body with customizable font families for title, description, and CTA
 - Layout: Responsive grid with customizable columns
-- Colors: Customizable via section settings
+- Colors: Customizable via section settings including CTA, title, description colors
+- CTA: Customizable underline and font family options
 {% endcomment %}
 
 <div class="lookbook-container" style="padding: {{ section.settings.padding_top }}px 20px {{ section.settings.padding_bottom }}px;">
   <div class="lookbook-header-content" style="flex-direction: column; align-items: {{ section.settings.header_alignment }};">
     <div class="lookbook-header-top">
-      {% if section.settings.cta_text != blank and section.settings.cta_link != blank %}
-        <a href="{{ section.settings.cta_link }}" class="lookbook-cta" style="text-align: {{ section.settings.header_alignment }}; color: {{ section.settings.cta_color }};">{{ section.settings.cta_text }}</a>
+      {% if section.settings.cta_text != blank %}
+        {% if section.settings.cta_link != blank %}
+          <a href="{{ section.settings.cta_link }}" class="lookbook-cta" style="text-align: {{ section.settings.header_alignment }} !important; color: {{ section.settings.cta_color }} !important; letter-spacing: {{ section.settings.cta_letter_spacing }}px; font-style: {% if section.settings.cta_italic %}italic{% else %}normal{% endif %};">{{ section.settings.cta_text }}</a>
+        {% else %}
+          <span class="lookbook-cta" style="text-align: {{ section.settings.header_alignment }} !important; color: {{ section.settings.cta_color }} !important; cursor: default; letter-spacing: {{ section.settings.cta_letter_spacing }}px; font-style: {% if section.settings.cta_italic %}italic{% else %}normal{% endif %};">{{ section.settings.cta_text }}</span>
+        {% endif %}
       {% endif %}
       {% if section.settings.title != blank %}
-        <h3 class="lookbook-title" style="color: {{ section.settings.title_color }}; text-align: {{ section.settings.header_alignment }};">{{ section.settings.title }}</h3>
+        <h3 class="lookbook-title" style="color: {{ section.settings.title_color }} !important; text-align: {{ section.settings.header_alignment }} !important; letter-spacing: {{ section.settings.title_letter_spacing }}px; text-decoration: {% if section.settings.title_underline %}underline{% else %}none{% endif %}; font-style: {% if section.settings.title_italic %}italic{% else %}normal{% endif %};">{{ section.settings.title }}</h3>
       {% endif %}
     </div>
     {% if section.settings.description != blank %}
-      <div class="lookbook-description" style="color: {{ section.settings.description_color }}; text-align: {{ section.settings.header_alignment }}; max-width: {{ section.settings.max_width }}px;">{{ section.settings.description }}</div>
+      <div class="lookbook-description" style="color: {{ section.settings.description_color }} !important; text-align: {{ section.settings.header_alignment }} !important; max-width: {{ section.settings.max_width }}px; letter-spacing: {{ section.settings.description_letter_spacing }}px; text-decoration: {% if section.settings.description_underline %}underline{% else %}none{% endif %}; font-style: {% if section.settings.description_italic %}italic{% else %}normal{% endif %};">
+        {{ section.settings.description }}
+      </div>
     {% endif %}
   </div>
 
@@ -43,9 +50,9 @@
   <div id="slider-backdrop" class="slider-backdrop"></div>
 
   <div id="lookbook-slider" class="lookbook-slider">
-    <div class="slider-close">
+    <div class="slider-close" style="background: {{ section.settings.slider_close_color | color_modify: 'alpha', 0.15 }}; border: 1px solid {{ section.settings.slider_close_color | color_modify: 'alpha', 0.3 }};">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 2L18 18M18 2L2 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M2 2L18 18M18 2L2 18" stroke="{{ section.settings.slider_close_color }}" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
     </div>
 
@@ -115,7 +122,7 @@
   .lookbook-title {
     font-size: 32px;
     margin: 0;
-    font-family: var(--font_header), sans-serif;
+    font-family: {{ section.settings.title_font_family }};
     margin-top: 20px;
 
   }
@@ -123,12 +130,25 @@
     font-size: 16px;
     line-height: 1.4;
     margin-top: 20px;
-
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-family: {{ section.settings.description_font_family }};
+  }
+  .lookbook-description p,
+  .lookbook-description * {
+    color: inherit !important;
+    margin: 0 0 0.5em 0;
+    display: block;
+  }
+  .lookbook-description p:last-child {
+    margin-bottom: 0;
   }
   .lookbook-cta {
-    text-decoration: none;
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
+    font-family: {{ section.settings.cta_font_family }};
+    text-decoration: {% if section.settings.cta_underline %}underline{% else %}none{% endif %};
   }
   .lookbook-grid {
     display: grid;
@@ -152,7 +172,6 @@
     display: inline-block;
     margin-top: 2px;
     font-size: 16px;
-    text-decoration: none;
     transition: opacity 0.3s ease;
     white-space: nowrap;
   }
@@ -179,15 +198,15 @@
     width: 40px;
     height: 40px;
     z-index: 1003;
-    background: #000;
     border-radius: 50%;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   .slider-close:hover {
-    background: #333;
+    transform: scale(1.1);
+    opacity: 1;
   }
   .slider-close svg {
     pointer-events: none;
@@ -216,7 +235,6 @@
     text-align: center;
     z-index: 1001;
     transition: opacity 0.3s ease;
-    background-color: ;
   }
   .slider-caption h2 {
     margin: 0;
@@ -224,23 +242,23 @@
   }
   /* Minimal scrollbar styling */
   .lookbook-slider::-webkit-scrollbar {
-    height: 8px;
+    height: {{ section.settings.scrollbar_height }}px;
   }
   .lookbook-slider::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+    background: {{ section.settings.scrollbar_track_color | color_modify: 'alpha', section.settings.scrollbar_track_opacity }};
+    border-radius: {{ section.settings.scrollbar_border_radius }}px;
   }
   .lookbook-slider::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 4px;
+    background: {{ section.settings.scrollbar_thumb_color | color_modify: 'alpha', section.settings.scrollbar_thumb_opacity }};
+    border-radius: {{ section.settings.scrollbar_border_radius }}px;
   }
   .lookbook-slider::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.7);
+    background: {{ section.settings.scrollbar_thumb_color | color_modify: 'alpha', section.settings.scrollbar_thumb_hover_opacity }};
   }
   /* Firefox scrollbar */
   .lookbook-slider {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.5) rgba(0, 0, 0, 0.2);
+    scrollbar-color: {{ section.settings.scrollbar_thumb_color | color_modify: 'alpha', section.settings.scrollbar_thumb_opacity }} {{ section.settings.scrollbar_track_color | color_modify: 'alpha', section.settings.scrollbar_track_opacity }};
   }
   
   .scroll-indicator {
@@ -297,7 +315,7 @@
       height: 22px;
     }
     .lookbook-slider::-webkit-scrollbar {
-      height: 10px;
+      height: {{ section.settings.scrollbar_height_mobile }}px;
     }
     .lookbook-header-content > div:last-child {
       align-items: center !important;
@@ -619,6 +637,140 @@
       "content": "Header Settings"
     },
     {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "title_font_family",
+      "label": "Title Font Family",
+      "options": [
+        {
+          "value": "var(--font_header), sans-serif",
+          "label": "Header Font (Global)"
+        },
+        {
+          "value": "var(--font_body), sans-serif",
+          "label": "Body Font (Global)"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        },
+        {
+          "value": "'Georgia', serif",
+          "label": "Georgia"
+        },
+        {
+          "value": "'Times New Roman', serif",
+          "label": "Times New Roman"
+        },
+        {
+          "value": "'Courier New', monospace",
+          "label": "Courier New"
+        },
+        {
+          "value": "'Helvetica Neue', sans-serif",
+          "label": "Helvetica"
+        }
+      ],
+      "default": "var(--font_header), sans-serif"
+    },
+    {
+      "type": "select",
+      "id": "description_font_family",
+      "label": "Description Font Family",
+      "options": [
+        {
+          "value": "var(--font_body), sans-serif",
+          "label": "Body Font (Global)"
+        },
+        {
+          "value": "var(--font_header), sans-serif",
+          "label": "Header Font (Global)"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        },
+        {
+          "value": "'Georgia', serif",
+          "label": "Georgia"
+        },
+        {
+          "value": "'Times New Roman', serif",
+          "label": "Times New Roman"
+        },
+        {
+          "value": "'Courier New', monospace",
+          "label": "Courier New"
+        },
+        {
+          "value": "'Helvetica Neue', sans-serif",
+          "label": "Helvetica"
+        }
+      ],
+      "default": "var(--font_body), sans-serif"
+    },
+    {
+      "type": "select",
+      "id": "cta_font_family",
+      "label": "CTA Font Family",
+      "options": [
+        {
+          "value": "var(--font_body), sans-serif",
+          "label": "Body Font (Global)"
+        },
+        {
+          "value": "var(--font_header), sans-serif",
+          "label": "Header Font (Global)"
+        },
+        {
+          "value": "Arial, sans-serif",
+          "label": "Arial"
+        },
+        {
+          "value": "'Georgia', serif",
+          "label": "Georgia"
+        },
+        {
+          "value": "'Times New Roman', serif",
+          "label": "Times New Roman"
+        },
+        {
+          "value": "'Courier New', monospace",
+          "label": "Courier New"
+        },
+        {
+          "value": "'Helvetica Neue', sans-serif",
+          "label": "Helvetica"
+        }
+      ],
+      "default": "var(--font_body), sans-serif"
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_underline",
+      "label": "Underline CTA Text",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "cta_italic",
+      "label": "Italic CTA Text",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "cta_letter_spacing",
+      "label": "CTA Letter Spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Title",
@@ -713,6 +865,28 @@
       "unit": "px"
     },
     {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "label": "Title Letter Spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "title_underline",
+      "label": "Underline Title Text",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "title_italic",
+      "label": "Italic Title Text",
+      "default": false
+    },
+    {
       "type": "header",
       "content": "Colors"
     },
@@ -723,10 +897,33 @@
       "default": "#000000"
     },
     {
+      "type": "range",
+      "id": "description_letter_spacing",
+      "label": "Description Letter Spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "checkbox",
+      "id": "description_underline",
+      "label": "Underline Description Text",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "description_italic",
+      "label": "Italic Description Text",
+      "default": false
+    },
+    {
       "type": "color",
       "id": "description_color",
       "label": "Description Color",
-      "default": "#000000"
+      "default": "#000000",
+      "info": "Make sure this contrasts with your background"
     },
     {
       "type": "color",
@@ -737,8 +934,9 @@
     {
       "type": "color",
       "id": "slider_close_color",
-      "label": "Slider Close Button Color",
-      "default": "#ffffff"
+      "label": "Slider Close Button Color (X Icon)",
+      "default": "#ffffff",
+      "info": "Controls the X icon color and button border"
     },
     {
       "type": "color",
@@ -773,6 +971,79 @@
       "id": "swipe_hand_color",
       "label": "Swipe Hand Color (Mobile)",
       "default": "#808080"
+    },
+    {
+      "type": "header",
+      "content": "Scrollbar Settings"
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_height",
+      "label": "Scrollbar Height (Desktop)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_height_mobile",
+      "label": "Scrollbar Height (Mobile)",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "default": 10,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_border_radius",
+      "label": "Scrollbar Border Radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "default": 4,
+      "unit": "px"
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_track_color",
+      "label": "Scrollbar Track Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_track_opacity",
+      "label": "Scrollbar Track Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.2
+    },
+    {
+      "type": "color",
+      "id": "scrollbar_thumb_color",
+      "label": "Scrollbar Thumb Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_thumb_opacity",
+      "label": "Scrollbar Thumb Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.5
+    },
+    {
+      "type": "range",
+      "id": "scrollbar_thumb_hover_opacity",
+      "label": "Scrollbar Thumb Hover Opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "default": 0.7
     },
     {
       "type": "header",

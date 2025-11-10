@@ -104,6 +104,7 @@ class LuxuryProductGallery {
     this.prevArrow = document.querySelector(`#prev-arrow-${sectionId}`);
     this.nextArrow = document.querySelector(`#next-arrow-${sectionId}`);
     this.dotsContainer = document.querySelector(`#nav-dots-${sectionId}`);
+    this.counter = document.querySelector(`#nav-counter-${sectionId}`);
     this.currentIndex = 0;
 
     this.init();
@@ -112,9 +113,12 @@ class LuxuryProductGallery {
   init() {
     this.createDots();
     this.bindEvents();
+    this.updateCounter();
   }
 
   createDots() {
+    if (!this.dotsContainer) return;
+    
     this.items.forEach((item, index) => {
       const dot = document.createElement('div');
       dot.classList.add('nav-dot');
@@ -128,35 +132,69 @@ class LuxuryProductGallery {
     });
   }
 
+  updateCounter() {
+    if (this.counter) {
+      this.counter.textContent = `${this.currentIndex + 1}/${this.items.length}`;
+    }
+  }
+
   updateDots() {
-    const dots = this.dotsContainer.querySelectorAll('.nav-dot');
-    dots.forEach((dot, index) => {
+    const dots = this.dotsContainer?.querySelectorAll('.nav-dot');
+    dots?.forEach((dot, index) => {
       dot.classList.toggle('active', index === this.currentIndex);
     });
+    
+    // Update counter
+    if (this.counter) {
+      this.counter.textContent = `${this.currentIndex + 1}/${this.items.length}`;
+    }
   }
 
   scrollToIndex(index) {
     if (window.innerWidth <= 1024) {
-      this.items[index].scrollIntoView({ 
-        behavior: 'smooth', 
-        inline: 'start', 
-        block: 'nearest' 
+      const galleryWidth = this.gallery.offsetWidth;
+      const targetScroll = index * galleryWidth;
+      
+      this.gallery.scrollTo({
+        left: targetScroll,
+        behavior: 'smooth'
       });
     }
   }
 
   bindEvents() {
     // Arrow navigation
-    this.prevArrow?.addEventListener('click', () => {
+    this.prevArrow?.addEventListener('click', (e) => {
+      e.preventDefault();
       this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
       this.scrollToIndex(this.currentIndex);
       this.updateDots();
+      this.updateCounter();
     });
 
-    this.nextArrow?.addEventListener('click', () => {
+    this.nextArrow?.addEventListener('click', (e) => {
+      e.preventDefault();
       this.currentIndex = (this.currentIndex + 1) % this.items.length;
       this.scrollToIndex(this.currentIndex);
       this.updateDots();
+      this.updateCounter();
+    });
+
+    // Touch support for arrows
+    this.prevArrow?.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.currentIndex = (this.currentIndex - 1 + this.items.length) % this.items.length;
+      this.scrollToIndex(this.currentIndex);
+      this.updateDots();
+      this.updateCounter();
+    });
+
+    this.nextArrow?.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this.currentIndex = (this.currentIndex + 1) % this.items.length;
+      this.scrollToIndex(this.currentIndex);
+      this.updateDots();
+      this.updateCounter();
     });
 
     // Track scroll position on mobile
@@ -166,14 +204,23 @@ class LuxuryProductGallery {
         clearTimeout(scrollTimeout);
         scrollTimeout = setTimeout(() => {
           const scrollLeft = this.gallery.scrollLeft;
-          const itemWidth = this.items[0]?.offsetWidth || 0;
-          if (itemWidth > 0) {
-            this.currentIndex = Math.round(scrollLeft / itemWidth);
-            this.updateDots();
+          const galleryWidth = this.gallery.offsetWidth;
+          if (galleryWidth > 0) {
+            const newIndex = Math.round(scrollLeft / galleryWidth);
+            if (newIndex !== this.currentIndex && newIndex >= 0 && newIndex < this.items.length) {
+              this.currentIndex = newIndex;
+              this.updateDots();
+              this.updateCounter();
+            }
           }
         }, 100);
       }
     });
+
+    // Prevent default touch behavior on navigation
+    this.nav?.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    }, { passive: false });
   }
 }
 
@@ -290,6 +337,102 @@ class LuxuryVariantSelector {
 }
 
 /**
+ * Lightbox Image Viewer
+ */
+class LuxuryLightbox {
+  constructor(sectionId) {
+    this.sectionId = sectionId;
+    this.section = document.querySelector(`#MainProductLuxury-${sectionId}`);
+    this.lightbox = document.querySelector(`#lightbox-${sectionId}`);
+    
+    if (!this.section || !this.lightbox) return;
+
+    this.images = Array.from(this.section.querySelectorAll('.product__item-img[data-lightbox-src]'));
+    this.currentIndex = 0;
+    this.lightboxImage = this.lightbox.querySelector('.lightbox-image');
+    this.counter = this.lightbox.querySelector('.lightbox-counter');
+    this.closeBtn = this.lightbox.querySelector('.lightbox-close');
+    this.prevBtn = this.lightbox.querySelector('.lightbox-prev');
+    this.nextBtn = this.lightbox.querySelector('.lightbox-next');
+
+    this.init();
+  }
+
+  init() {
+    // Click on images to open lightbox
+    this.images.forEach((img) => {
+      img.addEventListener('click', (e) => {
+        const index = parseInt(e.target.dataset.mediaIndex);
+        this.open(index);
+      });
+    });
+
+    // Close button
+    this.closeBtn?.addEventListener('click', () => this.close());
+
+    // Navigation arrows
+    this.prevBtn?.addEventListener('click', () => this.prev());
+    this.nextBtn?.addEventListener('click', () => this.next());
+
+    // Click outside image to close
+    this.lightbox.addEventListener('click', (e) => {
+      if (e.target === this.lightbox) {
+        this.close();
+      }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (this.lightbox.style.display !== 'none' && this.lightbox.classList.contains('active')) {
+        if (e.key === 'Escape') this.close();
+        if (e.key === 'ArrowLeft') this.prev();
+        if (e.key === 'ArrowRight') this.next();
+      }
+    });
+  }
+
+  open(index) {
+    this.currentIndex = index;
+    this.updateImage();
+    this.lightbox.style.display = 'flex';
+    setTimeout(() => {
+      this.lightbox.classList.add('active');
+    }, 10);
+    document.body.style.overflow = 'hidden';
+  }
+
+  close() {
+    this.lightbox.classList.remove('active');
+    setTimeout(() => {
+      this.lightbox.style.display = 'none';
+    }, 300);
+    document.body.style.overflow = '';
+  }
+
+  prev() {
+    this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+    this.updateImage();
+  }
+
+  next() {
+    this.currentIndex = (this.currentIndex + 1) % this.images.length;
+    this.updateImage();
+  }
+
+  updateImage() {
+    const currentImg = this.images[this.currentIndex];
+    if (currentImg) {
+      const src = currentImg.dataset.lightboxSrc || currentImg.src;
+      const alt = currentImg.alt || '';
+      
+      this.lightboxImage.src = src;
+      this.lightboxImage.alt = alt;
+      this.counter.textContent = `${this.currentIndex + 1} / ${this.images.length}`;
+    }
+  }
+}
+
+/**
  * Initialize on DOM ready
  */
 document.addEventListener('DOMContentLoaded', () => {
@@ -304,6 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize variant selector
     new LuxuryVariantSelector(sectionId);
+
+    // Initialize lightbox
+    new LuxuryLightbox(sectionId);
   });
 });
 
