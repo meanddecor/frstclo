@@ -156,23 +156,122 @@
     justify-content: center;
   }
 
+  /* Force grid column layout on mobile */
+  @media screen and (max-width: 749px) {
+    #Slider-{{ section.id }}:not(.slider--tablet) {
+      display: grid !important;
+    }
+
+    #Slider-{{ section.id }}.grid--1-col-tablet-down:not(.slider--tablet) {
+      grid-template-columns: 1fr !important;
+    }
+
+    #Slider-{{ section.id }}.grid--2-col-tablet-down:not(.slider--tablet) {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--3-col-tablet-down:not(.slider--tablet) {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--4-col-tablet-down:not(.slider--tablet) {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--5-col-tablet-down:not(.slider--tablet) {
+      grid-template-columns: repeat(5, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}:not(.slider--tablet) .grid__item {
+      width: auto !important;
+      max-width: none !important;
+    }
+  }
+
+  /* Force grid column layout on desktop */
+  @media screen and (min-width: 990px) {
+    #Slider-{{ section.id }}:not(.slider--desktop) {
+      display: grid !important;
+    }
+
+    #Slider-{{ section.id }}.grid--1-col-desktop:not(.slider--desktop) {
+      grid-template-columns: 1fr !important;
+    }
+
+    #Slider-{{ section.id }}.grid--2-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--3-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--4-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--5-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(5, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--6-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(6, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--7-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(7, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--8-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(8, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--9-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(9, 1fr) !important;
+    }
+
+    #Slider-{{ section.id }}.grid--10-col-desktop:not(.slider--desktop) {
+      grid-template-columns: repeat(10, 1fr) !important;
+    }
+
+    {%- unless section.settings.enable_custom_card_size -%}
+    #Slider-{{ section.id }}:not(.slider--desktop) .grid__item {
+      width: auto !important;
+      max-width: none !important;
+    }
+    {%- endunless -%}
+  }
+
   /* Custom Card Size - Scale cards within their columns */
   {%- if section.settings.enable_custom_card_size -%}
   #Slider-{{ section.id }} .grid__item {
     display: flex;
     justify-content: center;
   }
-  
-  #Slider-{{ section.id }} .grid__item .card,
-  #Slider-{{ section.id }} .grid__item > * {
-    max-width: {{ section.settings.card_max_width }}px;
-    width: 100%;
+
+  @media screen and (min-width: 990px) {
+    #Slider-{{ section.id }} .grid__item {
+      width: auto !important;
+      max-width: none !important;
+    }
+
+    #Slider-{{ section.id }} .grid__item .card,
+    #Slider-{{ section.id }} .grid__item > * {
+      max-width: {{ section.settings.card_max_width }}px;
+      width: 100%;
+    }
   }
   
   @media screen and (max-width: 749px) {
+    #Slider-{{ section.id }} .grid__item {
+      width: auto !important;
+      max-width: none !important;
+    }
+
     #Slider-{{ section.id }} .grid__item .card,
     #Slider-{{ section.id }} .grid__item > * {
       max-width: {{ section.settings.card_max_width_mobile }}px;
+      width: 100%;
     }
   }
   {%- endif -%}
@@ -378,9 +477,9 @@
       "type": "range",
       "id": "columns_desktop",
       "min": 1,
-      "max": 5,
+      "max": 10,
       "step": 1,
-      "default": 4,
+      "default": 2,
       "label": "t:sections.featured-collection.settings.columns_desktop.label"
     },
     {
@@ -700,12 +799,12 @@
     {
       "type": "range",
       "id": "card_max_width_mobile",
-      "min": 150,
+      "min": 100,
       "max": 500,
       "step": 10,
       "unit": "px",
       "label": "Card max width (mobile)",
-      "default": 300,
+      "default": 200,
       "info": "Maximum width for each product card on mobile"
     },
     {
@@ -823,20 +922,13 @@
       "content": "t:sections.featured-collection.settings.header_mobile.content"
     },
     {
-      "type": "select",
+      "type": "range",
       "id": "columns_mobile",
-      "default": "2",
-      "label": "t:sections.featured-collection.settings.columns_mobile.label",
-      "options": [
-        {
-          "value": "1",
-          "label": "t:sections.featured-collection.settings.columns_mobile.options__1.label"
-        },
-        {
-          "value": "2",
-          "label": "t:sections.featured-collection.settings.columns_mobile.options__2.label"
-        }
-      ]
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 2,
+      "label": "t:sections.featured-collection.settings.columns_mobile.label"
     },
     {
       "type": "checkbox",

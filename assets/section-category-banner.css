@@ -2,12 +2,29 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  /* CSS variables for responsive dimensions */
+  --desktop-height: 100vh;
+  --mobile-height: 100vh;
+  --desktop-max-width: 1600px;
+}
+
+/* Desktop boxed width */
+.category-banner--desktop-boxed {
+  max-width: var(--desktop-max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Mobile contained width */
+.category-banner--mobile-contained {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .category-banner__image-wrap {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: var(--mobile-height);
   overflow: hidden;
 }
 
@@ -107,8 +124,7 @@
 /* Responsive adjustments */
 @media screen and (max-width: 767px) {
   .category-banner__image-wrap {
-    height: 100vh;
-    min-height: 600px;
+    height: var(--mobile-height);
   }
   
   .category-banner__scroll {
@@ -123,19 +139,31 @@
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   .category-banner__image-wrap {
-    height: 100vh;
+    height: var(--desktop-height);
+  }
+  
+  /* Remove mobile contained padding on tablet */
+  .category-banner--mobile-contained {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
 @media screen and (min-width: 1024px) {
   .category-banner__image-wrap {
-    height: 100vh;
+    height: var(--desktop-height);
   }
   
   .category-banner__scroll:hover {
     animation-play-state: paused;
     transform: translateX(-50%) translateY(-5px);
     transition: transform 0.3s ease;
+  }
+  
+  /* Remove mobile contained padding on desktop */
+  .category-banner--mobile-contained {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 

@@ -207,22 +207,22 @@
   .quantity-wrapper {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     border: 1px solid {{ section.settings.quantity_button_border_color }};
     background-color: {{ section.settings.quantity_wrapper_bg_color }};
-    padding: 10px 16px;
-    border-radius: 2px;
+    padding: 8px 12px;
+    border-radius: 4px;
   }
 
   @media screen and (max-width: 748px) {
     .quantity-wrapper {
-      padding: 12px 18px;
-      gap: 18px;
+      padding: 10px 14px;
+      gap: 14px;
     }
   }
 
   .cart__quantity-btn {
-    padding: 0;
+    padding: 4px;
     border: none;
     cursor: pointer;
     display: flex;
@@ -230,20 +230,6 @@
     justify-content: center;
     background: none;
     transition: opacity 0.2s;
-    font-size: 20px;
-    line-height: 1;
-    color: {{ section.settings.quantity_button_color }};
-    font-weight: 300;
-    width: 20px;
-    height: 20px;
-  }
-
-  @media screen and (max-width: 748px) {
-    .cart__quantity-btn {
-      font-size: 22px;
-      width: 24px;
-      height: 24px;
-    }
   }
 
   .cart__quantity-btn:hover:not(:disabled) {
@@ -255,12 +241,24 @@
     cursor: not-allowed;
   }
 
-  .cart__quantity-btn:active {
-    transform: scale(0.95);
+  button.cart__quantity-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  @media screen and (max-width: 748px) {
+    button.cart__quantity-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  button.cart__quantity-btn svg path {
+    fill: {{ section.settings.quantity_button_color }};
   }
 
   .cart__quantity-value {
-    min-width: 30px;
+    min-width: 20px;
     text-align: center;
     font-family: {{ section.settings.quantity_font.family }}, {{ section.settings.quantity_font.fallback_families }};
     font-weight: {{ section.settings.quantity_font_weight }};
@@ -269,12 +267,6 @@
     color: {{ section.settings.quantity_color }} !important;
     letter-spacing: {{ section.settings.quantity_letter_spacing }}px;
     {% if section.settings.quantity_italic %}font-style: italic;{% endif %}
-  }
-
-  @media screen and (max-width: 748px) {
-    .cart__quantity-value {
-      min-width: 32px;
-    }
   }
 
   .checkout-elements {
@@ -594,12 +586,16 @@
                   <button class="cart__quantity-btn cart__quantity-btn-minus{% if item.quantity <= 1 %} disabled{% endif %}" 
                           type="button"
                           {% if item.quantity <= 1 %}disabled{% endif %}>
-                    —
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M21 12C21 12.1989 20.921 12.3897 20.7803 12.5303C20.6397 12.671 20.4489 12.75 20.25 12.75H3.75C3.55109 12.75 3.36032 12.671 3.21967 12.5303C3.07902 12.3897 3 12.1989 3 12C3 11.8011 3.07902 11.6103 3.21967 11.4697C3.36032 11.329 3.55109 11.25 3.75 11.25H20.25C20.4489 11.25 20.6397 11.329 20.7803 11.4697C20.921 11.6103 21 11.8011 21 12Z"></path>
+                    </svg>
                   </button>
                   <input type="hidden" name="updates[]" value="{{ item.quantity }}" data-quantity-input>
                   <span class="cart__quantity-value" id="quantity-{{ item.key }}">{{ item.quantity }}</span>
                   <button class="cart__quantity-btn cart__quantity-btn-plus" type="button">
-                    +
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                      <path d="M21.4355 12.6982C21.4355 12.8972 21.3565 13.0879 21.2159 13.2286C21.0752 13.3692 20.8845 13.4482 20.6855 13.4482H13.1855V20.9482C13.1855 21.1472 13.1065 21.3379 12.9659 21.4786C12.8252 21.6192 12.6345 21.6982 12.4355 21.6982C12.2366 21.6982 12.0459 21.6192 11.9052 21.4786C11.7646 21.3379 11.6855 21.1472 11.6855 20.9482V13.4482H4.18555C3.98663 13.4482 3.79587 13.3692 3.65522 13.2286C3.51456 13.0879 3.43555 12.8972 3.43555 12.6982C3.43555 12.4993 3.51456 12.3086 3.65522 12.1679C3.79587 12.0273 3.98663 11.9482 4.18555 11.9482H11.6855V4.44824C11.6855 4.24933 11.7646 4.05856 11.9052 3.91791C12.0459 3.77726 12.2366 3.69824 12.4355 3.69824C12.6345 3.69824 12.8252 3.77726 12.9659 3.91791C13.1065 4.05856 13.1855 4.24933 13.1855 4.44824V11.9482H20.6855C20.8845 11.9482 21.0752 12.0273 21.2159 12.1679C21.3565 12.3086 21.4355 12.4993 21.4355 12.6982Z"></path>
+                    </svg>
                   </button>
                 </div>
               </div>

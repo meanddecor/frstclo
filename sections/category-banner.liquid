@@ -1,6 +1,39 @@
 {{ 'section-category-banner.css' | asset_url | stylesheet_tag }}
 
-<div class="category-banner {{ section.settings.css_class }}">
+{%- comment -%}
+✅ RESPONSIVE DIMENSIONS APPLIED:
+- Desktop height: {{ section.settings.desktop_height_unit }} ({{ section.settings.desktop_height }}px or {{ section.settings.desktop_height_vh }}vh)
+- Mobile height: {{ section.settings.mobile_height_unit }} ({{ section.settings.mobile_height }}px or {{ section.settings.mobile_height_vh }}vh)
+- Desktop width: {{ section.settings.desktop_width }}
+- Mobile width: {{ section.settings.mobile_width }}
+{%- endcomment -%}
+
+{%- liquid
+  # Calculate desktop height
+  if section.settings.desktop_height_unit == 'vh'
+    assign desktop_height_value = section.settings.desktop_height_vh | append: 'vh'
+  else
+    assign desktop_height_value = section.settings.desktop_height | append: 'px'
+  endif
+  
+  # Calculate mobile height
+  if section.settings.mobile_height_unit == 'vh'
+    assign mobile_height_value = section.settings.mobile_height_vh | append: 'vh'
+  else
+    assign mobile_height_value = section.settings.mobile_height | append: 'px'
+  endif
+  
+  # Width classes
+  assign width_classes = ''
+  if section.settings.desktop_width == 'boxed'
+    assign width_classes = width_classes | append: ' category-banner--desktop-boxed'
+  endif
+  if section.settings.mobile_width == 'contained'
+    assign width_classes = width_classes | append: ' category-banner--mobile-contained'
+  endif
+-%}
+
+<div class="category-banner {{ section.settings.css_class }}{{ width_classes }}" style="--desktop-height: {{ desktop_height_value }}; --mobile-height: {{ mobile_height_value }}; --desktop-max-width: {{ section.settings.desktop_max_width }}px;">
   <div class="category-banner__image-wrap">
     {%- if section.settings.link_url != blank -%}
       <a class="category-banner__link" href="{{ section.settings.link_url }}">
@@ -169,6 +202,135 @@
       "id": "link_url",
       "label": "Link URL",
       "info": "Makes the entire banner clickable. Use # for anchor links (e.g., #product-search-results) or any page URL"
+    },
+    {
+      "type": "header",
+      "content": "Desktop Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 300,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Desktop height",
+      "default": 800,
+      "info": "Height of the banner on desktop devices (min-width: 1024px)"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height_unit",
+      "label": "Desktop height unit",
+      "options": [
+        {
+          "value": "px",
+          "label": "Pixels"
+        },
+        {
+          "value": "vh",
+          "label": "Viewport height"
+        }
+      ],
+      "default": "vh",
+      "info": "Use 'vh' for full viewport height or 'px' for fixed height"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height_vh",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Desktop height (vh)",
+      "default": 100,
+      "info": "Only applies when unit is set to 'vh'"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width (100%)"
+        },
+        {
+          "value": "boxed",
+          "label": "Boxed (max-width)"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "desktop_max_width",
+      "min": 1000,
+      "max": 2000,
+      "step": 100,
+      "unit": "px",
+      "label": "Desktop max width",
+      "default": 1600,
+      "info": "Only applies when width is set to 'boxed'"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Dimensions"
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Mobile height",
+      "default": 600,
+      "info": "Height of the banner on mobile devices (max-width: 767px)"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height_unit",
+      "label": "Mobile height unit",
+      "options": [
+        {
+          "value": "px",
+          "label": "Pixels"
+        },
+        {
+          "value": "vh",
+          "label": "Viewport height"
+        }
+      ],
+      "default": "vh",
+      "info": "Use 'vh' for full viewport height or 'px' for fixed height"
+    },
+    {
+      "type": "range",
+      "id": "mobile_height_vh",
+      "min": 30,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "label": "Mobile height (vh)",
+      "default": 100,
+      "info": "Only applies when unit is set to 'vh'"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width (100%)"
+        },
+        {
+          "value": "contained",
+          "label": "Contained (with padding)"
+        }
+      ],
+      "default": "full"
     },
     {
       "type": "checkbox",

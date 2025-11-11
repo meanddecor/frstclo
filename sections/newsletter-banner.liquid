@@ -1,32 +1,117 @@
 {% comment %}
 ✅ GLOBAL SETTINGS APPLIED:
-- Colors: color_background, color_text, color_button, color_button_text
-- Typography: type_header_font, type_body_font
-- Buttons: button_style, button_radius, button_shadow_opacity
 - Layout: page_width
-- Inputs: input_border_thickness, input_corner_radius, input_shadow_opacity
+- Buttons: button_shadow_opacity
+- Inputs: input_shadow_opacity
+
+✅ SECTION SCHEMA SETTINGS:
+- All Text Colors: heading_color, description_color, button_text_color, input_text_color, success_text_color, placeholder_color
+- Button Colors: button_background, button_hover_background, button_text_color
+- Input Colors: input_background, input_border_color, input_text_color, input_focus_border_color, input_focus_outline_color
+- Background: background_color
+- Corner Radius: button_corner_radius, input_corner_radius
+- Outline: input_focus_outline_width, input_focus_outline_color
+- Border Thickness: input_border_thickness
+- Font Families: heading_font, description_font, input_font, button_font, success_font
+- Letter Spacing: heading_letter_spacing, description_letter_spacing, input_letter_spacing, button_letter_spacing, success_letter_spacing
+- Font Sizes: heading_size, description_size, input_font_size, button_font_size, success_font_size
+- Text Decorations: heading_italic, heading_underline, heading_strikethrough, description_italic, description_underline, description_strikethrough
+- Spacing: padding_top, padding_bottom, heading_spacing, description_spacing, form_spacing, form_gap
 {% endcomment %}
 
 <style>
+{%- liquid
+  assign loaded_fonts = ''
+  
+  if section.settings.heading_font
+    assign font_id = section.settings.heading_font.family | append: section.settings.heading_font.weight | handleize
+    unless loaded_fonts contains font_id
+      echo section.settings.heading_font | font_face: font_display: 'swap'
+      assign loaded_fonts = loaded_fonts | append: ' ' | append: font_id
+    endunless
+  endif
+  
+  if section.settings.description_font
+    assign font_id = section.settings.description_font.family | append: section.settings.description_font.weight | handleize
+    unless loaded_fonts contains font_id
+      echo section.settings.description_font | font_face: font_display: 'swap'
+      assign loaded_fonts = loaded_fonts | append: ' ' | append: font_id
+    endunless
+  endif
+  
+  if section.settings.input_font
+    assign font_id = section.settings.input_font.family | append: section.settings.input_font.weight | handleize
+    unless loaded_fonts contains font_id
+      echo section.settings.input_font | font_face: font_display: 'swap'
+      assign loaded_fonts = loaded_fonts | append: ' ' | append: font_id
+    endunless
+  endif
+  
+  if section.settings.button_font
+    assign font_id = section.settings.button_font.family | append: section.settings.button_font.weight | handleize
+    unless loaded_fonts contains font_id
+      echo section.settings.button_font | font_face: font_display: 'swap'
+      assign loaded_fonts = loaded_fonts | append: ' ' | append: font_id
+    endunless
+  endif
+  
+  if section.settings.success_font
+    assign font_id = section.settings.success_font.family | append: section.settings.success_font.weight | handleize
+    unless loaded_fonts contains font_id
+      echo section.settings.success_font | font_face: font_display: 'swap'
+      assign loaded_fonts = loaded_fonts | append: ' ' | append: font_id
+    endunless
+  endif
+-%}
+
   #shopify-section-{{ section.id }} {
     --section-bg-color: {{ section.settings.background_color }};
-    --text-color: {{ section.settings.text_color }};
     --button-bg-color: {{ section.settings.button_background }};
     --button-text-color: {{ section.settings.button_text_color }};
+    --button-hover-bg: {{ section.settings.button_hover_background }};
     --input-border-color: {{ section.settings.input_border_color }};
+    --input-text-color: {{ section.settings.input_text_color }};
+    --input-focus-border: {{ section.settings.input_focus_border_color }};
+    --input-focus-outline: {{ section.settings.input_focus_outline_color }};
+    --input-focus-outline-width: {{ section.settings.input_focus_outline_width }}px;
+    
+    /* Font families */
+    {% if section.settings.heading_font %}
+    --heading-font: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    {% else %}
+    --heading-font: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
+    {% endif %}
+    {% if section.settings.description_font %}
+    --description-font: {{ section.settings.description_font.family }}, {{ section.settings.description_font.fallback_families }};
+    {% else %}
+    --description-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    {% endif %}
+    {% if section.settings.input_font %}
+    --input-font: {{ section.settings.input_font.family }}, {{ section.settings.input_font.fallback_families }};
+    {% else %}
+    --input-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    {% endif %}
+    {% if section.settings.button_font %}
+    --button-font: {{ section.settings.button_font.family }}, {{ section.settings.button_font.fallback_families }};
+    {% else %}
+    --button-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    {% endif %}
+    {% if section.settings.success_font %}
+    --success-font: {{ section.settings.success_font.family }}, {{ section.settings.success_font.fallback_families }};
+    {% else %}
+    --success-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    {% endif %}
     
     /* Global theme settings */
     --page-width: {{ settings.page_width }}px;
-    --button-radius: {{ settings.button_radius }}px;
-    --input-radius: {{ settings.input_corner_radius }}px;
-    --header-font: {{ settings.type_header_font.family }}, {{ settings.type_header_font.fallback_families }};
-    --body-font: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+    --button-radius: {{ section.settings.button_corner_radius }}px;
+    --input-radius: {{ section.settings.input_corner_radius }}px;
   }
   
   .newsletter-banner__wrapper {
-    background-color: var(--section-bg-color);
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.background_color }} !important;
+    padding-top: {{ section.settings.padding_top }}px !important;
+    padding-bottom: {{ section.settings.padding_bottom }}px !important;
   }
   
   .newsletter-banner__container {
@@ -37,107 +122,114 @@
   
   .newsletter-banner__heading {
     text-align: center;
-    font-family: var(--header-font);
-    font-size: {{ section.settings.heading_size }}px;
-    color: var(--text-color);
-    margin-bottom: {{ section.settings.heading_spacing }}px;
-    font-weight: {{ section.settings.heading_weight }};
-    text-transform: {{ section.settings.heading_transform }};
-    letter-spacing: {{ section.settings.heading_letter_spacing }}px;
+    font-family: var(--heading-font) !important;
+    font-size: {{ section.settings.heading_size }}px !important;
+    color: {{ section.settings.heading_color }} !important;
+    margin-bottom: {{ section.settings.heading_spacing }}px !important;
+    font-weight: {{ section.settings.heading_weight }} !important;
+    text-transform: {{ section.settings.heading_transform }} !important;
+    letter-spacing: {{ section.settings.heading_letter_spacing }}px !important;
+    {% if section.settings.heading_italic %}font-style: italic !important;{% endif %}
+    {% if section.settings.heading_underline or section.settings.heading_strikethrough %}
+    text-decoration: {% if section.settings.heading_underline %}underline{% endif %}{% if section.settings.heading_underline and section.settings.heading_strikethrough %} {% endif %}{% if section.settings.heading_strikethrough %}line-through{% endif %} !important;
+    {% endif %}
   }
   
   .newsletter-banner__description {
     text-align: center;
-    max-width: {{ section.settings.description_max_width }}rem;
-    margin: 0 auto;
-    font-family: var(--body-font);
-    font-size: {{ section.settings.description_size }}px;
-    color: var(--text-color);
+    max-width: {{ section.settings.description_max_width }}rem !important;
+    margin: 0 auto {{ section.settings.description_spacing }}px !important;
+    font-family: var(--description-font) !important;
+    font-size: {{ section.settings.description_size }}px !important;
+    color: {{ section.settings.description_color }} !important;
     line-height: 1.6;
+    letter-spacing: {{ section.settings.description_letter_spacing }}px !important;
+    {% if section.settings.description_italic %}font-style: italic !important;{% endif %}
+    {% if section.settings.description_underline or section.settings.description_strikethrough %}
+    text-decoration: {% if section.settings.description_underline %}underline{% endif %}{% if section.settings.description_underline and section.settings.description_strikethrough %} {% endif %}{% if section.settings.description_strikethrough %}line-through{% endif %} !important;
+    {% endif %}
   }
   
   .newsletter-banner__form-group {
     display: flex;
     justify-content: center;
     align-items: stretch;
-    margin-top: {{ section.settings.form_spacing }}px;
-    gap: {{ section.settings.form_gap }}px;
+    margin-top: {{ section.settings.form_spacing }}px !important;
+    gap: {{ section.settings.form_gap }}px !important;
     flex-wrap: wrap;
   }
   
   .newsletter-banner__input {
     display: block;
     width: {{ section.settings.input_width }}px;
-    padding: {{ section.settings.input_padding_vertical }}px {{ section.settings.input_padding_horizontal }}px;
-    font-size: {{ section.settings.input_font_size }}px;
-    font-family: var(--body-font);
-    border: {{ settings.input_border_thickness }}px solid var(--input-border-color);
-    border-radius: var(--input-radius);
-    background-color: {{ section.settings.input_background }};
-    color: var(--text-color);
+    padding: {{ section.settings.input_padding_vertical }}px {{ section.settings.input_padding_horizontal }}px !important;
+    font-size: {{ section.settings.input_font_size }}px !important;
+    font-family: var(--input-font) !important;
+    letter-spacing: {{ section.settings.input_letter_spacing }}px !important;
+    border: {{ section.settings.input_border_thickness }}px solid {{ section.settings.input_border_color }} !important;
+    border-radius: {{ section.settings.input_corner_radius }}px !important;
+    background-color: {{ section.settings.input_background }} !important;
+    color: {{ section.settings.input_text_color }} !important;
     {% if settings.input_shadow_opacity > 0 %}
-    box-shadow: 0 2px 4px rgba(0, 0, 0, {{ settings.input_shadow_opacity | divided_by: 100.0 }});
+    box-shadow: 0 2px 4px rgba(0, 0, 0, {{ settings.input_shadow_opacity | divided_by: 100.0 }}) !important;
     {% endif %}
   }
   
   .newsletter-banner__input::placeholder {
-    color: {{ section.settings.placeholder_color }};
+    color: {{ section.settings.placeholder_color }} !important;
   }
   
   .newsletter-banner__input:focus {
-    outline: none;
-    border-color: var(--button-bg-color);
+    outline: {{ section.settings.input_focus_outline_width }}px solid {{ section.settings.input_focus_outline_color }} !important;
+    border-color: {{ section.settings.input_focus_border_color }} !important;
   }
   
   .newsletter-banner__button {
-    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px;
+    padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal }}px !important;
     cursor: pointer;
-    font-size: {{ section.settings.button_font_size }}px;
-    font-family: var(--body-font);
-    font-weight: {{ section.settings.button_weight }};
-    border: none;
-    border-radius: var(--button-radius);
-    color: var(--button-text-color);
-    background: var(--button-bg-color);
-    text-transform: {{ section.settings.button_transform }};
-    transition: opacity 0.3s ease;
+    font-size: {{ section.settings.button_font_size }}px !important;
+    font-family: var(--button-font) !important;
+    font-weight: {{ section.settings.button_weight }} !important;
+    letter-spacing: {{ section.settings.button_letter_spacing }}px !important;
+    border: none !important;
+    border-radius: {{ section.settings.button_corner_radius }}px !important;
+    color: {{ section.settings.button_text_color }} !important;
+    background: {{ section.settings.button_background }} !important;
+    text-transform: {{ section.settings.button_transform }} !important;
+    transition: all 0.3s ease;
     {% if settings.button_shadow_opacity > 0 %}
-    box-shadow: 0 2px 4px rgba(0, 0, 0, {{ settings.button_shadow_opacity | divided_by: 100.0 }});
+    box-shadow: 0 2px 4px rgba(0, 0, 0, {{ settings.button_shadow_opacity | divided_by: 100.0 }}) !important;
     {% endif %}
   }
   
   .newsletter-banner__button:hover {
-    opacity: {{ section.settings.button_hover_opacity | divided_by: 100.0 }};
+    opacity: {{ section.settings.button_hover_opacity | divided_by: 100.0 }} !important;
+    background: {{ section.settings.button_hover_background }} !important;
   }
   
   .newsletter-banner__success-message {
     text-align: center;
     margin: 20px 0;
     display: none;
-    font-family: var(--body-font);
-    font-size: {{ section.settings.success_font_size }}px;
-    color: {{ section.settings.success_text_color }};
+    font-family: var(--success-font) !important;
+    font-size: {{ section.settings.success_font_size }}px !important;
+    color: {{ section.settings.success_text_color }} !important;
+    letter-spacing: {{ section.settings.success_letter_spacing }}px !important;
   }
   
   @media screen and (max-width: 749px) {
     .newsletter-banner__heading {
-      font-size: {{ section.settings.heading_size_mobile }}px;
-      margin-bottom: {{ section.settings.heading_spacing_mobile }}px;
-    }
-    
-    .newsletter-banner__form-group {
-      flex-direction: column;
-      align-items: center;
+      font-size: {{ section.settings.heading_size_mobile }}px !important;
+      margin-bottom: {{ section.settings.heading_spacing_mobile }}px !important;
     }
     
     .newsletter-banner__input {
-      width: 100%;
-      max-width: {{ section.settings.input_width }}px;
+      width: calc({{ section.settings.input_width }}px * 0.7);
+      min-width: 180px;
     }
     
     .newsletter-banner__button {
-      width: 100%;
-      max-width: {{ section.settings.input_width }}px;
+      padding: {{ section.settings.button_padding_vertical }}px {{ section.settings.button_padding_horizontal | times: 0.7 }}px !important;
     }
   }
 </style>
@@ -264,6 +356,40 @@
     },
     {
       "type": "header",
+      "content": "Heading Font"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Heading font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_italic",
+      "label": "Italic",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_underline",
+      "label": "Underline",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_strikethrough",
+      "label": "Strikethrough",
+      "default": false
+    },
+    {
+      "type": "header",
       "content": "Heading Style"
     },
     {
@@ -342,6 +468,50 @@
     },
     {
       "type": "header",
+      "content": "Description Font"
+    },
+    {
+      "type": "font_picker",
+      "id": "description_font",
+      "label": "Description font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "description_letter_spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Description letter spacing",
+      "default": 0
+    },
+    {
+      "type": "checkbox",
+      "id": "description_italic",
+      "label": "Italic",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "description_underline",
+      "label": "Underline",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "description_strikethrough",
+      "label": "Strikethrough",
+      "default": false
+    },
+    {
+      "type": "header",
       "content": "Description Style"
     },
     {
@@ -363,6 +533,16 @@
       "unit": "rem",
       "label": "Description max width",
       "default": 35
+    },
+    {
+      "type": "range",
+      "id": "description_spacing",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Description bottom spacing",
+      "default": 0
     },
     {
       "type": "header",
@@ -387,6 +567,86 @@
       "unit": "px",
       "label": "Gap between input and button",
       "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Input Font & Colors"
+    },
+    {
+      "type": "font_picker",
+      "id": "input_font",
+      "label": "Input font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "color",
+      "id": "input_text_color",
+      "label": "Input text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "input_background",
+      "label": "Input background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "input_border_color",
+      "label": "Input border color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "input_border_thickness",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Input border thickness",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "input_corner_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Input corner radius",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "placeholder_color",
+      "label": "Placeholder color",
+      "default": "#999999"
+    },
+    {
+      "type": "header",
+      "content": "Input Focus State"
+    },
+    {
+      "type": "color",
+      "id": "input_focus_border_color",
+      "label": "Focus border color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "input_focus_outline_color",
+      "label": "Focus outline color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "input_focus_outline_width",
+      "min": 0,
+      "max": 5,
+      "step": 1,
+      "unit": "px",
+      "label": "Focus outline width",
+      "default": 2
     },
     {
       "type": "header",
@@ -433,22 +693,52 @@
       "default": 14
     },
     {
-      "type": "color",
-      "id": "input_background",
-      "label": "Input background",
-      "default": "#ffffff"
+      "type": "range",
+      "id": "input_letter_spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Input letter spacing",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Button Font & Colors"
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Button font",
+      "default": "assistant_n4"
     },
     {
       "type": "color",
-      "id": "input_border_color",
-      "label": "Input border color",
+      "id": "button_background",
+      "label": "Button background",
       "default": "#000000"
     },
     {
       "type": "color",
-      "id": "placeholder_color",
-      "label": "Placeholder color",
-      "default": "#999999"
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_background",
+      "label": "Button hover background",
+      "default": "#333333"
+    },
+    {
+      "type": "range",
+      "id": "button_corner_radius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Button corner radius",
+      "default": 0
     },
     {
       "type": "header",
@@ -483,6 +773,16 @@
       "unit": "px",
       "label": "Button font size",
       "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_letter_spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Button letter spacing",
+      "default": 0
     },
     {
       "type": "select",
@@ -520,7 +820,7 @@
     },
     {
       "type": "header",
-      "content": "Colors"
+      "content": "Section Colors"
     },
     {
       "type": "color",
@@ -529,32 +829,20 @@
       "default": "#ffffff"
     },
     {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
-      "default": "#000000"
+      "type": "header",
+      "content": "Success Message Font & Style"
     },
     {
-      "type": "color",
-      "id": "button_background",
-      "label": "Button background",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Button text color",
-      "default": "#ffffff"
+      "type": "font_picker",
+      "id": "success_font",
+      "label": "Success message font",
+      "default": "assistant_n4"
     },
     {
       "type": "color",
       "id": "success_text_color",
       "label": "Success message color",
       "default": "#000000"
-    },
-    {
-      "type": "header",
-      "content": "Success Message"
     },
     {
       "type": "range",
@@ -565,6 +853,16 @@
       "unit": "px",
       "label": "Success message font size",
       "default": 20
+    },
+    {
+      "type": "range",
+      "id": "success_letter_spacing",
+      "min": -2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Success message letter spacing",
+      "default": 0
     },
     {
       "type": "header",

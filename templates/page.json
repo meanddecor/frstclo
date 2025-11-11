@@ -1,1 +1,64 @@
-{"sections":{"main":{"type":"main-page","settings":{"padding_top":28,"padding_bottom":28}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "heading_font_family": "assistant_n4",
+        "heading_color": "",
+        "font_family": "assistant_n4",
+        "custom_font_size": 0,
+        "line_height": 0,
+        "letter_spacing": 0,
+        "text_alignment": "left",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "context_bar_VziqVN": {
+      "type": "context-bar",
+      "name": "Context Bar",
+      "settings": {
+        "heading": "About us",
+        "heading_tag": "h2",
+        "text": "<p>Add your context or description text here.</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style_secondary": false,
+        "button_spacing": 24,
+        "content_width": 100,
+        "text_alignment": "left",
+        "heading_size_desktop": 44,
+        "heading_size_mobile": 28,
+        "text_size_desktop": 16,
+        "text_size_mobile": 14,
+        "heading_spacing": 16,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_left": 0,
+        "padding_right": 0,
+        "margin_top": 20,
+        "margin_bottom": 100,
+        "background_color": "#ffffff",
+        "heading_color": "#000000",
+        "text_color": "#000000",
+        "button_background": "#000000",
+        "button_background_hover": "#333333",
+        "button_text_color": "#FFFFFF"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "context_bar_VziqVN"
+  ]
+}
