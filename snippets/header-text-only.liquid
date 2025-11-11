@@ -5,6 +5,10 @@
 - Colors: Applied via CSS variables and section settings
 
 ✅ SECTION SETTINGS APPLIED - ALL RESPONSIVE BREAKPOINTS WORKING:
+- Header Layout: text_only_header_bg_color, text_only_position_type, text_only_position_top, text_only_position_left, text_only_position_right, text_only_z_index
+- Header Dimensions: text_only_width_type, text_only_width_value, text_only_height_type, text_only_height_value
+- Header Padding: text_only_padding_top, text_only_padding_bottom, text_only_padding_left, text_only_padding_right
+- Content Scaling: text_only_content_scale, text_only_center_content_vertically
 - Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit
 - Text-Only Header: text_only_burger_color, text_only_cross_color, text_only_menu_text_color, text_only_menu_font_size
 - Text-Only Header: text_only_menu_letter_spacing, text_only_menu_font_weight, text_only_menu_font
@@ -19,7 +23,7 @@
 - Cart/Account: text_only_cart_text_color
 - Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, text_only_mobile_menu_font_size, text_only_mobile_menu_letter_spacing, text_only_mobile_menu_font_weight, text_only_mobile_menu_font
 
-🔧 FIXED: Removed hardcoded clamp() values and conflicting mobile menu overrides that were preventing responsive settings from applying
+🔧 NEW: Full header positioning control (sticky, fixed, absolute), custom dimensions (vh, vw, px), padding, and uniform content scaling
 {% endcomment %}
 
 {%- liquid
@@ -40,6 +44,57 @@
 {%- endif -%}
 <style>
   :root {
+    /* Header Layout & Positioning */
+    --text-only-header-bg-color: {{ section.settings.text_only_header_bg_color | default: 'rgba(0,0,0,0)' }};
+    --text-only-position-type: {{ section.settings.text_only_position_type | default: 'relative' }};
+    --text-only-position-top: {{ section.settings.text_only_position_top | default: 0 }}px;
+    --text-only-position-left: {{ section.settings.text_only_position_left | default: 0 }}px;
+    --text-only-position-right: {{ section.settings.text_only_position_right | default: 0 }}px;
+    --text-only-z-index: {{ section.settings.text_only_z_index | default: 100 }};
+    
+    /* Header Dimensions */
+    {%- liquid
+      assign width_type = section.settings.text_only_width_type | default: 'full'
+      assign width_value = section.settings.text_only_width_value | default: 100
+      
+      case width_type
+        when 'full'
+          assign width_output = '100%'
+        when 'vw'
+          assign width_output = width_value | append: 'vw'
+        when 'px'
+          assign width_output = width_value | append: 'px'
+        when 'max-width'
+          assign width_output = '100%'
+      endcase
+      
+      assign height_type = section.settings.text_only_height_type | default: 'auto'
+      assign height_value = section.settings.text_only_height_value | default: 80
+      
+      case height_type
+        when 'auto'
+          assign height_output = 'auto'
+        when 'vh'
+          assign height_output = height_value | append: 'vh'
+        when 'px'
+          assign height_output = height_value | append: 'px'
+      endcase
+    -%}
+    --text-only-width: {{ width_output }};
+    --text-only-height: {{ height_output }};
+    --text-only-use-max-width: {% if width_type == 'max-width' %}1{% else %}0{% endif %};
+    
+    /* Header Padding */
+    --text-only-padding-top: {{ section.settings.text_only_padding_top | default: 20 }}px;
+    --text-only-padding-bottom: {{ section.settings.text_only_padding_bottom | default: 20 }}px;
+    --text-only-padding-left: {{ section.settings.text_only_padding_left | default: 20 }}px;
+    --text-only-padding-right: {{ section.settings.text_only_padding_right | default: 20 }}px;
+    
+    /* Content Scaling */
+    --text-only-content-scale: {{ section.settings.text_only_content_scale | default: 100 | divided_by: 100.0 }};
+    --text-only-center-vertically: {% if section.settings.text_only_center_content_vertically %}center{% else %}stretch{% endif %};
+    
+    /* Logo & Typography */
     --text-only-logo-width: {{ section.settings.text_only_logo_width | default: 100 }}px;
     --text-only-logo-object-fit: {{ section.settings.text_only_logo_object_fit | default: 'contain' }};
     --text-only-burger-color: {{ section.settings.text_only_burger_color | default: '#000000' }};
@@ -59,6 +114,21 @@
     --text-only-mobile-menu-font-weight: {{ section.settings.text_only_mobile_menu_font_weight | default: 700 }};
     --text-only-spacing-scale: {{ section.settings.text_only_spacing_scale | default: 100 | divided_by: 100.0 }};
   }
+  
+  /* Apply header positioning and dimensions */
+  .header--text-only {
+    position: var(--text-only-position-type) !important;
+    top: var(--text-only-position-top) !important;
+    left: var(--text-only-position-left) !important;
+    right: var(--text-only-position-right) !important;
+    z-index: var(--text-only-z-index) !important;
+    width: var(--text-only-width) !important;
+    height: var(--text-only-height) !important;
+    background-color: var(--text-only-header-bg-color) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
 
   {%- liquid
     assign mobile_menu_style = section.settings.text_only_mobile_menu_style | default: 'fullscreen'
@@ -69,10 +139,14 @@
   .text-only-header-wrapper {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
-    align-items: center;
+    align-items: var(--text-only-center-vertically);
     gap: calc(1.25rem * var(--text-only-spacing-scale));
-    padding: 1.25rem calc(1.25rem * var(--text-only-spacing-scale));
+    padding: var(--text-only-padding-top) var(--text-only-padding-right) var(--text-only-padding-bottom) var(--text-only-padding-left);
     box-sizing: border-box;
+    transform: scale(var(--text-only-content-scale));
+    transform-origin: center center;
+    width: calc(100% / var(--text-only-content-scale));
+    height: calc(100% / var(--text-only-content-scale));
   }
 
   /* XL Desktop - 1200px and above */
@@ -297,7 +371,8 @@
   .text-only-burger-menu {
     display: none;
     cursor: pointer;
-    z-index: 997;
+    z-index: 10000;
+    position: relative;
   }
 
   .text-only-burger-menu svg {
@@ -495,17 +570,23 @@
 
     {%- if mobile_menu_style == 'fullscreen' -%}
     .text-only-header-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       background: var(--text-only-mobile-menu-bg);
-      z-index: 996;
+      z-index: 9999 !important;
       gap: 30px;
+      transform: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      max-width: none !important;
     }
     {%- elsif mobile_menu_style == 'horizontal_scroll' -%}
     .text-only-burger-menu {
@@ -557,10 +638,22 @@
 
     .text-only-header-menu.active {
       display: flex !important;
+      {%- if mobile_menu_style == 'fullscreen' -%}
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 9999 !important;
+      transform: none !important;
+      {%- endif -%}
     }
 
     .text-only-header-menu .text-only-menu-item {
       text-align: center;
+      transform: none !important;
     }
 
     .text-only-header-menu .text-only-menu-link {
@@ -595,6 +688,7 @@
     .text-only-submenu {
       padding: 15px 0 0 0;
       gap: 12px;
+      transform: none !important;
     }
 
     .text-only-submenu a {
@@ -605,6 +699,7 @@
       font-weight: var(--text-only-mobile-menu-font-weight) !important;
       letter-spacing: var(--text-only-mobile-menu-letter-spacing) !important;
       opacity: 0.7;
+      transform: none !important;
       {%- if mobile_menu_font -%}
       font-family: {{ mobile_menu_font.family }}, {{ mobile_menu_font.fallback_families }};
       font-weight: {{ mobile_menu_font.weight }};

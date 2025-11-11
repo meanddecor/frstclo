@@ -1,0 +1,156 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "heading_font_family": "assistant_n4",
+        "heading_color": "",
+        "font_family": "assistant_n4",
+        "custom_font_size": 0,
+        "line_height": 0,
+        "letter_spacing": 0,
+        "text_alignment": "left",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "context_bar_VziqVN": {
+      "type": "context-bar",
+      "disabled": true,
+      "name": "Context Bar",
+      "settings": {
+        "heading": "About us",
+        "heading_tag": "h2",
+        "text": "<p>Add your context or description text here.</p>",
+        "button_label": "",
+        "button_link": "",
+        "button_style_secondary": false,
+        "button_spacing": 24,
+        "content_width": 100,
+        "text_alignment": "left",
+        "heading_size_desktop": 44,
+        "heading_size_mobile": 28,
+        "text_size_desktop": 16,
+        "text_size_mobile": 14,
+        "heading_spacing": 16,
+        "padding_top": 20,
+        "padding_bottom": 20,
+        "padding_left": 0,
+        "padding_right": 0,
+        "margin_top": 20,
+        "margin_bottom": 100,
+        "background_color": "#ffffff",
+        "heading_color": "#000000",
+        "text_color": "#000000",
+        "button_background": "#000000",
+        "button_background_hover": "#333333",
+        "button_text_color": "#ffffff"
+      }
+    },
+    "interactive_drake_Yybp9j": {
+      "type": "interactive-drake",
+      "blocks": {
+        "explore_button_Kye3Cc": {
+          "type": "explore_button",
+          "settings": {
+            "x_position": 90,
+            "y_position": 90,
+            "color": "#ffffff",
+            "size": 24,
+            "border_color": "#ffffff",
+            "bg_color": "rgba(0,0,0,0)",
+            "arrow_color": "#ffffff",
+            "border_width": 1,
+            "expanded_width": 100,
+            "arrow_direction": "right",
+            "enable_pulse": false,
+            "pulse_speed": 1.5,
+            "label": "GO BACK",
+            "link": "#"
+          }
+        },
+        "hotspot_Bm9bNX": {
+          "type": "hotspot",
+          "settings": {
+            "x_position": 33,
+            "y_position": 62,
+            "dot_type": "color",
+            "svg_code": "",
+            "color": "#ffffff",
+            "pulse_color": "#ffffff",
+            "size": 20,
+            "pulse_speed": 1.5,
+            "hotspot_link": "shopify://products/blak-jecket",
+            "tooltip": "Product 1",
+            "tooltip_bg": "#ffffff",
+            "tooltip_opacity": 80,
+            "tooltip_font_color": "#000000",
+            "tooltip_font_size": 15,
+            "tooltip_width_mode": "dynamic",
+            "tooltip_width": 200,
+            "tooltip_offset": 0,
+            "tooltip_align": "center"
+          }
+        },
+        "hotspot_x8MHbX": {
+          "type": "hotspot",
+          "settings": {
+            "x_position": 48,
+            "y_position": 72,
+            "dot_type": "color",
+            "svg_code": "",
+            "color": "#ffffff",
+            "pulse_color": "#ffffff",
+            "size": 20,
+            "pulse_speed": 1.5,
+            "hotspot_link": "shopify://products/capri-88-running-man-jersey",
+            "tooltip": "Product 2",
+            "tooltip_bg": "#ffffff",
+            "tooltip_opacity": 80,
+            "tooltip_font_color": "#000000",
+            "tooltip_font_size": 15,
+            "tooltip_width_mode": "dynamic",
+            "tooltip_width": 200,
+            "tooltip_offset": 0,
+            "tooltip_align": "center"
+          }
+        }
+      },
+      "block_order": [
+        "explore_button_Kye3Cc",
+        "hotspot_Bm9bNX",
+        "hotspot_x8MHbX"
+      ],
+      "name": "Interactive Drake",
+      "settings": {
+        "image": "shopify://shop_images/20250213_STUDIO_SSS_4_U_V1_3e0e39815b.webp",
+        "section_height": 100,
+        "background_color": "#000000",
+        "enable_horizontal_scroll": true,
+        "enable_vertical_scroll": false,
+        "image_height": 100,
+        "image_min_height": 100,
+        "object_fit": "cover",
+        "object_position": "center",
+        "mobile_breakpoint": 768,
+        "mobile_scroll_horizontal": true,
+        "mobile_min_width": 150
+      }
+    }
+  },
+  "order": [
+    "main",
+    "context_bar_VziqVN",
+    "interactive_drake_Yybp9j"
+  ]
+}

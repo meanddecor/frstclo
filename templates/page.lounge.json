@@ -1,0 +1,122 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "heading_font_family": "assistant_n4",
+        "heading_color": "",
+        "font_family": "assistant_n4",
+        "custom_font_size": 0,
+        "line_height": 0,
+        "letter_spacing": 0,
+        "text_alignment": "left",
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "interactive_drake_XW96wM": {
+      "type": "interactive-drake",
+      "blocks": {
+        "hotspot_33eiFC": {
+          "type": "hotspot",
+          "settings": {
+            "x_position": 31,
+            "y_position": 62,
+            "dot_type": "color",
+            "svg_code": "",
+            "color": "#ffffff",
+            "pulse_color": "#ffffff",
+            "size": 20,
+            "pulse_speed": 1.5,
+            "hotspot_link": "",
+            "tooltip": "",
+            "tooltip_bg": "#ffffff",
+            "tooltip_opacity": 80,
+            "tooltip_font_color": "#000000",
+            "tooltip_font_size": 15,
+            "tooltip_width_mode": "dynamic",
+            "tooltip_width": 200,
+            "tooltip_offset": 0,
+            "tooltip_align": "center"
+          }
+        },
+        "hotspot_JPEmbT": {
+          "type": "hotspot",
+          "settings": {
+            "x_position": 40,
+            "y_position": 93,
+            "dot_type": "color",
+            "svg_code": "",
+            "color": "#ffffff",
+            "pulse_color": "#ffffff",
+            "size": 20,
+            "pulse_speed": 1.5,
+            "hotspot_link": "",
+            "tooltip": "Product 2",
+            "tooltip_bg": "#ffffff",
+            "tooltip_opacity": 80,
+            "tooltip_font_color": "#000000",
+            "tooltip_font_size": 15,
+            "tooltip_width_mode": "dynamic",
+            "tooltip_width": 200,
+            "tooltip_offset": 0,
+            "tooltip_align": "center"
+          }
+        },
+        "explore_button_DQQzdA": {
+          "type": "explore_button",
+          "settings": {
+            "x_position": 90,
+            "y_position": 95,
+            "color": "#ffffff",
+            "size": 24,
+            "border_color": "#ffffff",
+            "bg_color": "rgba(0,0,0,0)",
+            "arrow_color": "#ffffff",
+            "border_width": 1,
+            "expanded_width": 100,
+            "arrow_direction": "right",
+            "enable_pulse": false,
+            "pulse_speed": 1.5,
+            "label": "GO BACK",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "hotspot_33eiFC",
+        "hotspot_JPEmbT",
+        "explore_button_DQQzdA"
+      ],
+      "name": "Interactive Drake",
+      "settings": {
+        "image": "shopify://shop_images/20230623_lounge_object_titles_ruin_everything_03c2e0a2a3.jpg",
+        "section_height": 100,
+        "background_color": "#000000",
+        "enable_horizontal_scroll": true,
+        "enable_vertical_scroll": false,
+        "image_height": 100,
+        "image_min_height": 100,
+        "object_fit": "cover",
+        "object_position": "center",
+        "mobile_breakpoint": 768,
+        "mobile_scroll_horizontal": true,
+        "mobile_min_width": 150
+      }
+    }
+  },
+  "order": [
+    "main",
+    "interactive_drake_XW96wM"
+  ]
+}

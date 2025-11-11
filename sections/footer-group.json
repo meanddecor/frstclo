@@ -13,6 +13,7 @@
   "sections": {
     "footer_minimal_PqtVTL": {
       "type": "footer-minimal",
+      "disabled": true,
       "name": "Footer Minimal",
       "settings": {
         "show_footer_nav": true,
@@ -31,7 +32,7 @@
         "big_logo": "shopify://shop_images/Artboard_1_0c9918d3-91af-4d29-9f7c-6a09fca54ea1.png",
         "image_width": 100,
         "image_height_auto": true,
-        "image_height": 200,
+        "image_height": 760,
         "image_object_fit": "contain",
         "background_color": "#ffffff",
         "enable_border_top": false,

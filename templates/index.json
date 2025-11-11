@@ -9,282 +9,70 @@
  */
 {
   "sections": {
-    "hero_6WUhjL": {
-      "type": "hero",
-      "name": "Hero Banner",
-      "settings": {
-        "heading_text": "FALL 24 COLLECTION",
-        "heading_font_family": "amiri_n4",
-        "heading_custom_font_family": "",
-        "heading_size_desktop": 38,
-        "heading_size_mobile": 22,
-        "heading_weight": "700",
-        "heading_color": "#ffffff",
-        "heading_letter_spacing": 0,
-        "heading_bottom_spacing": 10,
-        "desktop_image": "shopify://shop_images/imgi_41_EDITO_DK_MB_LB_SU25_CAMPAIGN_06_LOOKS_2000x3000_2x3_be3437ad-9339-4ed0-a9dd-7a3b7d607560.jpg",
-        "image_height": 90,
-        "overlay_opacity": 40,
-        "margin_bottom": 45,
-        "button_text": "SHOP NOW",
-        "button_url": "",
-        "button_style": "primary",
-        "button_size_desktop": 15,
-        "button_size_mobile": 11,
-        "button_padding_vertical_desktop": 13,
-        "button_padding_horizontal_desktop": 30,
-        "button_padding_vertical_mobile": 10,
-        "button_padding_horizontal_mobile": 24,
-        "button_radius": 0,
-        "button_bg_color": "#000000",
-        "button_text_color": "#000000",
-        "button_outline_color": "#ffffff",
-        "button_outline_bg_color": "rgba(0,0,0,0)",
-        "button_outline_text_color": "#ffffff"
-      }
-    },
-    "featured_collection_LCgWqp": {
-      "type": "featured-collection",
-      "name": "t:sections.featured-collection.presets.name",
-      "settings": {
-        "title": "",
-        "heading_size": "h1",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 25,
-        "columns_desktop": 4,
-        "heading_color": "#000000",
-        "show_product_title": true,
-        "enable_title_styling": true,
-        "enable_title_color": true,
-        "product_title_color": "#000000",
-        "title_font_size": 15,
-        "title_font_weight": "700",
-        "title_font_family": "Arial, sans-serif",
-        "show_product_price": true,
-        "enable_price_styling": true,
-        "enable_price_color": true,
-        "product_price_color": "#000000",
-        "price_font_size": 14,
-        "price_font_weight": "400",
-        "price_font_family": "Arial, sans-serif",
-        "enable_vendor_styling": false,
-        "vendor_font_size": 12,
-        "vendor_font_weight": "400",
-        "vendor_font_family": "default",
-        "content_padding_top": 12,
-        "full_width": true,
-        "horizontal_padding": 24,
-        "product_gap": 20,
-        "vertical_gap": 0,
-        "enable_custom_card_size": true,
-        "card_max_width": 310,
-        "card_max_width_mobile": 230,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "color_scheme": "background-1",
-        "image_ratio": "square",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "enable_quick_add": false,
-        "columns_mobile": 2,
-        "swipe_on_mobile": false,
-        "padding_top": 36,
-        "padding_bottom": 0
-      }
-    },
-    "lookbook_carousel_KknjjG": {
-      "type": "lookbook-carousel",
+    "interactive_drake_Xp9Fk4": {
+      "type": "interactive-drake",
       "blocks": {
-        "carousel_image_pUCCgi": {
-          "type": "carousel_image",
+        "explore_button_BJEDnx": {
+          "type": "explore_button",
           "settings": {
-            "image": "shopify://shop_images/imgi_41_EDITO_DK_MB_LB_SU25_CAMPAIGN_06_LOOKS_2000x3000_2x3_be3437ad-9339-4ed0-a9dd-7a3b7d607560.jpg",
-            "image_alt": "Lookbook Image"
+            "x_position": 30,
+            "y_position": 65,
+            "color": "#ffffff",
+            "size": 24,
+            "border_color": "#ffffff",
+            "bg_color": "rgba(0,0,0,0)",
+            "arrow_color": "#ffffff",
+            "border_width": 1,
+            "expanded_width": 200,
+            "arrow_direction": "left",
+            "enable_pulse": false,
+            "pulse_speed": 1.5,
+            "label": "ENTER STUDIO",
+            "link": "shopify://pages/studio"
           }
         },
-        "carousel_image_m97H4t": {
-          "type": "carousel_image",
+        "explore_button_BdMjUg": {
+          "type": "explore_button",
           "settings": {
-            "image_alt": "Lookbook Image"
-          }
-        },
-        "carousel_image_MGLACr": {
-          "type": "carousel_image",
-          "settings": {
-            "image_alt": "Lookbook Image"
-          }
-        },
-        "carousel_image_PRFYJw": {
-          "type": "carousel_image",
-          "settings": {
-            "image_alt": "Lookbook Image"
-          }
-        },
-        "carousel_image_EWjqgE": {
-          "type": "carousel_image",
-          "settings": {
-            "image_alt": "Lookbook Image"
-          }
-        },
-        "carousel_image_bNaNz8": {
-          "type": "carousel_image",
-          "settings": {
-            "image_alt": "Lookbook Image"
+            "x_position": 77,
+            "y_position": 19,
+            "color": "#ffffff",
+            "size": 24,
+            "border_color": "#ffffff",
+            "bg_color": "rgba(0,0,0,0)",
+            "arrow_color": "#ffffff",
+            "border_width": 1,
+            "expanded_width": 200,
+            "arrow_direction": "right",
+            "enable_pulse": false,
+            "pulse_speed": 1.5,
+            "label": "ENTER LOUNGE",
+            "link": ""
           }
         }
       },
       "block_order": [
-        "carousel_image_pUCCgi",
-        "carousel_image_m97H4t",
-        "carousel_image_MGLACr",
-        "carousel_image_PRFYJw",
-        "carousel_image_EWjqgE",
-        "carousel_image_bNaNz8"
+        "explore_button_BJEDnx",
+        "explore_button_BdMjUg"
       ],
-      "name": "Lookbook Carousel",
+      "name": "Interactive Drake",
       "settings": {
-        "heading_text": "FALL 25 LOOKBOOK",
-        "heading_font_family": "arial_n7",
-        "heading_color": "#000000",
-        "heading_font_size": 32,
-        "heading_font_size_mobile": 24,
-        "heading_letter_spacing": 0,
-        "gap_size": 10,
-        "item_border_radius": 0
-      }
-    },
-    "newsletter_banner_NcbbCa": {
-      "type": "newsletter-banner",
-      "name": "Newsletter Banner",
-      "settings": {
-        "heading": "EVERYBODY CAN'T HAVE LIMITED ITEMS..",
-        "description": "JOIN OUR EMAIL LIST TO FIND OUT ABOUT THE NEW DROP AND NEVER MISS IT AGAIN",
-        "input_placeholder": "Your email",
-        "button_text": "Subscribe",
-        "success_message": "Thanks for your subscription!",
-        "form_tags": "newsletter, prospect",
-        "heading_font": "assistant_n4",
-        "heading_color": "#000000",
-        "heading_italic": false,
-        "heading_underline": false,
-        "heading_strikethrough": false,
-        "heading_size": 50,
-        "heading_size_mobile": 28,
-        "heading_weight": "700",
-        "heading_transform": "none",
-        "heading_letter_spacing": 0,
-        "heading_spacing": 24,
-        "heading_spacing_mobile": 16,
-        "description_font": "assistant_n4",
-        "description_color": "#000000",
-        "description_letter_spacing": 0,
-        "description_italic": false,
-        "description_underline": false,
-        "description_strikethrough": false,
-        "description_size": 15,
-        "description_max_width": 35,
-        "description_spacing": 0,
-        "form_spacing": 32,
-        "form_gap": 0,
-        "input_font": "assistant_n4",
-        "input_text_color": "#000000",
-        "input_background": "#ffffff",
-        "input_border_color": "#000000",
-        "input_border_thickness": 1,
-        "input_corner_radius": 0,
-        "placeholder_color": "#999999",
-        "input_focus_border_color": "#000000",
-        "input_focus_outline_color": "#000000",
-        "input_focus_outline_width": 2,
-        "input_width": 300,
-        "input_padding_vertical": 11,
-        "input_padding_horizontal": 18,
-        "input_font_size": 14,
-        "input_letter_spacing": 0,
-        "button_font": "assistant_n4",
-        "button_background": "#000000",
-        "button_text_color": "#ffffff",
-        "button_hover_background": "#333333",
-        "button_corner_radius": 0,
-        "button_padding_vertical": 12,
-        "button_padding_horizontal": 18,
-        "button_font_size": 14,
-        "button_letter_spacing": 0,
-        "button_weight": "500",
-        "button_transform": "none",
-        "button_hover_opacity": 80,
-        "background_color": "#ffffff",
-        "success_font": "assistant_n4",
-        "success_text_color": "#000000",
-        "success_font_size": 20,
-        "success_letter_spacing": 0,
-        "padding_top": 70,
-        "padding_bottom": 80
-      }
-    },
-    "floating_collage_96FzHf": {
-      "type": "floating-collage",
-      "blocks": {
-        "product_EaUT64": {
-          "type": "product",
-          "settings": {
-            "product": "blak-jecket"
-          }
-        },
-        "product_bXagzK": {
-          "type": "product",
-          "settings": {
-            "product": ""
-          }
-        },
-        "product_fXGFHN": {
-          "type": "product",
-          "settings": {
-            "product": ""
-          }
-        }
-      },
-      "block_order": [
-        "product_EaUT64",
-        "product_bXagzK",
-        "product_fXGFHN"
-      ],
-      "name": "Floating Collage",
-      "settings": {
-        "section_width": "full",
-        "section_height": "custom",
-        "custom_height": 750,
-        "height_unit": "px",
-        "background_type": "image",
-        "video_url": "",
-        "background_image": "shopify://shop_images/imgi_41_EDITO_DK_MB_LB_SU25_CAMPAIGN_06_LOOKS_2000x3000_2x3_83af7cc0-01e9-4a12-aeaa-4a3893ec7696.jpg",
-        "video_overlay_color": "#ffffff",
-        "video_overlay_opacity": 0,
-        "image_overlay_color": "#000000",
-        "image_overlay_opacity": 0,
-        "floating_image_fit": "contain",
-        "background_image_fit": "cover",
-        "background_video_fit": "cover",
-        "speed_desktop": 0.5,
-        "speed_mobile": 0.5,
-        "image_size_desktop": 40,
-        "image_size_mobile": 60,
-        "button_text": "View",
-        "button_bg_color": "#111111",
-        "button_text_color": "#ffffff"
+        "image": "shopify://shop_images/JUST_BOXES_1.webp",
+        "section_height": 100,
+        "background_color": "#000000",
+        "enable_horizontal_scroll": true,
+        "enable_vertical_scroll": false,
+        "image_height": 100,
+        "image_min_height": 100,
+        "object_fit": "cover",
+        "object_position": "center",
+        "mobile_breakpoint": 768,
+        "mobile_scroll_horizontal": true,
+        "mobile_min_width": 300
       }
     }
   },
   "order": [
-    "hero_6WUhjL",
-    "featured_collection_LCgWqp",
-    "lookbook_carousel_KknjjG",
-    "newsletter_banner_NcbbCa",
-    "floating_collage_96FzHf"
+    "interactive_drake_Xp9Fk4"
   ]
 }

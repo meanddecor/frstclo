@@ -44,9 +44,9 @@
     "site_button_bg_color": "#000000",
     "product_checked_pills": "#ffffff",
     "product_checked_pills_text": "#000000",
-    "type_header_font": "eurostile_next_n7",
+    "type_header_font": "arial_n4",
     "heading_scale": 100,
-    "type_body_font": "eurostile_next_n6",
+    "type_body_font": "sans_serif_n7",
     "body_scale": 100,
     "hide_enter-page": false,
     "page_width": 1600,
@@ -295,7 +295,7 @@
       "running-text": {
         "type": "running-text",
         "settings": {
-          "show_runningtext": true,
+          "show_runningtext": false,
           "running_text": "Welcome to our website",
           "text_color": "#ffffff",
           "background_color": "#000000",

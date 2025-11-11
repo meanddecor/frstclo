@@ -12,9 +12,14 @@
 - Spacing: padding_top, padding_bottom, margin_bottom
 
 ✅ SECTION SETTINGS APPLIED - TEXT-ONLY HEADER STYLE:
-- Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit
+- Header Layout & Positioning: text_only_header_bg_color, text_only_position_type (relative/sticky/fixed/absolute)
+- Position Offsets: text_only_position_top, text_only_position_left, text_only_position_right, text_only_z_index
+- Header Dimensions: text_only_width_type (full/vw/px/max-width), text_only_width_value, text_only_height_type (auto/vh/px), text_only_height_value
+- Header Padding: text_only_padding_top, text_only_padding_bottom, text_only_padding_left, text_only_padding_right
+- Content Scaling: text_only_content_scale, text_only_center_content_vertically
+- Text-Only Logo: text_only_logo, text_only_logo_width, text_only_logo_object_fit, text_only_custom_logo_text
 - Header Styling: text_only_burger_color, text_only_menu_text_color, text_only_menu_font_size
-- Typography: text_only_menu_letter_spacing, text_only_menu_font_weight
+- Typography: text_only_menu_letter_spacing, text_only_menu_font_weight, text_only_menu_font, text_only_logo_font
 - Logo Text: text_only_logo_text_color, text_only_logo_font_size, text_only_logo_letter_spacing
 - Spacing: text_only_spacing_scale (unified spacing control)
 - XL Breakpoint (1200px+): text_only_xl_max_width
@@ -24,6 +29,14 @@
 - XS Breakpoint (480-639px): text_only_xs_max_width, logo, menu font size, menu gap, horizontal padding
 - Mobile Menu: text_only_mobile_menu_style, scroll settings (fade, snap)
 - Mobile Menu Fullscreen: text_only_mobile_menu_bg, text_only_mobile_menu_text_color, typography
+
+🎯 NEW FEATURES:
+- Full positioning control (sticky, fixed, absolute with top/left/right offsets)
+- Customizable dimensions (width: 100%/vw/px, height: auto/vh/px)
+- Background color with transparency support
+- Custom padding for all sides
+- Uniform content scaling with transform
+- Responsive layout that works with all positioning types
 
 NOTE: Header style is switchable via 'header_style' setting (default or text_only)
 {% endcomment %}
@@ -203,6 +216,49 @@ NOTE: Header style is switchable via 'header_style' setting (default or text_onl
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- if section.settings.header_style == 'text_only' -%}
+  /* Text-Only Header Positioning & Layout */
+  .header--text-only {
+    position: {{ section.settings.text_only_position_type | default: 'relative' }} !important;
+    top: {{ section.settings.text_only_position_top | default: 0 }}px !important;
+    left: {{ section.settings.text_only_position_left | default: 0 }}px !important;
+    right: {{ section.settings.text_only_position_right | default: 0 }}px !important;
+    z-index: {{ section.settings.text_only_z_index | default: 100 }} !important;
+    background-color: {{ section.settings.text_only_header_bg_color | default: 'rgba(0,0,0,0)' }} !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    
+    {%- liquid
+      assign width_type = section.settings.text_only_width_type | default: 'full'
+      assign width_value = section.settings.text_only_width_value | default: 100
+      
+      case width_type
+        when 'full'
+          echo 'width: 100% !important;'
+        when 'vw'
+          echo 'width: ' | append: width_value | append: 'vw !important;'
+        when 'px'
+          echo 'width: ' | append: width_value | append: 'px !important;'
+        when 'max-width'
+          echo 'width: 100% !important;'
+      endcase
+      
+      assign height_type = section.settings.text_only_height_type | default: 'auto'
+      assign height_value = section.settings.text_only_height_value | default: 80
+      
+      case height_type
+        when 'auto'
+          echo 'height: auto !important;'
+        when 'vh'
+          echo 'height: ' | append: height_value | append: 'vh !important;'
+        when 'px'
+          echo 'height: ' | append: height_value | append: 'px !important;'
+      endcase
+    -%}
+  }
+  {%- endif -%}
 {%- endstyle -%}
 
 <script src="{{ 'details-disclosure.js' | asset_url }}" defer="defer"></script>
@@ -1163,6 +1219,192 @@ NOTE: Header style is switchable via 'header_style' setting (default or text_onl
     {
       "type": "paragraph",
       "content": "🎨 These settings apply when 'Text-only' header style is selected. Configure desktop menu, mobile menu, and logo appearance separately below."
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Header Layout & Positioning"
+    },
+    {
+      "type": "color",
+      "id": "text_only_header_bg_color",
+      "label": "Header background color",
+      "default": "rgba(0,0,0,0)",
+      "info": "📝 TEXT-ONLY STYLE - Header background color (supports transparency)"
+    },
+    {
+      "type": "select",
+      "id": "text_only_position_type",
+      "label": "Position type",
+      "options": [
+        { "value": "relative", "label": "Relative (Default)" },
+        { "value": "sticky", "label": "Sticky" },
+        { "value": "fixed", "label": "Fixed" },
+        { "value": "absolute", "label": "Absolute" }
+      ],
+      "default": "relative",
+      "info": "📝 TEXT-ONLY STYLE - How header is positioned on page"
+    },
+    {
+      "type": "range",
+      "id": "text_only_position_top",
+      "label": "Top position",
+      "min": -200,
+      "max": 200,
+      "step": 5,
+      "default": 0,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Top offset (for sticky/fixed/absolute positioning)"
+    },
+    {
+      "type": "range",
+      "id": "text_only_position_left",
+      "label": "Left position",
+      "min": -200,
+      "max": 200,
+      "step": 5,
+      "default": 0,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Left offset (for absolute/fixed positioning)"
+    },
+    {
+      "type": "range",
+      "id": "text_only_position_right",
+      "label": "Right position",
+      "min": -200,
+      "max": 200,
+      "step": 5,
+      "default": 0,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Right offset (for absolute/fixed positioning). Set to 0 for full width."
+    },
+    {
+      "type": "range",
+      "id": "text_only_z_index",
+      "label": "Z-index (layer order)",
+      "min": 100,
+      "max": 9900,
+      "step": 100,
+      "default": 100,
+      "info": "📝 TEXT-ONLY STYLE - Stacking order (higher = on top). Increments of 100."
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Header Dimensions"
+    },
+    {
+      "type": "select",
+      "id": "text_only_width_type",
+      "label": "Width type",
+      "options": [
+        { "value": "full", "label": "Full Width (100%)" },
+        { "value": "vw", "label": "Viewport Width (vw)" },
+        { "value": "px", "label": "Pixels (px)" },
+        { "value": "max-width", "label": "Max Width Container" }
+      ],
+      "default": "full",
+      "info": "📝 TEXT-ONLY STYLE - How width is calculated"
+    },
+    {
+      "type": "range",
+      "id": "text_only_width_value",
+      "label": "Width value",
+      "min": 10,
+      "max": 200,
+      "step": 5,
+      "default": 100,
+      "info": "📝 TEXT-ONLY STYLE - Width value (%, vw, or px depending on type selected)"
+    },
+    {
+      "type": "select",
+      "id": "text_only_height_type",
+      "label": "Height type",
+      "options": [
+        { "value": "auto", "label": "Auto (Content Height)" },
+        { "value": "vh", "label": "Viewport Height (vh)" },
+        { "value": "px", "label": "Pixels (px)" }
+      ],
+      "default": "auto",
+      "info": "📝 TEXT-ONLY STYLE - How height is calculated"
+    },
+    {
+      "type": "range",
+      "id": "text_only_height_value",
+      "label": "Height value",
+      "min": 10,
+      "max": 200,
+      "step": 5,
+      "default": 80,
+      "info": "📝 TEXT-ONLY STYLE - Height value (vh or px, not used for auto)"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Header Padding"
+    },
+    {
+      "type": "range",
+      "id": "text_only_padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Inner top padding"
+    },
+    {
+      "type": "range",
+      "id": "text_only_padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Inner bottom padding"
+    },
+    {
+      "type": "range",
+      "id": "text_only_padding_left",
+      "label": "Padding left",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Inner left padding"
+    },
+    {
+      "type": "range",
+      "id": "text_only_padding_right",
+      "label": "Padding right",
+      "min": 0,
+      "max": 200,
+      "step": 5,
+      "default": 20,
+      "unit": "px",
+      "info": "📝 TEXT-ONLY STYLE - Inner right padding"
+    },
+    {
+      "type": "header",
+      "content": "Text-Only Style - Content Scaling"
+    },
+    {
+      "type": "range",
+      "id": "text_only_content_scale",
+      "label": "Content scale",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "default": 100,
+      "unit": "%",
+      "info": "📝 TEXT-ONLY STYLE - Scale all content uniformly (logo, menu, icons)"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_only_center_content_vertically",
+      "label": "Center content vertically",
+      "default": true,
+      "info": "📝 TEXT-ONLY STYLE - Vertically center all header content"
     },
     {
       "type": "header",
