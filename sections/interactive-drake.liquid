@@ -36,9 +36,9 @@
 
   .drake-image-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
     line-height: 0;
-    width: fit-content;
+    width: 100%;
     height: fit-content;
   }
   
@@ -63,10 +63,9 @@
       object-fit: none;
     {% else %}
       /* Cover/Fill modes: fill viewport */
-      height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_height | default: 100 }}%{% else %}100%{% endif %};
-      width: 100%;
-      min-width: {% if section.settings.mobile_scroll_horizontal %}{{ section.settings.mobile_min_width | default: 150 }}vw{% else %}100%{% endif %};
-      min-height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_min_height | default: 100 }}vh{% else %}100vh{% endif %};
+      height: 100vh;
+      width: auto;
+      min-width: 100vw;
       max-width: none;
       object-fit: {{ section.settings.object_fit | default: 'cover' }};
     {% endif %}
@@ -89,10 +88,9 @@
         min-height: 100%;
         object-fit: none;
       {% else %}
-        height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_height | default: 100 }}%{% else %}100%{% endif %};
-        width: {% if section.settings.enable_horizontal_scroll %}auto{% else %}100%{% endif %};
-        min-width: {% if section.settings.enable_horizontal_scroll %}100%{% else %}100%{% endif %};
-        min-height: {% if section.settings.enable_vertical_scroll %}{{ section.settings.image_min_height | default: 100 }}vh{% else %}100%{% endif %};
+        height: 100vh;
+        width: auto;
+        min-width: 100%;
         object-fit: {{ section.settings.object_fit | default: 'cover' }};
       {% endif %}
       object-position: {{ section.settings.object_position | default: 'center' }};
